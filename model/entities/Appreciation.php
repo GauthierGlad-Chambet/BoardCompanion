@@ -1,0 +1,29 @@
+<?php
+
+ require_once "entity.php";
+
+ class Appreciation extends Entity {
+    private string $id;
+    private string $label;
+
+    // Getters
+
+    public function getId() : string {
+        return $this->id;
+    }
+
+    public function getLabel() : string {
+        return $this->label;
+    }
+
+
+    // Setters
+
+    public function setId($id) {
+        $this->id = $id;
+    }
+
+    public function setLabel($label) {
+        $this->label = $label;
+    }
+ }
