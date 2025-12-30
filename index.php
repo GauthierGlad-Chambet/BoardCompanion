@@ -13,7 +13,7 @@
 
     // Détermine le controleur à appeler et son action en fonction de l'url
     $controller = $_GET["controller"] ?? "main";
-    $action = $_GET["action"] ?? "home";
+    $action = $_GET["action"] ?? "signIn";
 
     $controllerPath = "controller/" . $controller . "Controller.php";
     
