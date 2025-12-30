@@ -13,6 +13,8 @@
     private int $nbPredecs;
     private bool $isCleaning;
     private bool $isAlone;
+    private string $scriptFilePath;
+    private string $templateFilePath;
     private float $nbTotalPages;
     private float $nbAssignedPages;
     private float $estimTotalDuration;
@@ -62,6 +64,14 @@
 
     public function getIsAlone() : bool {
         return $this->isAlone;
+    }
+
+    public function getScriptFilePath() : string {
+        return $this->scriptFilePath;
+    }
+
+    public function getTemplateFilePath() : string {
+        return $this->templateFilePath;
     }
 
     public function getNbTotalPages() : float {
@@ -133,6 +143,14 @@
 
     public function setIsAlone($isAlone) {
         $this->isAlone = $isAlone;
+    }
+
+    public function setScriptFilePath($scriptFilePath) {
+        $this->scriptFilePath = $scriptFilePath;
+    }
+
+    public function setTemplateFilePath($templateFilePath) {
+        $this->templateFilePath = $templateFilePath;
     }
 
     public function setNbTotalPages($nbTotalPages) {
