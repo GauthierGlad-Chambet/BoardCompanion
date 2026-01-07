@@ -1,14 +1,7 @@
-
-
-
-
-<!-- A ANALYSER POUR COMPRENDRE  -->
-
-
-
-
 <?php
+namespace App\Models;
 
+//A ANALYSER POUR COMPRENDRE
     class Model {
         const HOST = "localhost";
         const DB = "board_companion";

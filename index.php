@@ -1,15 +1,6 @@
-
-
-
-
-
-
-
-
-<!-- A ANALYSER POUR COMPRENDRE  -->
-
-
 <?php
+
+//A ANALYSER POUR COMPRENDRE
 
     // Détermine le controleur à appeler et son action en fonction de l'url
     $controller = $_GET["controller"] ?? "main";

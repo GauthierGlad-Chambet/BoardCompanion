@@ -1,15 +1,7 @@
-
-
-
-
-
-
-<!-- A ANALYSER POUR COMPRENDRE  -->
-
-
-
-
 <?php
+namespace APP\entities;
+
+//A ANALYSER POUR COMPRENDRE
 
    class Entity {
 

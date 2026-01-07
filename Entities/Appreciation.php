@@ -1,4 +1,5 @@
 <?php
+namespace APP\entities;
 
  require_once "entity.php";
 
