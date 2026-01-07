@@ -1,0 +1,1 @@
+<p>Merci de <a href="account.php">créer un compte</a> ou vous <a href="account.php">connecter</a></p>

@@ -1,17 +1,23 @@
 <?php
+
 namespace App\Controllers;
 
-    class FormController {
+class FormController extends MainController
+{
 
-        public function newProject() {
-            require_once("view/partials/header.php");
-            include("view/main/newProjectForm.php");
-            require_once("view/partials/footer.php");
-        }
+    public function newProject()
+    {
+        // require_once("Views/partials/header.php");
+        // include("Views/projectForm/newProjectForm.php");
+        // require_once("Views/partials/footer.php");
 
-        public function detailedAnalysis() {
-            require_once("view/partials/header.php");
-            include("view/main/detailedAnalysisForm.php");
-            require_once("view/partials/footer.php");
-        }
+        $this->_display("projectForm/newProjectForm");
     }
+
+    public function detailedAnalysis()
+    {
+        // require_once("Views/partials/header.php");
+        // include("Views/projectForm/detailedAnalysisForm.php");
+        // require_once("Views/partials/footer.php");
+    }
+}

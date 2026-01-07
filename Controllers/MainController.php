@@ -1,21 +1,34 @@
 <?php
+
 namespace App\Controllers;
 
-    abstract class MainController {
+/**
+ * Classe mère des controllers
+ */
+abstract class MainController
+{
 
-        // Show home page
-        public function home() {
-            require_once("view/partials/header.php");
-            include("view/main/home.php");
-            require_once("view/partials/footer.php");
+    protected array $_arrData = [];
+
+    /**
+     * Fonction d'affichage
+     * @param string $strTemplate nom de la vue à afficher
+     * @return void Affichage de la vue
+     */
+    protected function _display(string $strTemplate)
+    {
+        foreach ($this->_arrData as $key => $value) {
+            $$key = $value;
         }
-
-        // Show signUp/signIn page
-        public function signIn() {
-            require_once("view/partials/header.php");
-            include("view/main/signIn.php");
-            require_once("view/partials/footer.php");
-        }
-
-      
+        // Chemins relatifs depuis le dossier Controllers vers le dossier Views
+        require __DIR__ . '/../Views/partials/header.php';
+        include __DIR__ . '/../Views/' . $strTemplate . '.php';
+        require __DIR__ . '/../Views/partials/footer.php';
     }
+
+    protected function _notFound()
+    {
+        header("Location:index.php?controller=errors&action=error_404");
+        exit();
+    }
+}

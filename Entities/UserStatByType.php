@@ -1,10 +1,12 @@
 <?php
+
 namespace App\Entities;
 
 
 use App\Entities\Entity;
 
- class UserStatByType extends Entity {
+class UserStatByType extends MainEntity
+{
     private string $id;
     private float $avgPagesDays;
     private Type $type;
@@ -13,38 +15,46 @@ use App\Entities\Entity;
 
     // Getters
 
-    public function getId() : string {
+    public function getId(): string
+    {
         return $this->id;
     }
 
-    public function getAvgPagesDays() : float {
+    public function getAvgPagesDays(): float
+    {
         return $this->avgPagesDays;
     }
 
-    public function getType() : Type {
+    public function getType(): Type
+    {
         return $this->type;
     }
 
-    public function getUser() : user {
+    public function getUser(): user
+    {
         return $this->user;
     }
 
 
     // Setters
 
-    public function setId($id) {
+    public function setId($id)
+    {
         $this->id = $id;
     }
 
-    public function setAvgPagesDays($avgPagesDays) {
+    public function setAvgPagesDays($avgPagesDays)
+    {
         $this->avgPagesDays = $avgPagesDays;
     }
 
-    public function setType($type) {
+    public function setType($type)
+    {
         $this->type = $type;
     }
 
-    public function setUser($user) {
+    public function setUser($user)
+    {
         $this->user = $user;
     }
- }
+}

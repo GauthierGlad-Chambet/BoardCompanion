@@ -1,10 +1,12 @@
 <?php
+
 namespace App\Entities;
 
 
 use App\Entities\Entity;
 
- class User extends Entity {
+class User extends MainEntity
+{
     private string $id;
     private string $pseudo;
     private string $email;
@@ -15,54 +17,66 @@ use App\Entities\Entity;
 
     // Getters
 
-    public function getId() : string {
+    public function getId(): string
+    {
         return $this->id;
     }
 
-    public function getPseudo() : string {
+    public function getPseudo(): string
+    {
         return $this->pseudo;
     }
 
-    public function getEmail() : string {
+    public function getEmail(): string
+    {
         return $this->email;
     }
 
-    public function getPwd() : string {
+    public function getPwd(): string
+    {
         return $this->pwd;
     }
 
-    public function getAvgPageDay() : float {
+    public function getAvgPageDay(): float
+    {
         return $this->avgPageDay;
     }
 
-    public function getAvgCleaningDuration() : float {
+    public function getAvgCleaningDuration(): float
+    {
         return $this->avgCleaningDuration;
     }
 
 
     // Setters
 
-    public function setId($id) {
+    public function setId($id)
+    {
         $this->id = $id;
     }
 
-    public function setPseudo($pseudo) {
+    public function setPseudo($pseudo)
+    {
         $this->pseudo = $pseudo;
     }
 
-    public function setEmail($email) {
+    public function setEmail($email)
+    {
         $this->email = $email;
     }
 
-    public function setPwd($pwd) {
+    public function setPwd($pwd)
+    {
         $this->pwd = $pwd;
     }
 
-    public function setAvgPageDay($avgPageDay) {
+    public function setAvgPageDay($avgPageDay)
+    {
         $this->avgPageDay = $avgPageDay;
     }
 
-    public function setAvgCleaningDuration($avgCleaningDuration) {
+    public function setAvgCleaningDuration($avgCleaningDuration)
+    {
         $this->avgCleaningDuration = $avgCleaningDuration;
     }
- }
+}

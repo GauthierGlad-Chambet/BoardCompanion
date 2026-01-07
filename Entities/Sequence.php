@@ -1,10 +1,12 @@
 <?php
+
 namespace App\Entities;
 
 
 use App\Entities\Entity;
 
- class Sequence extends Entity {
+class Sequence extends MainEntity
+{
     private string $id;
     private bool $isAssigned;
     private float $durationEstimated;
@@ -14,47 +16,56 @@ use App\Entities\Entity;
 
     // Getters
 
-    public function getId() : string {
+    public function getId(): string
+    {
         return $this->id;
     }
 
-    public function getIsAssigned() : bool {
+    public function getIsAssigned(): bool
+    {
         return $this->isAssigned;
     }
 
-    public function getDurationEstimated() : float {
+    public function getDurationEstimated(): float
+    {
         return $this->durationEstimated;
     }
 
-    public function getType() : Type {
+    public function getType(): Type
+    {
         return $this->type;
     }
 
-    public function getProject() : Project {
+    public function getProject(): Project
+    {
         return $this->project;
     }
 
 
     // Setters
 
-    public function setId($id) {
+    public function setId($id)
+    {
         $this->id = $id;
     }
 
-    public function setIsAssigned($isAssigned) {
+    public function setIsAssigned($isAssigned)
+    {
         $this->isAssigned = $isAssigned;
     }
 
-    public function setDurationEstimated($durationEstimated) {
+    public function setDurationEstimated($durationEstimated)
+    {
         $this->durationEstimated = $durationEstimated;
     }
 
-    public function setType($type) {
+    public function setType($type)
+    {
         $this->type = $type;
     }
 
-    public function setProject($project) {
+    public function setProject($project)
+    {
         $this->project = $project;
     }
- }
-    
+}
