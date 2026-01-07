@@ -2,7 +2,7 @@
 namespace App\Models;
 
 //A ANALYSER POUR COMPRENDRE
-    class MainModel {
+    abstract class MainModel {
         const HOST = "localhost";
         const DB = "board_companion";
         const USER = "root";

@@ -1,7 +1,7 @@
 <?php
 namespace App\Controllers;
 
-    class MainController {
+    abstract class MainController {
 
         // Show home page
         public function home() {
