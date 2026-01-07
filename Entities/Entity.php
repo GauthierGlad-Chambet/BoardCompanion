@@ -1,5 +1,5 @@
 <?php
-namespace APP\entities;
+namespace App\Entities;
 
 //A ANALYSER POUR COMPRENDRE
 

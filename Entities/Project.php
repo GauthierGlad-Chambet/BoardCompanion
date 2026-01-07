@@ -1,8 +1,8 @@
 <?php
-namespace APP\entities;
+namespace App\Entities;
 
 
- require_once "entity.php";
+use App\Entities\Entity;
 
  class Project extends Entity {
     private string $id;

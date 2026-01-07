@@ -1,30 +1,30 @@
 <?php
-namespace APP\entities;
+namespace App\Entities;
 
- require_once "entity.php";
+use App\Entities\Entity;
 
- class Appreciation extends Entity {
-    private string $id;
-    private string $label;
+class Appreciation extends Entity {
+private string $id;
+private string $label;
 
-    // Getters
+// Getters
 
-    public function getId() : string {
-        return $this->id;
-    }
+public function getId() : string {
+    return $this->id;
+}
 
-    public function getLabel() : string {
-        return $this->label;
-    }
+public function getLabel() : string {
+    return $this->label;
+}
 
 
-    // Setters
+// Setters
 
-    public function setId($id) {
-        $this->id = $id;
-    }
+public function setId($id) {
+    $this->id = $id;
+}
 
-    public function setLabel($label) {
-        $this->label = $label;
-    }
- }
+public function setLabel($label) {
+    $this->label = $label;
+}
+}
