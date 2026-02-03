@@ -5,7 +5,7 @@ namespace App\Entities;
 
 use App\Entities\Entity;
 
-class User extends MainEntity
+class User extends MotherEntity
 {
     private string $id;
     private string $pseudo;

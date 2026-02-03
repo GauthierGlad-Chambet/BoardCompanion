@@ -2,28 +2,32 @@
 
 namespace App\Entities;
 
-use App\Entities\MainEntity;
+use App\Entities\MotherEntity;
 
-class Project extends MainEntity
+class Project extends MotherEntity
 {
+    function __construct() {
+        $this->_strPrefix = "_project";
+    }
+
     private string $id;
     private string $name;
     private string $studio;
-    private string $episodeNb;
-    private string $episodeTitle;
-    private string $dateBegin;
-    private string $dateEnd;
-    private int $nbPredecs;
-    private bool $isCleaning;
-    private bool $isAlone;
-    private string $scriptFilePath;
-    private string $templateFilePath;
-    private float $nbTotalPages;
-    private float $nbAssignedPages;
-    private float $estimTotalDuration;
-    private float $estimCleaningDuration;
-    private float $recoPagesDays;
-    private User $user;
+    private string $episode_nb;
+    private string $episode_title;
+    private int $nb_predec;
+    private bool $project_is_alone;
+    private bool $is_cleaning;
+    private string $script_path;
+    private string $template_path;
+    private string $date_begining;
+    private string $date_end;
+    private float $nb_total_pages;
+    private float $nb_assigned_pages;
+    private float $estimated_total_duration;
+    private float $estimated_cleaning_duration;
+    private float $recommended_pages_per_day;
+    private int $fk_user;
     private FinalReport $finalReport;
 
 
@@ -114,7 +118,7 @@ class Project extends MainEntity
         return $this->recoPagesDays;
     }
 
-    public function getUser(): User
+    public function getUser(): int
     {
         return $this->user;
     }

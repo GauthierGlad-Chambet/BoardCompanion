@@ -5,7 +5,7 @@ namespace App\Entities;
 
 use App\Entities\Entity;
 
-class Sequence extends MainEntity
+class Sequence extends MotherEntity
 {
     private string $id;
     private bool $isAssigned;

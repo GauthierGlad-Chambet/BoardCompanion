@@ -6,7 +6,7 @@ use PDO;
 use PDOException;
 
 //A ANALYSER POUR COMPRENDRE
-abstract class MainModel
+abstract class MotherModel
 {
     const HOST = "localhost";
     const DB = "board_companion";
@@ -18,9 +18,9 @@ abstract class MainModel
     {
         try {
             return new PDO(
-                "mysql:host=" . MainModel::HOST . ";dbname=" . MainModel::DB . ";charset=utf8",
-                MainModel::USER,
-                MainModel::PASS,
+                "mysql:host=" . MotherModel::HOST . ";dbname=" . MotherModel::DB . ";charset=utf8",
+                MotherModel::USER,
+                MotherModel::PASS,
                 array(PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC)
             );
         } catch (PDOException $ex) {

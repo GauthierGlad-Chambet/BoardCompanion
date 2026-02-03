@@ -4,7 +4,7 @@ namespace App\Entities;
 
 use App\Entities\Entity;
 
-class Appreciation extends MainEntity
+class Appreciation extends MotherEntity
 {
     private string $id;
     private string $label;

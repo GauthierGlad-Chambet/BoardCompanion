@@ -4,7 +4,7 @@ namespace App\Entities;
 
 use App\Entities\Entity;
 
-class FinalReport extends MainEntity
+class FinalReport extends MotherEntity
 {
     private string $id;
     private float $totalDuration;

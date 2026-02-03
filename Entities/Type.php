@@ -5,7 +5,7 @@ namespace App\Entities;
 
 use App\Entities\Entity;
 
-class Type extends MainEntity
+class Type extends MotherEntity
 {
     private string $id;
     private string $label;

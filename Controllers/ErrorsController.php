@@ -2,9 +2,9 @@
 
 namespace App\Controllers;
 
-use App\Controllers\MainController;
+use App\Controllers\MotherController;
 
-class ErrorsController extends MainController
+class ErrorsController extends MotherController
 {
 
     /**

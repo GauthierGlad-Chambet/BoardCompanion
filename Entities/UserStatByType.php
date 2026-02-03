@@ -5,7 +5,7 @@ namespace App\Entities;
 
 use App\Entities\Entity;
 
-class UserStatByType extends MainEntity
+class UserStatByType extends MotherEntity
 {
     private string $id;
     private float $avgPagesDays;

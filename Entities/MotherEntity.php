@@ -3,7 +3,7 @@ namespace App\Entities;
 
 //A ANALYSER POUR COMPRENDRE
 
-abstract class MainEntity {
+abstract class MotherEntity {
 
     protected string $_strPrefix;
 
