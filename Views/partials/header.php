@@ -11,5 +11,6 @@ require_once("Views/partials/head.php");
             <a href="index.php?action=">Planning</a>
             <a href="index.php?action=">Arborescence</a>
             <a href="index.php?action=">Compte</a>
+            <a name="logout" href="index.php?controller=user&action=logout">Se déconnecter</a>
         </nav>
     </header>

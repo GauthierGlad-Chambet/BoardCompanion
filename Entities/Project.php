@@ -16,7 +16,7 @@ class Project extends MotherEntity
     private string $episode_nb;
     private string $episode_title;
     private int $nb_predec;
-    private bool $project_is_alone;
+    private bool $is_alone;
     private bool $is_cleaning;
     private string $script_path;
     private string $template_path;
@@ -50,77 +50,77 @@ class Project extends MotherEntity
 
     public function getEpisodeNb(): string
     {
-        return $this->episodeNb;
+        return $this->episode_nb;
     }
 
     public function getEpisodeTitle(): string
     {
-        return $this->episodeTitle;
+        return $this->episode_title;
     }
 
     public function getDateBegin(): string
     {
-        return $this->dateBegin;
+        return $this->date_begining;
     }
 
     public function getDateEnd(): string
     {
-        return $this->dateEnd;
+        return $this->date_end;
     }
 
     public function getNbPredecs(): int
     {
-        return $this->nbPredecs;
+        return $this->nb_predec;
     }
 
     public function getIsCleaning(): bool
     {
-        return $this->isCleaning;
+        return $this->is_cleaning;
     }
 
     public function getIsAlone(): bool
     {
-        return $this->isAlone;
+        return $this->is_alone;
     }
 
     public function getScriptFilePath(): string
     {
-        return $this->scriptFilePath;
+        return $this->script_path;
     }
 
     public function getTemplateFilePath(): string
     {
-        return $this->templateFilePath;
+        return $this->template_path;
     }
 
     public function getNbTotalPages(): float
     {
-        return $this->nbTotalPages;
+        return $this->nb_total_pages;
     }
 
     public function getNbAssignedPages(): float
     {
-        return $this->nbAssignedPages;
+        return $this->nb_assigned_pages;
     }
 
     public function getEstimTotalDuration(): float
     {
-        return $this->estimTotalDuration;
+        return $this->estimated_total_duration;
     }
 
     public function getEstimCleaningDuration(): float
     {
-        return $this->estimCleaningDuration;
+        return $this->estimated_cleaning_duration;
     }
 
     public function getRecoPagesDays(): float
     {
-        return $this->recoPagesDays;
+        return $this->recommended_pages_per_day;
     }
 
     public function getUser(): int
     {
-        return $this->user;
+        return $this->fk_user;
     }
 
     public function getFinalReport(): FinalReport
@@ -148,77 +148,77 @@ class Project extends MotherEntity
 
     public function setEpisodeNb($episodeNb)
     {
-        $this->episodeNb = $episodeNb;
+        $this->episode_nb = $episodeNb;
     }
 
     public function setEpisodeTitle($episodeTitle)
     {
-        $this->episodeTitle = $episodeTitle;
+        $this->episode_title = $episodeTitle;
     }
 
     public function setDateBegin($dateBegin)
     {
-        $this->dateBegin = $dateBegin;
+        $this->date_begining = $dateBegin;
     }
 
     public function setDateEnd($dateEnd)
     {
-        $this->dateEnd = $dateEnd;
+        $this->date_end = $dateEnd;
     }
 
     public function setNbPredecs($nbPredecs)
     {
-        $this->nbPredecs = $nbPredecs;
+        $this->nb_predec = $nbPredecs;
     }
 
     public function setIsCleaning($isCleaning)
     {
-        $this->isCleaning = $isCleaning;
+        $this->is_cleaning = $isCleaning;
     }
 
     public function setIsAlone($isAlone)
     {
-        $this->isAlone = $isAlone;
+        $this->is_alone = $isAlone;
     }
 
     public function setScriptFilePath($scriptFilePath)
     {
-        $this->scriptFilePath = $scriptFilePath;
+        $this->script_path = $scriptFilePath;
     }
 
     public function setTemplateFilePath($templateFilePath)
     {
-        $this->templateFilePath = $templateFilePath;
+        $this->template_path = $templateFilePath;
     }
 
     public function setNbTotalPages($nbTotalPages)
     {
-        $this->nbTotalPages = $nbTotalPages;
+        $this->nb_total_pages = $nbTotalPages;
     }
 
     public function setNbAssignedPages($nbAssignedPages)
     {
-        $this->nbAssignedPages = $nbAssignedPages;
+        $this->nb_assigned_pages = $nbAssignedPages;
     }
 
     public function setEstimTotalDuration($estimTotalDuration)
     {
-        $this->estimTotalDuration = $estimTotalDuration;
+        $this->estimated_total_duration = $estimTotalDuration;
     }
 
     public function setEstimCleaningDuration($estimCleaningDuration)
     {
-        $this->estimCleaningDuration = $estimCleaningDuration;
+        $this->estimated_cleaning_duration = $estimCleaningDuration;
     }
 
     public function setRecoPagesDays($recoPagesDays)
     {
-        $this->recoPagesDays = $recoPagesDays;
+        $this->recommended_pages_per_day = $recoPagesDays;
     }
 
     public function setUser($user)
     {
-        $this->user = $user;
+        $this->fk_user = $user;
     }
 
     public function setFinalReport($finalReport)

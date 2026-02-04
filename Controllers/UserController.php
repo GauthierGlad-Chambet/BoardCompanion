@@ -67,7 +67,6 @@ class UserController extends MotherController
             }
         }
 
-        var_dump($_SESSION);
         $this->_display("user/signIn");
     }
 
