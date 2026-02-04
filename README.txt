@@ -1,8 +1,13 @@
 # BoardCompanion
 A web application designed to help storyboarders manage their projects and optimize their workflow.
 
-Modifier les paramètres serveur :
+Démarrer le projet :
+git clone https://github.com/GauthierGlad-Chambet/BoardCompanion.git
 
+
+dans le terminal : composer install
+
+Modifier les paramètres serveur :
 
 Dans php.ini :
 
