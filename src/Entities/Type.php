@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Entities;
+namespace GauthierGladchambet\BoardCompanion\Entities;
 
-use App\Entities\Entity;
 
-class Appreciation extends MotherEntity
+use GauthierGladchambet\BoardCompanion\Entities\Entity;
+
+class Type extends MotherEntity
 {
     private string $id;
     private string $label;

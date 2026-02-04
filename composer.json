@@ -1,0 +1,17 @@
+{
+    "name": "gauthier-gladchambet/board-companion",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "GauthierGladchambet\\BoardCompanion\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Gauthier Glad-Chambet"
+        }
+    ],
+    "require": {
+        "smalot/pdfparser": "^2.12"
+    }
+}

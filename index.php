@@ -5,23 +5,26 @@ session_start();
 //A ANALYSER POUR COMPRENDRE
 
 // Déclaration de l'autoloader (manuel)
-spl_autoload_register(function ($class) {
+// spl_autoload_register(function ($class) {
 
-    // Pour chaque use, cette fonction sera appelée
-    // ex. : use Blog\Controllers\ArticlesCtrl;
-    // $class = "Blog\Controllers\ArticlesCtrl"
+//     // Pour chaque use, cette fonction sera appelée
+//     // ex. : use Blog\Controllers\ArticlesCtrl;
+//     // $class = "Blog\Controllers\ArticlesCtrl"
 
-    // Objectif, transformer $class => chemin réel du fichier .php
-    // ex. "./Controllers/ArticlesCtrl.php"
+//     // Objectif, transformer $class => chemin réel du fichier .php
+//     // ex. "./Controllers/ArticlesCtrl.php"
 
-    $strFilename = str_replace('App\\', './', $class); //< "Controllers\ArticlesCtrl"
-    $strFilename = str_replace('\\', '/', $strFilename) . '.php'; //< "Controllers/ArticlesCtrl"
+//     $strFilename = str_replace('App\\', './', $class); //< "Controllers\ArticlesCtrl"
+//     $strFilename = str_replace('\\', '/', $strFilename) . '.php'; //< "Controllers/ArticlesCtrl"
 
-    // On vérifie si le fichier existe avant de faire le require_once
-    if (file_exists($strFilename)) {
-        require_once $strFilename;
-    }
-});
+//     // On vérifie si le fichier existe avant de faire le require_once
+//     if (file_exists($strFilename)) {
+//         require_once $strFilename;
+//     }
+// });
+
+// Autoloader de composer
+require 'vendor/autoload.php';
 
 // Détermine le controleur à appeler et son action en fonction de l'url
 if(empty($_SESSION)){
@@ -40,7 +43,7 @@ $bool404 = false;
 // On spécifie le nom complet de la classe avec le namespace
 // Construire le nom de la classe attendu par l'autoloader
 // Namespace utilisé dans les contrôleurs : App\Controllers
-$strCtrlName = 'App\\Controllers\\' . ucfirst($controller) . 'Controller';
+$strCtrlName = 'GauthierGladchambet\\BoardCompanion\\Controllers\\' . ucfirst($controller) . 'Controller';
 
 // Test sur l'existence de la classe
 if (class_exists($strCtrlName)) {

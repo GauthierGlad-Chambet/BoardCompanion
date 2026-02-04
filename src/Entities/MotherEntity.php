@@ -1,5 +1,5 @@
 <?php
-namespace App\Entities;
+namespace GauthierGladchambet\BoardCompanion\Entities;
 
 //A ANALYSER POUR COMPRENDRE
 

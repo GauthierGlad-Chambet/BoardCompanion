@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Entities;
+namespace GauthierGladchambet\BoardCompanion\Entities;
 
-
-use App\Entities\Entity;
+use GauthierGladchambet\BoardCompanion\Entities\Entity;
 
 class UserStatByType extends MotherEntity
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Controllers;
+namespace GauthierGladchambet\BoardCompanion\Controllers;
 
-use App\Controllers\MotherController;
+use GauthierGladchambet\BoardCompanion\Controllers\MotherController;
 
 class ErrorsController extends MotherController
 {

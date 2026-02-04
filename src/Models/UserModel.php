@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Models;
+namespace GauthierGladchambet\BoardCompanion\Models;
 
 use PDO;
-use App\Entities\User;
+use GauthierGladchambet\BoardCompanion\Entities\User;
 
 class UserModel extends MotherModel {
 
 
-    function add(User $user) {
+    function addUser(User $user) {
         // Connexion à la base de données
         $pdo = $this->connect();
 

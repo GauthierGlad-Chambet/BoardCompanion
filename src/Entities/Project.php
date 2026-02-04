@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Entities;
+namespace GauthierGladchambet\BoardCompanion\Entities;
 
-use App\Entities\MotherEntity;
+use GauthierGladchambet\BoardCompanion\Entities\MotherEntity;
 
 class Project extends MotherEntity
 {
@@ -19,7 +19,7 @@ class Project extends MotherEntity
     private bool $is_alone;
     private bool $is_cleaning;
     private string $script_path;
-    private string $template_path;
+    private ?string $template_path = null;
     private string $date_begining;
     private string $date_end;
     private float $nb_total_pages;
@@ -88,7 +88,7 @@ class Project extends MotherEntity
         return $this->script_path;
     }
 
-    public function getTemplateFilePath(): string
+    public function getTemplateFilePath(): ?string
     {
         return $this->template_path;
     }

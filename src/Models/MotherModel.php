@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace GauthierGladchambet\BoardCompanion\Models;
 
 use PDO;
 use PDOException;

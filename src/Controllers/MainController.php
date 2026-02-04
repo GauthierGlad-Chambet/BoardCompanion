@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controllers;
+namespace GauthierGladchambet\BoardCompanion\Controllers;
 
 class MainController extends MotherController
 {

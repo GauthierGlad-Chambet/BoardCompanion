@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Controllers;
+namespace GauthierGladchambet\BoardCompanion\Controllers;
 
-use App\Entities\User;
-use App\Models\UserModel;
+use GauthierGladchambet\BoardCompanion\Entities\User;
+use GauthierGladchambet\BoardCompanion\Models\UserModel;
 
 class UserController extends MotherController
 {
@@ -38,7 +38,7 @@ class UserController extends MotherController
                 // Enregistrement de l'utilisateur dans la base de données
                 try {
                     $UserModel = new UserModel();
-                    $UserModel->add($user);
+                    $UserModel->addUser($user);
                     echo "Utilisateur ajouté avec succès.";
                 } catch (\Exception $e) {
                     echo "Erreur lors de l'ajout de l'utilisateur : " . htmlspecialchars($e->getMessage());
@@ -67,7 +67,7 @@ class UserController extends MotherController
             }
         }
 
-        $this->_display("user/signIn");
+        $this->_display("user/signIn", false);
     }
 
     function logout() {
