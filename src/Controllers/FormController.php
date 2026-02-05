@@ -106,7 +106,7 @@ class FormController extends MotherController {
                         $pdf = $parser->parseFile($project->getScriptFilePath());
                         $metaData = $pdf->getDetails();
                         if (isset($metaData['Pages'])) {
-                            $project->setNbTotalPages(intval($metaData['Pages']));
+                            $project->setNbTotalPages(intval($metaData['Pages'])-1);
                             $newProjectModel->updateNbPagesProject($project);
                         }
                     } catch (\Exception $e) {
@@ -247,50 +247,84 @@ class FormController extends MotherController {
         $lines = explode("\n", $text);
         $extracts = [];
         $keywords = ['INT.', 'EXT.', 'I/E', 'SEQ'];
-        
+
+        $currentSequence = null;
+
         // Parcourir chaque ligne du texte
         for ($i = 0; $i < count($lines); $i++) {
             $line = trim($lines[$i]);
-            
+
             // Vérifier si la ligne contient un des mots-clés
+            $isKeywordLine = false;
             foreach ($keywords as $keyword) {
                 if (stripos($line, $keyword) !== false) {
-                    // Récupérer les 8 lignes suivantes
-                    $extract = [];
-                         
-                    // Ajouter les 8 lignes suivantes
-                    for ($j = 1; $j <= 8 && ($i + $j) < count($lines); $j++) {
-                        $nextLine = trim($lines[$i + $j]);
-                        if (!empty($nextLine)) { // Ignorer les lignes vides
-                            $extract[] = $nextLine;
-                        }
-                    }
-                    
-                    // Stocker l'extrait avec le mot-clé, le numéro de ligne, l'en-tête et le contenu
-                    $extracts[] = [
-                        'keyword' => $keyword,
-                        'line_number' => $i + 1,
-                        'header' => $line,
-                        'content' => $extract
-                    ];
-                    
-                    break; // Passer à la ligne suivante
+                    $isKeywordLine = true;
+                    break;
                 }
             }
+
+            // Si la ligne contient un mot-clé, démarrer une nouvelle séquence
+            if ($isKeywordLine) {
+                // Si une séquence est en cours, la terminer
+                if ($currentSequence) {
+                    $currentSequence['line_count'] = count($currentSequence['content']);
+                    $extracts[] = $currentSequence;
+                }
+
+                // Démarrer une nouvelle séquence
+                $currentSequence = [
+                    'keyword' => $keyword,
+                    'line_number' => $i + 1,
+                    'header' => $line,
+                    'content' => []
+                ];
+            } elseif ($currentSequence) {
+                // Ajouter la ligne à la séquence en cours
+                if (!empty($line)) {
+                    $currentSequence['content'][] = $line;
+                }
+            }
+        }
+
+        // Ajouter la dernière séquence si elle existe
+        if ($currentSequence) {
+            $currentSequence['line_count'] = count($currentSequence['content']);
+            $extracts[] = $currentSequence;
         }
 
         return $extracts;
     }
 
-    // Compte le nombre de lignes une fois le texte nettoyé et calcule combien ça représente de pages en supposant qu'une page contient 33 lignes en moyenne
-    public function countAssignedPages($text) {
-        $lines = explode("\n", $text);
-        $lineCount = count($lines);
-        $pageCount = ceil($lineCount / 33); // Arrondir au nombre entier supérieur pour obtenir le nombre de pages
+    // Récupère les séquences assignées depuis la bdd, compte le nombre total de lignes et
+    // calcule combien ça représente de pages en supposant qu'une page contient 33 lignes en moyenne
+    public function countAssignedPages(int $projectId) {
+            $sequenceModel = new SequenceModel();
+            $assignedSequences = $sequenceModel->findSequencesByProjectId($projectId);
+                $totalLines = 0;
+                foreach ($assignedSequences as $seq) {
+                    $scriptContent = json_decode($seq['script'], true);
+                    if (is_array($scriptContent)) {
+                        $totalLines += count($scriptContent);
+                    }
+                }
+                $totalAssignedPages = ceil($totalLines / 33); // En supposant 33 lignes par page
 
-        return $pageCount;
+            return $totalAssignedPages;   
     }
 
+    // Fonction d'estimation du temps de cleaning : si is_cleaning est true,
+    // alors on estime que le temps de cleaning est égal à ???? 
+
+    // Fonction d'estimation de la durée total pour boarder le projet
+    // Si pas d'analyse détaillée on prend en paramètre nb_total_pages de la bdd,
+    // sinon on prend en paramètre nb_assigned_pages
+    //on calcule ????
+
+    // Fonction de pages/jour recommandées
+    
+
+
+                
     // Affichage du formulaire d'analyse détaillée, en passant le texte extrait et les en-têtes de scènes à la vue
     public function detailedAnalysis(){
         require_once __DIR__ . '/../../vendor/autoload.php';
@@ -302,8 +336,6 @@ class FormController extends MotherController {
             echo "Fichier PDF introuvable.";
             exit;
         }
-
-        
 
         if (isset($_POST['submit_sequences'])) {
             // Récupérer l'ID du projet
@@ -340,6 +372,13 @@ class FormController extends MotherController {
                     $sequenceModel->addSequence($sequence);
                 }
             }
+            
+                $project = new Project();
+                $project->setId($projectId);
+                $project->setNbAssignedPages($this->countAssignedPages($projectId));
+                
+                $projectModel = new ProjectModel();
+                $projectModel->updateNbPagesAssignedProject($project);
 
             header("Location: index.php");
         } else {

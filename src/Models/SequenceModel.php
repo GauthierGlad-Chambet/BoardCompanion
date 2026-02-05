@@ -44,4 +44,18 @@ class SequenceModel extends MotherModel {
 
     return $prepare->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    // Récupération de toutes les séquences d'un même projet
+    function findSequencesByProjectId(int $projectId): array {
+        $query = "
+            SELECT *
+            FROM sequence
+            WHERE fk_project = :project_id AND is_assigned = 1
+        ";
+        $prepare = $this->_db->prepare($query);
+        $prepare->bindValue(':project_id', $projectId, PDO::PARAM_INT);
+        $prepare->execute();
+
+        return $prepare->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

@@ -14,7 +14,8 @@
             <h3>Séquence <?= $index + 1 ?> - <?= htmlspecialchars($sequence['header']) ?></h3>
             <p><strong>Ligne <?= $sequence['line_number'] ?></strong></p>
             <ul>
-                <?php foreach ($sequence['content'] as $line): ?>
+                <!-- Affichage des 5 premières lignes de la séquence pour un aperçu -->
+                <?php foreach (array_slice($sequence['content'], 0, 5) as $line): ?>
                     <li><?= htmlspecialchars($line) ?></li>
                 <?php endforeach; ?>
                 <li>…</li>
