@@ -22,8 +22,8 @@ class Project extends MotherEntity
     private ?string $template_path = null;
     private string $date_begining;
     private string $date_end;
-    private float $nb_total_pages;
-    private float $nb_assigned_pages;
+    private int $nb_total_pages;
+    private int $nb_assigned_pages;
     private float $estimated_total_duration;
     private float $estimated_cleaning_duration;
     private float $recommended_pages_per_day;

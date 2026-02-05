@@ -8,10 +8,11 @@ use GauthierGladchambet\BoardCompanion\Entities\Entity;
 class Sequence extends MotherEntity
 {
     private string $id;
+    private string $script;
     private bool $isAssigned;
     private float $durationEstimated;
-    private Type $type;
-    private Project $project;
+    private string $type;
+    private int $fk_project;
 
 
     // Getters
@@ -19,6 +20,11 @@ class Sequence extends MotherEntity
     public function getId(): string
     {
         return $this->id;
+    }
+
+    public function getScript(): string
+    {
+        return $this->script;
     }
 
     public function getIsAssigned(): bool
@@ -31,14 +37,14 @@ class Sequence extends MotherEntity
         return $this->durationEstimated;
     }
 
-    public function getType(): Type
+    public function getType(): string
     {
         return $this->type;
     }
 
-    public function getProject(): Project
+    public function getProject(): int
     {
-        return $this->project;
+        return $this->fk_project;
     }
 
 
@@ -47,6 +53,11 @@ class Sequence extends MotherEntity
     public function setId($id)
     {
         $this->id = $id;
+    }
+
+    public function setScript($script)
+    {
+        $this->script = $script;
     }
 
     public function setIsAssigned($isAssigned)
@@ -64,8 +75,8 @@ class Sequence extends MotherEntity
         $this->type = $type;
     }
 
-    public function setProject($project)
+    public function setProject($fk_project)
     {
-        $this->project = $project;
+        $this->fk_project = $fk_project;
     }
 }

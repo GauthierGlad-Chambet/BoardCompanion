@@ -4,13 +4,11 @@ namespace GauthierGladchambet\BoardCompanion\Models;
 
 use PDO;
 use GauthierGladchambet\BoardCompanion\Entities\Project;
-use GauthierGladchambet\BoardCompanion\Entities\Sequence;
 
 class ProjectModel extends MotherModel {
 
-    function addProject(Project $project) {
-        // Connexion à la base de données
-        $pdo = $this->connect();
+    // Ajout d'un projet dans la base de données
+    function addProject(Project $project) {;
 
         // Préparation de la requête pour ajouter un projet dans la base de données
         $query = "
@@ -34,7 +32,7 @@ class ProjectModel extends MotherModel {
         $query .= ":date_beginning, :date_end, :fk_user
             )";
 
-        $prepare = $pdo->prepare($query);
+        $prepare = $this->_db->prepare($query);
 
         // Liaison des paramètres
         $prepare->bindValue(':name', $project->getName(), PDO::PARAM_STR);
@@ -56,10 +54,51 @@ class ProjectModel extends MotherModel {
         if (!$prepare->execute()) {
             throw new \Exception("Erreur lors de l'insertion du projet : " . implode(", ", $prepare->errorInfo()));
         }
+        return $this->_db->lastInsertId(); // Retourne l'ID du projet nouvellement créé
     }
 
+
+    // Mise à jour du nombre de pages du projet
+    function updateNbPagesProject(Project $project) {
+
+        $query = "
+            UPDATE project
+            SET nb_total_pages = :nb_total_pages
+            WHERE id = :project_id
+        ";
+
+        $prepare = $this->_db->prepare($query);
+        $prepare->bindValue(':nb_total_pages', $project->getNbTotalPages(), PDO::PARAM_INT);
+        $prepare->bindValue(':project_id', $project->getId(), PDO::PARAM_INT);
+        
+        if (!$prepare->execute()) {
+            throw new \Exception("Erreur lors de la mise à jour du nombre de pages du projet : " . implode(", ", $prepare->errorInfo()));
+            }
+    }
+
+    // trouve l'id du dernier projet ajouté
+    function findLastProjectId() {
+
+        $query = "
+            SELECT id
+            FROM project
+            ORDER BY id DESC
+            LIMIT 1
+        ";
+
+        $prepare = $this->_db->prepare($query);
+        $prepare->execute();
+
+        // Exécution de la requête
+        if (!$prepare->execute()) {
+            throw new \Exception("Erreur lors de la récupération du dernier projet : " . implode(", ", $prepare->errorInfo()));
+        }
+        $row = $prepare->fetch(PDO::FETCH_ASSOC);
+        return $row['id'] ?? null; // <-- retourne directement l'id du projet
+    }
+    
+    // Récupération du chemin du dernier script ajouté dans la base de données
     function findLastScriptPath() {
-        $pdo = $this->connect();
 
         $query = "
             SELECT script_path
@@ -68,7 +107,7 @@ class ProjectModel extends MotherModel {
             LIMIT 1
         ";
 
-        $prepare = $pdo->prepare($query);
+        $prepare = $this->_db->prepare($query);
         $prepare->execute();
 
         // Exécution de la requête
@@ -79,44 +118,23 @@ class ProjectModel extends MotherModel {
         return $row['script_path'] ?? null; // <-- retourne directement la string
     }
 
-
-
-    function addSequences(Sequence $sequence) {
-        $pdo = $this->connect();
+    // Mise à jour du nombre de pages assignées du projet
+    function updateNbPagesAssignedProject(Project $project) {
 
         $query = "
-            INSERT INTO sequence (
-                name, description, duration, fk_project
-            ) VALUES (
-                :name, :description, :duration, :fk_project
-            )
+            UPDATE project
+            SET nb_assigned_pages = :nb_assigned_pages
+            WHERE id = :project_id
         ";
 
-        $prepare = $pdo->prepare($query);
-        $prepare->bindValue(':name', $sequence->getName(), PDO::PARAM_STR);
-        $prepare->bindValue(':description', $sequence->getDescription(), PDO::PARAM_STR);
-        $prepare->bindValue(':duration', $sequence->getDuration(), PDO::PARAM_STR);
-        $prepare->bindValue(':fk_project', $sequence->getProjectId(), PDO::PARAM_INT);
+        $prepare = $this->_db->prepare($query);
+        $prepare->bindValue(':nb_assigned_pages', $project->getNbAssignedPages(), PDO::PARAM_INT);
+        $prepare->bindValue(':project_id', $project->getId(), PDO::PARAM_INT);
 
         if (!$prepare->execute()) {
-            throw new \Exception("Erreur lors de l'insertion de la séquence : " . implode(", ", $prepare->errorInfo()));
+            throw new \Exception("Erreur lors de la mise à jour du nombre de pages assignées du projet : " . implode(", ", $prepare->errorInfo()));
         }
     }
-
-    function findAllSequencesByProjectId(int $projectId): array {
-    $pdo = $this->connect();
-
-    $query = "
-        SELECT *
-        FROM sequence
-        WHERE fk_project = :project_id
-    ";
-
-    $prepare = $pdo->prepare($query);
-    $prepare->bindValue(':project_id', $projectId, PDO::PARAM_INT);
-    $prepare->execute();
-
-    return $prepare->fetchAll(PDO::FETCH_ASSOC);
-    }
+    
 }
 

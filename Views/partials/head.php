@@ -16,7 +16,7 @@
     <meta name="”theme-color”" content="#########insérer_hexa##########" />
     <!-- Indique le thème de couleur du site, qui apparait sur les navigateurs compatibles-->
     <title>
-      #########insérer_titre##########
+      BoardCompanion
     </title>
     <meta
       name="description"
@@ -26,9 +26,9 @@
     <!-- Pour afficher un aperçu personnalisé quand partage le lien du site sur les plateformes comme Messenger ou Whatsapp -->
     <meta
       property="og:title"
-      content="#########insérer_titre##########"
+      content="BoardCompanion"
     />
-    <meta property="og:description" content="#########insérer_très_courte_description##########" />
+    <meta property="og:description" content="Plateforme de gestion de projets pour Storyboarders" />
     <meta
       property="og:image"
       content="#########insérer_image_format rectangle_de_préférence##########"

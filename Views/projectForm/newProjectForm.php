@@ -25,8 +25,8 @@
 </br>
         <p>Je m'occupe du cleaning</p>
         <input type="radio" id="cleaning" name="is_cleaning" value="oui" checked />
-        <label for="alone">Oui</label>
-        <input type="radio" id="not_alone" name="is_cleaning" value="non" />
+        <label for="cleaning">Oui</label>
+        <input type="radio" id="no_cleaning" name="is_cleaning" value="non" />
         <label for="no_cleaning">Non</label>
 </br>
 </br>

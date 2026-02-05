@@ -3,7 +3,10 @@
 namespace GauthierGladchambet\BoardCompanion\Controllers;
 
 use GauthierGladchambet\BoardCompanion\Entities\Project;
+use GauthierGladchambet\BoardCompanion\Entities\Sequence;
 use GauthierGladchambet\BoardCompanion\Models\ProjectModel;
+use GauthierGladchambet\BoardCompanion\Models\SequenceModel;
+
 
 class FormController extends MotherController {
 
@@ -85,17 +88,33 @@ class FormController extends MotherController {
                 $project->setTemplateFilePath($templateFilePath);
             }
 
-            // Get the user ID from session or default to 1 if not set
+            // Récupérer l'identifiant utilisateur de la session ou la valeur par défaut 1 si non défini.
             $userId = $_SESSION['user']['id'];
-            // Assuming you have a method to set the user in Project entity
-            // You would need to inject the user object into the project entity
-            // For now, we'll just set the user ID directly
             $project->setUser($userId);
 
-            // Save the project using the model
             try {
                 $newProjectModel = new ProjectModel();
-                $newProjectModel->addProject($project);
+                $idProject = $newProjectModel->addProject($project);
+                $project->setId($idProject);
+
+                // Commpte le nombre de pages du PDF et l'ajoute à l'entité Project
+                if (isset($scriptFilePath)) {
+                    // Utilisation de smalot/pdfparser pour extraire les détails du PDF, notamment le nombre de pages
+                    try {
+                        // Créer une instance du parser et analyser le fichier PDF
+                        $parser = new \Smalot\PdfParser\Parser();
+                        $pdf = $parser->parseFile($project->getScriptFilePath());
+                        $metaData = $pdf->getDetails();
+                        if (isset($metaData['Pages'])) {
+                            $project->setNbTotalPages(intval($metaData['Pages']));
+                            $newProjectModel->updateNbPagesProject($project);
+                        }
+                    } catch (\Exception $e) {
+                        echo "Erreur lors de la lecture du PDF : " . htmlspecialchars($e->getMessage());
+                        exit;
+                    }
+                }
+
                 echo "Projet ajouté avec succès.";
                 if($script_detailed === 'oui'){
                     header("Location: index.php?controller=form&action=detailedAnalysis");
@@ -111,31 +130,51 @@ class FormController extends MotherController {
         
     }
 
+    // Nettoyage du texte extrait du PDF pour supprimer les en-têtes, pieds de page, autres éléments répétitifs, numéros en trop, caractères spéciaux, ...
     public function cleanPDF($text) {
-
         $lines = explode("\n", $text);
-    
-        // Compter les occurrences de chaque ligne
-        $lineCount = array_count_values(array_map('trim', $lines));
         
-        // Définir un seuil : si une ligne apparaît plus de X fois, c'est probablement un en-tête/pied
+        // Séparer les lignes courtes et longues
+        $longLines = [];
+        
+        // Identifier les lignes longues et les stocker avec leur index
+        foreach ($lines as $index => $line) {
+            $trimmedLine = trim($line);
+            if (empty($trimmedLine)) continue;
+            
+            if (strlen($trimmedLine) > 15) { // Seuil de longueur pour considérer une ligne comme "longue"
+                $longLines[$index] = $trimmedLine;
+            }
+        }
+        
+        // Détecter uniquement les lignes LONGUES similaires
+        $linesToRemove = [];
+        $similarGroups = $this->findSimilarLongLines($longLines);
+        // Seules les lignes longues qui se répètent plus de 2 fois sont considérées comme des éléments à supprimer
         $threshold = 2;
         
+        // Marquer les indices des lignes longues similaires qui dépassent le seuil pour suppression
+        foreach ($similarGroups as $group) {
+            if (count($group) > $threshold) {
+                $linesToRemove = array_merge($linesToRemove, $group);
+            }
+        }
+        
+        // Construire le texte nettoyé
         $cleanedLines = [];
-        foreach ($lines as $line) {
+        foreach ($lines as $index => $line) {
             $trimmedLine = trim($line);
             
             // Ignorer les lignes vides
             if (empty($trimmedLine)) continue;
             
-            // Ignorer les lignes qui se répètent trop souvent
-            if (isset($lineCount[$trimmedLine]) && $lineCount[$trimmedLine] > $threshold) {
-                continue;
-            }
+            // Ignorer uniquement si c'est une ligne longue marquée pour suppression
+            if (in_array($index, $linesToRemove)) continue;
             
+            // Garder TOUTES les lignes courtes (même répétitives)
             $cleanedLines[] = $line;
         }
-    
+
         $text = implode("\n", $cleanedLines);
 
         // Supprimer tous les astérisques
@@ -147,14 +186,69 @@ class FormController extends MotherController {
         // Nettoyer les lignes vides multiples
         $text = preg_replace('/\n\s*\n+/', "\n\n", $text);
 
+        // Supprimer les espaces en début et fin de texte
         return trim($text);
     }
 
+
+    // Trouver les groupes de lignes longues similaires
+    private function findSimilarLongLines($longLines) {
+        $groups = [];
+        $processed = [];
+        
+        // Obtenir les indices des lignes longues
+        $indices = array_keys($longLines);
+        
+        // Comparer chaque ligne longue avec les autres pour trouver des groupes de lignes similaires
+        foreach ($indices as $i) {
+
+            // Si cette ligne a déjà été traitée dans un groupe, la sauter
+            if (isset($processed[$i])) continue;
+            
+            $line1 = $longLines[$i];
+            $similarIndices = [$i];
+            
+            // Comparer avec toutes les autres lignes longues
+            foreach ($indices as $j) {
+                if ($i === $j || isset($processed[$j])) continue;
+                
+                $line2 = $longLines[$j];
+                
+                // Calculer la similarité
+                if ($this->areLinesimilar($line1, $line2)) {
+                    $similarIndices[] = $j;
+                    $processed[$j] = true;
+                }
+            }
+            
+            // Si ce groupe de lignes similaires contient plus d'une ligne, le conserver
+            if (count($similarIndices) > 1) {
+                $groups[] = $similarIndices;
+            }
+            
+            $processed[$i] = true;
+        }
+        
+        return $groups;
+    }
+
+    // Déterminer si deux lignes sont similaires en utilisant une combinaison de normalisation et de calcul de similarité
+                                                    // $threshold indique le pourcentage de similarité requis
+    private function areLinesimilar($line1, $line2, $threshold = 0.9) {
+        
+        // Méthode 2 : Calculer le pourcentage de similarité
+        similar_text($line1, $line2, $percent);
+        
+        return ($percent / 100) >= $threshold;
+    }
+
+    // Extraction des séquences à partir du texte nettoyé, en se basant sur les mots-clés "INT.", "EXT.", "I/E" et en récupérant les 8 lignes suivantes
     public function extractSequences($text) {
         $lines = explode("\n", $text);
         $extracts = [];
-        $keywords = ['INT.', 'EXT.', 'I/E'];
+        $keywords = ['INT.', 'EXT.', 'I/E', 'SEQ'];
         
+        // Parcourir chaque ligne du texte
         for ($i = 0; $i < count($lines); $i++) {
             $line = trim($lines[$i]);
             
@@ -172,6 +266,7 @@ class FormController extends MotherController {
                         }
                     }
                     
+                    // Stocker l'extrait avec le mot-clé, le numéro de ligne, l'en-tête et le contenu
                     $extracts[] = [
                         'keyword' => $keyword,
                         'line_number' => $i + 1,
@@ -187,70 +282,95 @@ class FormController extends MotherController {
         return $extracts;
     }
 
+    // Compte le nombre de lignes une fois le texte nettoyé et calcule combien ça représente de pages en supposant qu'une page contient 33 lignes en moyenne
+    public function countAssignedPages($text) {
+        $lines = explode("\n", $text);
+        $lineCount = count($lines);
+        $pageCount = ceil($lineCount / 33); // Arrondir au nombre entier supérieur pour obtenir le nombre de pages
 
-// ----------------- DIRE QUE JE VEUX SUPPRIMER QUE LES LIGNES QUI SE REPETENT QUI FONT UNE CERTAINE LONGUEUR ----------------- //
-                                             // POUR RETROUVER LES NOMS DES PERSOS //
+        return $pageCount;
+    }
 
-
-
+    // Affichage du formulaire d'analyse détaillée, en passant le texte extrait et les en-têtes de scènes à la vue
     public function detailedAnalysis(){
         require_once __DIR__ . '/../../vendor/autoload.php';
 
         $scriptPath = new ProjectModel();
         $scriptPath = $scriptPath->findLastScriptPath();
 
-         if (!$scriptPath || !file_exists($scriptPath)) {
-        echo "Fichier PDF introuvable.";
-        exit;
+        if (!$scriptPath || !file_exists($scriptPath)) {
+            echo "Fichier PDF introuvable.";
+            exit;
         }
 
+        
+
+        if (isset($_POST['submit_sequences'])) {
+            // Récupérer l'ID du projet
+            $projectId = $_POST['project_id'] ?? null;
+            if (!$projectId) {
+                echo "ID du projet manquant.";
+                exit;
+            }
+
+            // Traiter les données du formulaire ici
+            foreach ($_POST as $key => $value) {
+                // Identifier les champs de type de séquence en utilisant le préfixe "typeSequence_"
+                if (strpos($key, 'typeSequence_') === 0) {
+                    // Extraire l'index de la séquence à partir du nom du champ
+                    $index = str_replace('typeSequence_', '', $key);
+                    $typeSequence = $value;
+                    $isAssigned = (int) ($_POST['is_assigned_' . $index] ?? 0);
+
+                    // Récupérer le contenu de la séquence
+                    $sequenceContent = $_POST['sequence_content_' . $index] ?? '[]';
+                    $sequenceContent = json_decode($sequenceContent, true);
+
+                    // Convertir le contenu en JSON pour le stockage
+                    $sequenceContentJson = json_encode($sequenceContent);
+
+                    // Enregistrer ces informations dans la base de données
+                    $sequence = new Sequence();
+                    $sequence->setType($typeSequence);
+                    $sequence->setIsAssigned($isAssigned);
+                    $sequence->setScript($sequenceContentJson); // Stocker en tant que JSON
+                    $sequence->setProject($projectId);
+
+                    $sequenceModel = new SequenceModel();
+                    $sequenceModel->addSequence($sequence);
+                }
+            }
+
+            header("Location: index.php");
+        } else {
+            // Utilisation de smalot/pdfparser pour extraire le texte du PDF
         try {
-        $parser = new \Smalot\PdfParser\Parser();
-        $pdf = $parser->parseFile($scriptPath);
-        $text = $pdf->getText();
+            $parser = new \Smalot\PdfParser\Parser();
+            $pdf = $parser->parseFile($scriptPath);
+            $text = $pdf->getText();
 
-        $text = $this->cleanPDF($text);
+            // Nettoyage du texte pour supprimer les éléments répétitifs, les numéros en trop, les caractères spéciaux, etc.
+            $text = $this->cleanPDF($text);
 
-        // Extraction des séquences
-        $sequences = $this->extractSequences($text);
+            // Extraction des séquences
+            $sequences = $this->extractSequences($text);
 
-        // Passer à la vue
-        $data = [
-            'extractedText' => $text,
-            'sceneHeaders' => $sequences
-        ];
-        $this->_display("projectForm/detailedAnalysisForm", true, $data);
-        
-    } catch (\Exception $e) {
-        echo "Erreur : " . $e->getMessage();
-        exit;
+            // Récupérer l'ID du dernier projet ajouté
+            $projectModel = new ProjectModel();
+            $projectId = $projectModel->findLastProjectId();
+
+            // Passer à la vue
+            $data = [
+                'extractedText' => $text,
+                'sequenceHeaders' => $sequences,
+                'projectId' => $projectId
+            ];
+            $this->_display("projectForm/detailedAnalysisForm", true, $data);
+        } catch (\Exception $e) {
+            echo "Erreur : " . $e->getMessage();
+            exit;
+        }
+        }
     }
-}
 
-        // $scriptPath = str_replace('\\', '/', $scriptPath);
-        // $cmd = 'pdftotext -enc UTF-8 ' . $scriptPath . ' -';
-        
-        
-        // // Construction de la commande
-        // // $cmd = 'pdftotext -enc UTF-8 ' . escapeshellarg($scriptPath) . ' -';
-        // var_dump($cmd);
-
-        // // PHP lance une procédure système pour exécuter la commande pdftotext
-        // exec($cmd, $output, $returnCode);
-
-        // // Vérification
-        // if ($returnCode !== 0) {
-        //     echo "Une erreur est survenue lors de l'analyse détaillée du script.";
-        //     exit;
-        // }
-
-        // // La sortie de la commande est capturée dans le tableau $output
-        // // Le texte complet du PDF est maintenant dans la variable $text
-        // $text = implode("\n", $output);
-
-        // // var_dump($text);die;
-
-        // $this->_display("projectForm/detailedAnalysisForm");
-
-    // }
 }
