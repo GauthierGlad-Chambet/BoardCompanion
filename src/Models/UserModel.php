@@ -9,8 +9,6 @@ class UserModel extends MotherModel {
 
 
     function addUser(User $user) {
-        // Connexion à la base de données
-        $pdo = $this->connect();
 
         // Préparation de la requête pour ajouter un utilisateur dans la base de données
         $query = "
@@ -20,7 +18,7 @@ class UserModel extends MotherModel {
                 :pseudo, :email, :pwd
             )";
 
-        $prepare = $pdo->prepare($query);
+        $prepare = $this->_db->prepare($query);
 
         // Liaison des paramètres
         $prepare->bindValue(':pseudo', $user->getPseudo(), PDO::PARAM_STR);
@@ -37,14 +35,12 @@ class UserModel extends MotherModel {
 
     function findByMail(string $email) {
 
-        $pdo = $this->connect();
-
         // Requête préparée pour récupérer les informations de l'utilisateur
         $query =
             "SELECT id, pseudo, email FROM user
             WHERE email=:email";
 
-        $prepare = $pdo->prepare($query);
+        $prepare = $this->_db->prepare($query);
 
         // Définition des paramettres de la requête préparée
         $prepare->bindValue(":email", $email, PDO::PARAM_STR);
@@ -56,17 +52,32 @@ class UserModel extends MotherModel {
 
     function getPasswordHash(string $email) {
 
-        $pdo = $this->connect();
-
         // Requête préparée pour trouver le hash du mot de passe de l'utilisateur
         $query =
             "SELECT pwd FROM user
             WHERE email=:email";
 
-        $prepare = $pdo->prepare($query);
+        $prepare = $this->_db->prepare($query);
 
         // Définition des paramettres de la requête préparée
         $prepare->bindValue(":email", $email, PDO::PARAM_STR);
+
+        // Execute la requête. Retourne un tableau (si résussite) ou false (si echec)
+        $prepare->execute();
+        return $prepare->fetch();
+    }
+
+    function findById(string $id) {
+
+        // Requête préparée pour récupérer les informations de l'utilisateur
+        $query =
+            "SELECT id, pseudo, email, avg_pages_per_day, avg_cleaning_duration FROM user
+            WHERE id=:id";
+
+        $prepare = $this->_db->prepare($query);
+
+        // Définition des paramettres de la requête préparée
+        $prepare->bindValue(":id", $id, PDO::PARAM_STR);
 
         // Execute la requête. Retourne un tableau (si résussite) ou false (si echec)
         $prepare->execute();

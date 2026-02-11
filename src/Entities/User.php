@@ -2,17 +2,14 @@
 
 namespace GauthierGladchambet\BoardCompanion\Entities;
 
-
-use GauthierGladchambet\BoardCompanion\Entities\Entity;
-
 class User extends MotherEntity
 {
     private string $id;
     private string $pseudo;
     private string $email;
     private string $pwd;
-    private float $avgPageDay;
-    private float $avgCleaningDuration;
+    private float $avgPageDay = 1;
+    private float $avgCleaningDuration = 0.2; // en jours, par page assignée
 
 
     // Getters

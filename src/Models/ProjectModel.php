@@ -57,24 +57,25 @@ class ProjectModel extends MotherModel {
         return $this->_db->lastInsertId(); // Retourne l'ID du projet nouvellement créé
     }
 
-
-    // Mise à jour du nombre de pages du projet
-    function updateNbPagesProject(Project $project) {
+    // trouver le projet en fonction de son ID
+    function findById($id) {
 
         $query = "
-            UPDATE project
-            SET nb_total_pages = :nb_total_pages
-            WHERE id = :project_id
+            SELECT *
+            FROM project
+            WHERE id = :id
         ";
 
         $prepare = $this->_db->prepare($query);
-        $prepare->bindValue(':nb_total_pages', $project->getNbTotalPages(), PDO::PARAM_INT);
-        $prepare->bindValue(':project_id', $project->getId(), PDO::PARAM_INT);
-        
+        $prepare->bindValue(':id', $id, PDO::PARAM_INT);
+
+        // Exécution de la requête
         if (!$prepare->execute()) {
-            throw new \Exception("Erreur lors de la mise à jour du nombre de pages du projet : " . implode(", ", $prepare->errorInfo()));
-            }
+            throw new \Exception("Erreur lors de la récupération du projet : " . implode(", ", $prepare->errorInfo()));
+        }
+        return $prepare->fetch(PDO::FETCH_ASSOC); // Retourne les données du projet sous forme de tableau associatif
     }
+
 
     // trouve l'id du dernier projet ajouté
     function findLastProjectId() {
@@ -118,6 +119,24 @@ class ProjectModel extends MotherModel {
         return $row['script_path'] ?? null; // <-- retourne directement la string
     }
 
+    // Mise à jour du nombre de pages du projet
+    function updateNbPagesProject(Project $project) {
+
+        $query = "
+            UPDATE project
+            SET nb_total_pages = :nb_total_pages
+            WHERE id = :project_id
+        ";
+
+        $prepare = $this->_db->prepare($query);
+        $prepare->bindValue(':nb_total_pages', $project->getNbTotalPages(), PDO::PARAM_INT);
+        $prepare->bindValue(':project_id', $project->getId(), PDO::PARAM_INT);
+        
+        if (!$prepare->execute()) {
+            throw new \Exception("Erreur lors de la mise à jour du nombre de pages du projet : " . implode(", ", $prepare->errorInfo()));
+            }
+    }
+
     // Mise à jour du nombre de pages assignées du projet
     function updateNbPagesAssignedProject(Project $project) {
 
@@ -135,6 +154,42 @@ class ProjectModel extends MotherModel {
             throw new \Exception("Erreur lors de la mise à jour du nombre de pages assignées du projet : " . implode(", ", $prepare->errorInfo()));
         }
     }
-    
+
+     // Mise à jour du temps moyen de cleaning pour le projet
+    function updateAvgCleaningProject(Project $project) {
+
+        $query = "
+            UPDATE project
+            SET estimated_cleaning_duration = :estimated_cleaning_duration
+            WHERE id = :project_id
+        ";
+
+        $prepare = $this->_db->prepare($query);
+        $prepare->bindValue(':estimated_cleaning_duration', $project->getEstimCleaningDuration(), PDO::PARAM_STR);
+        $prepare->bindValue(':project_id', $project->getId(), PDO::PARAM_INT);
+        
+        if (!$prepare->execute()) {
+            throw new \Exception("Erreur lors de la mise à jour du temps moyen de cleaning du projet : " . implode(", ", $prepare->errorInfo()));
+            }
+    }
+
+
+    // Mise à jour de la durée totale estimée du projet
+    function updateTotalDurationProject(Project $project) {
+
+        $query = "
+            UPDATE project
+            SET estimated_total_duration = :estimated_total_duration
+            WHERE id = :project_id
+        ";
+
+        $prepare = $this->_db->prepare($query);
+        $prepare->bindValue(':estimated_total_duration', $project->getEstimTotalDuration(), PDO::PARAM_STR);
+        $prepare->bindValue(':project_id', $project->getId(), PDO::PARAM_INT);
+        
+        if (!$prepare->execute()) {
+            throw new \Exception("Erreur lors de la mise à jour de la durée totale estimée du projet : " . implode(", ", $prepare->errorInfo()));
+            }
+    }
 }
 

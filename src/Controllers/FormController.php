@@ -2,6 +2,7 @@
 
 namespace GauthierGladchambet\BoardCompanion\Controllers;
 
+use GauthierGladchambet\BoardCompanion\Models\UserModel;
 use GauthierGladchambet\BoardCompanion\Entities\Project;
 use GauthierGladchambet\BoardCompanion\Entities\Sequence;
 use GauthierGladchambet\BoardCompanion\Models\ProjectModel;
@@ -11,6 +12,8 @@ use GauthierGladchambet\BoardCompanion\Models\SequenceModel;
 class FormController extends MotherController {
 
     public function newProject() {
+
+    $flag = false;
         
         if(count($_POST) > 0){
 
@@ -95,7 +98,8 @@ class FormController extends MotherController {
             try {
                 $newProjectModel = new ProjectModel();
                 $idProject = $newProjectModel->addProject($project);
-                $project->setId($idProject);
+                $project->setId($idProject); // Assigner l'ID généré à l'entité Project pour les étapes suivantes
+                
 
                 // Commpte le nombre de pages du PDF et l'ajoute à l'entité Project
                 if (isset($scriptFilePath)) {
@@ -108,6 +112,9 @@ class FormController extends MotherController {
                         if (isset($metaData['Pages'])) {
                             $project->setNbTotalPages(intval($metaData['Pages'])-1);
                             $newProjectModel->updateNbPagesProject($project);
+
+                            $project->setEstimTotalDuration($this->estimateTotalDuration($project, $flag));
+                            $newProjectModel->updateTotalDurationProject($project);
                         }
                     } catch (\Exception $e) {
                         echo "Erreur lors de la lecture du PDF : " . htmlspecialchars($e->getMessage());
@@ -312,16 +319,49 @@ class FormController extends MotherController {
             return $totalAssignedPages;   
     }
 
-    // Fonction d'estimation du temps de cleaning : si is_cleaning est true,
-    // alors on estime que le temps de cleaning est égal à ???? 
+    // Fonction d'estimation du temps de cleaning :
+    // si is_cleaning est true on multiplie le nombre de pages assignées par avg_cleaning_duration de l'utilisateur
+    public function estimateCleaningDuration(Project $project) {
+        if ($project->getIsCleaning()) {
+            // Récupérer les informations de l'utilisateur à partir de la base de données en fonction de son ID en session
+            $userModel = new UserModel();
+            $userData = $userModel->findById($_SESSION['user']['id']);
+
+            // Estimation du temps de cleaning en fonction du nombre de pages assignées
+            $assignedPages = $project->getNbAssignedPages();
+            $cleaningDuration = $assignedPages * ($userData['avg_cleaning_duration']); // de base, 0.2 jour par  par page assignée
+            return $cleaningDuration;
+        }
+        return 0; // Pas de cleaning nécessaire
+    }
+
 
     // Fonction d'estimation de la durée total pour boarder le projet
-    // Si pas d'analyse détaillée on prend en paramètre nb_total_pages de la bdd,
-    // sinon on prend en paramètre nb_assigned_pages
-    //on calcule ????
+    public function estimateTotalDuration(Project $project, bool $flag) {
+        // Récupérer les informations de l'utilisateur à partir de la base de données en fonction de son ID en session
+            $userModel = new UserModel();
+            $userData = $userModel->findById($_SESSION['user']['id']);
+        if($flag === true){
+            $pagesDuration = $project->getNbAssignedPages() / $userData['avg_pages_per_day'];
+        } else {
+            $pagesDuration = $project->getNbTotalPages() / $userData['avg_pages_per_day'];
+        }
+        return $pagesDuration;
+    }
+
+
+
+
 
     // Fonction de pages/jour recommandées
     
+
+
+
+
+
+
+
 
 
                 
@@ -329,6 +369,7 @@ class FormController extends MotherController {
     public function detailedAnalysis(){
         require_once __DIR__ . '/../../vendor/autoload.php';
 
+        $flag = true;
         $scriptPath = new ProjectModel();
         $scriptPath = $scriptPath->findLastScriptPath();
 
@@ -372,13 +413,24 @@ class FormController extends MotherController {
                     $sequenceModel->addSequence($sequence);
                 }
             }
-            
+
                 $project = new Project();
                 $project->setId($projectId);
-                $project->setNbAssignedPages($this->countAssignedPages($projectId));
-                
+
+                //récupérer les attributs du projets en bdd en fonction de l'ID
                 $projectModel = new ProjectModel();
+                $projectData = $projectModel->findById($projectId);
+                $project->setIsCleaning($projectData['is_cleaning']);
+                $project->setNbTotalPages($projectData['nb_total_pages']);
+
+                $project->setNbAssignedPages($this->countAssignedPages($projectId));
+                $project->setEstimCleaningDuration($this->estimateCleaningDuration($project));
+                $project->setEstimTotalDuration($this->estimateTotalDuration($project, $flag));
+                
                 $projectModel->updateNbPagesAssignedProject($project);
+                $projectModel->updateAvgCleaningProject($project);
+                $projectModel->updateTotalDurationProject($project);
+                
 
             header("Location: index.php");
         } else {
