@@ -2,7 +2,7 @@
 
 namespace GauthierGladchambet\BoardCompanion\Entities;
 
-use GauthierGladchambet\BoardCompanion\Entities\Entity;
+use GauthierGladchambet\BoardCompanion\Entities\MotherEntity;
 
 class FinalReport extends MotherEntity
 {
@@ -11,8 +11,8 @@ class FinalReport extends MotherEntity
     private float $cleaningDuration;
     private int $nbShots;
     private string $commentary;
-    private Appreciation $appreciation;
-    private Project $project;
+    private int $fk_appreciation;
+    private int $fk_project;
 
 
     // Getters
@@ -42,14 +42,14 @@ class FinalReport extends MotherEntity
         return $this->commentary;
     }
 
-    public function getAppreciation(): Appreciation
+    public function getAppreciation(): int
     {
-        return $this->appreciation;
+        return $this->fk_appreciation;
     }
 
-    public function getProject(): Project
+    public function getProject(): int
     {
-        return $this->project;
+        return $this->fk_project;
     }
 
 
@@ -82,11 +82,11 @@ class FinalReport extends MotherEntity
 
     public function setAppreciation($appreciation)
     {
-        $this->appreciation = $appreciation;
+        $this->fk_appreciation = $appreciation;
     }
 
     public function setProject($project)
     {
-        $this->project = $project;
+        $this->fk_project = $project;
     }
 }

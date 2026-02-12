@@ -2,6 +2,8 @@
 
 namespace GauthierGladchambet\BoardCompanion\Controllers;
 
+use GauthierGladchambet\BoardCompanion\Controllers\MotherController;
+
 class MainController extends MotherController
 {
     

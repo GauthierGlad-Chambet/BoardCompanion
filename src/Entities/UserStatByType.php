@@ -2,14 +2,14 @@
 
 namespace GauthierGladchambet\BoardCompanion\Entities;
 
-use GauthierGladchambet\BoardCompanion\Entities\Entity;
+use GauthierGladchambet\BoardCompanion\Entities\MotherEntity;
 
 class UserStatByType extends MotherEntity
 {
     private string $id;
     private float $avgPagesDays;
-    private Type $type;
-    private User $user;
+    private int $fk_type;
+    private int $fk_user;
 
 
     // Getters
@@ -24,14 +24,14 @@ class UserStatByType extends MotherEntity
         return $this->avgPagesDays;
     }
 
-    public function getType(): Type
+    public function getType(): int
     {
-        return $this->type;
+        return $this->fk_type;
     }
 
-    public function getUser(): user
+    public function getUser(): int
     {
-        return $this->user;
+        return $this->fk_user;
     }
 
 
@@ -49,11 +49,11 @@ class UserStatByType extends MotherEntity
 
     public function setType($type)
     {
-        $this->type = $type;
+        $this->fk_type = $type;
     }
 
     public function setUser($user)
     {
-        $this->user = $user;
+        $this->fk_user = $user;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace GauthierGladchambet\BoardCompanion\Controllers;
 
+use GauthierGladchambet\BoardCompanion\Controllers\MotherController;
 use GauthierGladchambet\BoardCompanion\Entities\User;
 use GauthierGladchambet\BoardCompanion\Models\UserModel;
 

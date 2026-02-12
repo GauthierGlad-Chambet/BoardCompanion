@@ -25,10 +25,10 @@ class Project extends MotherEntity
     private int $nb_total_pages;
     private int $nb_assigned_pages;
     private float $estimated_total_duration;
-    private float $estimated_cleaning_duration;
+    private float $estimated_cleaning_duration = 0;
     private float $recommended_pages_per_day;
     private int $fk_user;
-    private FinalReport $finalReport;
+    private int $fk_finalReport;
 
 
     // Getters
@@ -123,11 +123,10 @@ class Project extends MotherEntity
         return $this->fk_user;
     }
 
-    public function getFinalReport(): FinalReport
+    public function getFinalReport(): int
     {
-        return $this->finalReport;
+        return $this->fk_finalReport;
     }
-
 
     // Setters
 
@@ -223,6 +222,16 @@ class Project extends MotherEntity
 
     public function setFinalReport($finalReport)
     {
-        $this->finalReport = $finalReport;
+        $this->fk_finalReport = $finalReport;
+    }
+
+    //Autres méthodes
+
+    public function getDuree()
+    {
+        $dateBegin = new \DateTime($this->getDateBegin());
+        $dateEnd = new \DateTime($this->getDateEnd());
+        $interval = $dateBegin->diff($dateEnd);
+        return $interval->days;
     }
 }

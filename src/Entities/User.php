@@ -2,6 +2,8 @@
 
 namespace GauthierGladchambet\BoardCompanion\Entities;
 
+use GauthierGladchambet\BoardCompanion\Entities\MotherEntity;
+
 class User extends MotherEntity
 {
     private string $id;

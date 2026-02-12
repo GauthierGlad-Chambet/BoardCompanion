@@ -3,7 +3,7 @@
 namespace GauthierGladchambet\BoardCompanion\Entities;
 
 
-use GauthierGladchambet\BoardCompanion\Entities\Entity;
+use GauthierGladchambet\BoardCompanion\Entities\MotherEntity;
 
 class Type extends MotherEntity
 {

@@ -4,11 +4,12 @@ namespace GauthierGladchambet\BoardCompanion\Models;
 
 use PDO;
 use GauthierGladchambet\BoardCompanion\Entities\Project;
+use GauthierGladchambet\BoardCompanion\Models\MotherModel;
 
 class ProjectModel extends MotherModel {
 
     // Ajout d'un projet dans la base de données
-    function addProject(Project $project) {;
+    function addProject(Project $project) {
 
         // Préparation de la requête pour ajouter un projet dans la base de données
         $query = "
@@ -190,6 +191,23 @@ class ProjectModel extends MotherModel {
         if (!$prepare->execute()) {
             throw new \Exception("Erreur lors de la mise à jour de la durée totale estimée du projet : " . implode(", ", $prepare->errorInfo()));
             }
+    }
+
+    function updateRecoPagesDaysProject(Project $project) {
+        
+        $query = " 
+            UPDATE project
+            SET recommended_pages_per_day = :recommended_pages_per_day
+            WHERE id = :project_id
+        ";
+            
+        $prepare = $this->_db->prepare($query);
+        $prepare->bindValue(':recommended_pages_per_day', $project->getRecoPagesDays(), PDO::PARAM_STR);
+        $prepare->bindValue(':project_id', $project->getId(), PDO::PARAM_INT);
+
+        if (!$prepare->execute()) { 
+            throw new \Exception("Erreur lors de la mise à jour du nombre de pages recommandées par jour du projet : " . implode(", ", $prepare->errorInfo())); 
+        } 
     }
 }
 

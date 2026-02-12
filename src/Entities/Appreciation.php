@@ -2,7 +2,7 @@
 
 namespace GauthierGladchambet\BoardCompanion\Entities;
 
-use GauthierGladchambet\BoardCompanion\Entities\Entity;
+use GauthierGladchambet\BoardCompanion\Entities\MotherEntity;
 
 class Appreciation extends MotherEntity
 {

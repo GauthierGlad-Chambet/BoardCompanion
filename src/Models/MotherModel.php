@@ -5,28 +5,13 @@ namespace GauthierGladchambet\BoardCompanion\Models;
 use PDO;
 use PDOException;
 
-//A ANALYSER POUR COMPRENDRE
 abstract class MotherModel {
     const HOST = "localhost";
     const DB = "board_companion";
     const USER = "root";
     const PASS = "";
 
-    // Connexion à la base de données en utilisant les informations çi dessus
-//     function connect()
-//     {
-//         try {
-//             return new PDO(
-//                 "mysql:host=" . MotherModel::HOST . ";dbname=" . MotherModel::DB . ";charset=utf8",
-//                 MotherModel::USER,
-//                 MotherModel::PASS,
-//                 array(PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC)
-//             );
-//         } catch (PDOException $ex) {
-//             return $ex->getMessage(); // Retourne un message d'erreur en cas de problème
-//         }
-//     }
-// }
+    // Connexion à la base de données en singleton en utilisant les informations çi dessus
     protected object $_db;
             private static ?PDO $_dbInstance = null;
 

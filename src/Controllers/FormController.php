@@ -2,6 +2,7 @@
 
 namespace GauthierGladchambet\BoardCompanion\Controllers;
 
+use GauthierGladchambet\BoardCompanion\Controllers\MotherController; 
 use GauthierGladchambet\BoardCompanion\Models\UserModel;
 use GauthierGladchambet\BoardCompanion\Entities\Project;
 use GauthierGladchambet\BoardCompanion\Entities\Sequence;
@@ -84,9 +85,11 @@ class FormController extends MotherController {
             $project->setNbPredecs(intval($nbPredecs));
             $project->setIsCleaning($isCleaning);
             $project->setIsAlone($isAlone);
+
             if (isset($scriptFilePath)) {
                 $project->setScriptFilePath($scriptFilePath);
             }
+
             if (isset($templateFilePath)) {
                 $project->setTemplateFilePath($templateFilePath);
             }
@@ -99,6 +102,7 @@ class FormController extends MotherController {
                 $newProjectModel = new ProjectModel();
                 $idProject = $newProjectModel->addProject($project);
                 $project->setId($idProject); // Assigner l'ID généré à l'entité Project pour les étapes suivantes
+                $project->getEstimCleaningDuration();
                 
 
                 // Commpte le nombre de pages du PDF et l'ajoute à l'entité Project
@@ -112,9 +116,13 @@ class FormController extends MotherController {
                         if (isset($metaData['Pages'])) {
                             $project->setNbTotalPages(intval($metaData['Pages'])-1);
                             $newProjectModel->updateNbPagesProject($project);
-
+                            
                             $project->setEstimTotalDuration($this->estimateTotalDuration($project, $flag));
                             $newProjectModel->updateTotalDurationProject($project);
+
+                            $project->setRecoPagesDays($this->estimateRecommendedPagesPerDay($project, $flag));
+                            $newProjectModel->updateRecoPagesDaysProject($project);
+
                         }
                     } catch (\Exception $e) {
                         echo "Erreur lors de la lecture du PDF : " . htmlspecialchars($e->getMessage());
@@ -353,10 +361,20 @@ class FormController extends MotherController {
 
 
 
-    // Fonction de pages/jour recommandées
+    // Fonction d'estimation du nombre de jours recommandés pour boarder le projet, en fonction du nombre de pages totales ou du nombre de pages assignées, du temps de cleaning estimé et de la durée du projet
+    public function estimateRecommendedPagesPerDay(Project $project, bool $flag)
+    {
+        $interval = $project->getDuree();
+        if($flag === true){
+            $recommandation = ($project->getNbAssignedPages() + $project->getEstimCleaningDuration()) / $interval;
+        } else {
+            $recommandation = ($project->getNbTotalPages() + $project->getEstimCleaningDuration()) / $interval;
+        }
+        return $recommandation;
+    }
+
+        
     
-
-
 
 
 
@@ -420,16 +438,21 @@ class FormController extends MotherController {
                 //récupérer les attributs du projets en bdd en fonction de l'ID
                 $projectModel = new ProjectModel();
                 $projectData = $projectModel->findById($projectId);
+
                 $project->setIsCleaning($projectData['is_cleaning']);
                 $project->setNbTotalPages($projectData['nb_total_pages']);
+                $project->setDateBegin($projectData['date_beginning']);
+                $project->setDateEnd($projectData['date_end']);
 
                 $project->setNbAssignedPages($this->countAssignedPages($projectId));
                 $project->setEstimCleaningDuration($this->estimateCleaningDuration($project));
                 $project->setEstimTotalDuration($this->estimateTotalDuration($project, $flag));
+                $project->setRecoPagesDays($this->estimateRecommendedPagesPerDay($project, $flag));
                 
                 $projectModel->updateNbPagesAssignedProject($project);
                 $projectModel->updateAvgCleaningProject($project);
                 $projectModel->updateTotalDurationProject($project);
+                $projectModel->updateRecoPagesDaysProject($project);
                 
 
             header("Location: index.php");

@@ -2,27 +2,6 @@
 // Every pages uses session
 session_start();
 
-//A ANALYSER POUR COMPRENDRE
-
-// Déclaration de l'autoloader (manuel)
-// spl_autoload_register(function ($class) {
-
-//     // Pour chaque use, cette fonction sera appelée
-//     // ex. : use Blog\Controllers\ArticlesCtrl;
-//     // $class = "Blog\Controllers\ArticlesCtrl"
-
-//     // Objectif, transformer $class => chemin réel du fichier .php
-//     // ex. "./Controllers/ArticlesCtrl.php"
-
-//     $strFilename = str_replace('App\\', './', $class); //< "Controllers\ArticlesCtrl"
-//     $strFilename = str_replace('\\', '/', $strFilename) . '.php'; //< "Controllers/ArticlesCtrl"
-
-//     // On vérifie si le fichier existe avant de faire le require_once
-//     if (file_exists($strFilename)) {
-//         require_once $strFilename;
-//     }
-// });
-
 // Autoloader de composer
 require 'vendor/autoload.php';
 
