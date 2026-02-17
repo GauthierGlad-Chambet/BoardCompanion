@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS `project` (
   `studio` varchar(50) NOT NULL,
   `episode_nb` varchar(50) NOT NULL,
   `episode_title` varchar(50) NOT NULL,
-  `date_begining` date NOT NULL,
+  `date_beginning` date NOT NULL,
   `date_end` date NOT NULL,
   `nb_predec` int NOT NULL,
   `is_cleaning` tinyint(1) NOT NULL,

@@ -17,7 +17,7 @@ class ProjectModel extends MotherModel {
                 name, studio, episode_nb, episode_title, nb_predec, is_alone, 
                 is_cleaning, script_path,";
         
-        if($project->getTemplateFilePath() !== null) {
+        if($project->getTemplate_path() !== null) {
             $query .= "template_path,";
         }
         
@@ -26,7 +26,7 @@ class ProjectModel extends MotherModel {
                 :name, :studio, :episode_nb, :episode_title, :nb_predec, :is_alone, 
                 :is_cleaning, :script_path,";
         
-        if($project->getTemplateFilePath() !== null) {
+        if($project->getTemplate_path() !== null) {
             $query .= ":template_path,";
         }
         
@@ -38,18 +38,18 @@ class ProjectModel extends MotherModel {
         // Liaison des paramètres
         $prepare->bindValue(':name', $project->getName(), PDO::PARAM_STR);
         $prepare->bindValue(':studio', $project->getStudio(), PDO::PARAM_STR);
-        $prepare->bindValue(':episode_nb', $project->getEpisodeNb(), PDO::PARAM_STR);
-        $prepare->bindValue(':episode_title', $project->getEpisodeTitle(), PDO::PARAM_STR);
-        $prepare->bindValue(':nb_predec', $project->getNbPredecs(), PDO::PARAM_INT);
-        $prepare->bindValue(':is_alone', $project->getIsAlone(), PDO::PARAM_BOOL);
-        $prepare->bindValue(':is_cleaning', $project->getIsCleaning(), PDO::PARAM_BOOL);
-        $prepare->bindValue(':script_path', $project->getScriptFilePath(), PDO::PARAM_STR);
-        if($project->getTemplateFilePath() !== null) {
-            $prepare->bindValue(':template_path', $project->getTemplateFilePath(), PDO::PARAM_STR);
+        $prepare->bindValue(':episode_nb', $project->getEpisode_nb(), PDO::PARAM_STR);
+        $prepare->bindValue(':episode_title', $project->getEpisode_title(), PDO::PARAM_STR);
+        $prepare->bindValue(':nb_predec', $project->getNb_predecs(), PDO::PARAM_INT);
+        $prepare->bindValue(':is_alone', $project->getIs_alone(), PDO::PARAM_BOOL);
+        $prepare->bindValue(':is_cleaning', $project->getIs_cleaning(), PDO::PARAM_BOOL);
+        $prepare->bindValue(':script_path', $project->getScript_path(), PDO::PARAM_STR);
+        if($project->getTemplate_path() !== null) {
+            $prepare->bindValue(':template_path', $project->getTemplate_path(), PDO::PARAM_STR);
         }
-        $prepare->bindValue(':date_beginning', $project->getDateBegin(), PDO::PARAM_STR);
-        $prepare->bindValue(':date_end', $project->getDateEnd(), PDO::PARAM_STR);
-        $prepare->bindValue(':fk_user', $project->getUser(), PDO::PARAM_INT);
+        $prepare->bindValue(':date_beginning', $project->getDate_beginning(), PDO::PARAM_STR);
+        $prepare->bindValue(':date_end', $project->getDate_end(), PDO::PARAM_STR);
+        $prepare->bindValue(':fk_user', $project->getFk_user(), PDO::PARAM_INT);
 
         // Exécution de la requête
         if (!$prepare->execute()) {
@@ -58,8 +58,9 @@ class ProjectModel extends MotherModel {
         return $this->_db->lastInsertId(); // Retourne l'ID du projet nouvellement créé
     }
 
+
     // trouver le projet en fonction de son ID
-    function findById($id) {
+    function getProjectById($id) {
 
         $query = "
             SELECT *
@@ -98,6 +99,26 @@ class ProjectModel extends MotherModel {
         $row = $prepare->fetch(PDO::FETCH_ASSOC);
         return $row['id'] ?? null; // <-- retourne directement l'id du projet
     }
+
+    //Trouver tous les projets d'un utilisateur
+    function getAllProjectsByUser(int $userId): array {
+        $query = "
+            SELECT project.id, name, date_beginning, date_end, nb_assigned_pages, estimated_total_duration, recommended_pages_per_day, label as appreciation_label
+            FROM project
+            LEFT JOIN final_report ON final_report.fk_project = project.id
+            LEFT JOIN appreciation ON final_report.fk_appreciation = appreciation.id
+            JOIN user ON project.fk_user = user.id
+            WHERE fk_user = :user_id
+            ORDER BY date_beginning DESC
+        ";
+
+        $prepare = $this->_db->prepare($query);
+        $prepare->bindValue(':user_id', $userId, PDO::PARAM_INT);
+        $prepare->execute();
+
+        return $prepare->fetchAll(PDO::FETCH_ASSOC); // Retourne un tableau de tous les projets de l'utilisateur
+    }
+
     
     // Récupération du chemin du dernier script ajouté dans la base de données
     function findLastScriptPath() {
@@ -120,17 +141,20 @@ class ProjectModel extends MotherModel {
         return $row['script_path'] ?? null; // <-- retourne directement la string
     }
 
+
     // Mise à jour du nombre de pages du projet
     function updateNbPagesProject(Project $project) {
 
         $query = "
             UPDATE project
-            SET nb_total_pages = :nb_total_pages
+            SET nb_total_pages = :nb_total_pages,
+                nb_assigned_pages = :nb_assigned_pages
             WHERE id = :project_id
         ";
 
         $prepare = $this->_db->prepare($query);
-        $prepare->bindValue(':nb_total_pages', $project->getNbTotalPages(), PDO::PARAM_INT);
+        $prepare->bindValue(':nb_total_pages', $project->getNb_total_pages(), PDO::PARAM_INT);
+        $prepare->bindValue(':nb_assigned_pages', $project->getNb_assigned_pages(), PDO::PARAM_INT);
         $prepare->bindValue(':project_id', $project->getId(), PDO::PARAM_INT);
         
         if (!$prepare->execute()) {
@@ -148,7 +172,7 @@ class ProjectModel extends MotherModel {
         ";
 
         $prepare = $this->_db->prepare($query);
-        $prepare->bindValue(':nb_assigned_pages', $project->getNbAssignedPages(), PDO::PARAM_INT);
+        $prepare->bindValue(':nb_assigned_pages', $project->getNb_assigned_pages(), PDO::PARAM_INT);
         $prepare->bindValue(':project_id', $project->getId(), PDO::PARAM_INT);
 
         if (!$prepare->execute()) {
@@ -166,7 +190,7 @@ class ProjectModel extends MotherModel {
         ";
 
         $prepare = $this->_db->prepare($query);
-        $prepare->bindValue(':estimated_cleaning_duration', $project->getEstimCleaningDuration(), PDO::PARAM_STR);
+        $prepare->bindValue(':estimated_cleaning_duration', $project->getEstimated_cleaning_duration(), PDO::PARAM_STR);
         $prepare->bindValue(':project_id', $project->getId(), PDO::PARAM_INT);
         
         if (!$prepare->execute()) {
@@ -185,7 +209,7 @@ class ProjectModel extends MotherModel {
         ";
 
         $prepare = $this->_db->prepare($query);
-        $prepare->bindValue(':estimated_total_duration', $project->getEstimTotalDuration(), PDO::PARAM_STR);
+        $prepare->bindValue(':estimated_total_duration', $project->getEstimated_total_duration(), PDO::PARAM_STR);
         $prepare->bindValue(':project_id', $project->getId(), PDO::PARAM_INT);
         
         if (!$prepare->execute()) {
@@ -193,7 +217,9 @@ class ProjectModel extends MotherModel {
             }
     }
 
-    function updateRecoPagesDaysProject(Project $project) {
+
+    // Mise à jour du rythme recommandé du projet
+    function updateRecommendedPagesPerDayProject(Project $project) {
         
         $query = " 
             UPDATE project
@@ -202,7 +228,7 @@ class ProjectModel extends MotherModel {
         ";
             
         $prepare = $this->_db->prepare($query);
-        $prepare->bindValue(':recommended_pages_per_day', $project->getRecoPagesDays(), PDO::PARAM_STR);
+        $prepare->bindValue(':recommended_pages_per_day', $project->getRecommended_pages_per_day(), PDO::PARAM_STR);
         $prepare->bindValue(':project_id', $project->getId(), PDO::PARAM_INT);
 
         if (!$prepare->execute()) { 

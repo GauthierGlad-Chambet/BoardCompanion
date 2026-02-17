@@ -7,10 +7,17 @@ use GauthierGladchambet\BoardCompanion\Entities\MotherEntity;
 
 class Sequence extends MotherEntity
 {
+    function __construct() {
+            $this->_strPrefix = "_sequence";
+        }
+
     private string $id;
+    private int $number;
+    private string $title;
     private string $script;
-    private bool $isAssigned;
-    private float $durationEstimated;
+    private int $lines_count;
+    private bool $is_assigned;
+    private float $duration_estimated = 0;
     private string $type;
     private int $fk_project;
 
@@ -22,19 +29,34 @@ class Sequence extends MotherEntity
         return $this->id;
     }
 
+    public function getNumber(): int
+    {
+        return $this->number;
+    }
+
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
     public function getScript(): string
     {
         return $this->script;
     }
 
-    public function getIsAssigned(): bool
+    public function getLines_count(): int
     {
-        return $this->isAssigned;
+        return $this->lines_count;
     }
 
-    public function getDurationEstimated(): float
+    public function getIs_assigned(): bool
     {
-        return $this->durationEstimated;
+        return $this->is_assigned;
+    }
+
+    public function getDuration_estimated(): float
+    {
+        return $this->duration_estimated;
     }
 
     public function getType(): string
@@ -55,19 +77,34 @@ class Sequence extends MotherEntity
         $this->id = $id;
     }
 
+    public function setNumber($number)
+    {
+        $this->number = $number;
+    }
+    
+    public function setTitle($title)
+    {
+        $this->title = $title;
+    }
+
     public function setScript($script)
     {
         $this->script = $script;
     }
 
-    public function setIsAssigned($isAssigned)
+    public function setLines_count($lines_count)
     {
-        $this->isAssigned = $isAssigned;
+        $this->lines_count = $lines_count;
     }
 
-    public function setDurationEstimated($durationEstimated)
+    public function setIs_assigned($is_assigned)
     {
-        $this->durationEstimated = $durationEstimated;
+        $this->is_assigned = $is_assigned;
+    }
+
+    public function setDuration_estimated($duration_estimated)
+    {
+        $this->duration_estimated = $duration_estimated;
     }
 
     public function setType($type)

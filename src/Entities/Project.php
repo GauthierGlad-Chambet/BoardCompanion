@@ -2,6 +2,7 @@
 
 namespace GauthierGladchambet\BoardCompanion\Entities;
 
+use DateTime;
 use GauthierGladchambet\BoardCompanion\Entities\MotherEntity;
 
 class Project extends MotherEntity
@@ -20,15 +21,16 @@ class Project extends MotherEntity
     private bool $is_cleaning;
     private string $script_path;
     private ?string $template_path = null;
-    private string $date_begining;
+    private string $date_beginning;
     private string $date_end;
     private int $nb_total_pages;
     private int $nb_assigned_pages;
     private float $estimated_total_duration;
-    private float $estimated_cleaning_duration = 0;
+    private ?float $estimated_cleaning_duration = 0;
     private float $recommended_pages_per_day;
     private int $fk_user;
-    private int $fk_finalReport;
+    private int $fk_final_report;
+    private string $appreciation_label = "";
 
 
     // Getters
@@ -48,84 +50,103 @@ class Project extends MotherEntity
         return $this->studio;
     }
 
-    public function getEpisodeNb(): string
+    public function getEpisode_nb(): string
     {
         return $this->episode_nb;
     }
 
-    public function getEpisodeTitle(): string
+    public function getEpisode_title(): string
     {
         return $this->episode_title;
     }
 
-    public function getDateBegin(): string
+    public function getDate_beginning(): string
     {
-        return $this->date_begining;
+        //Convertir la date au format "d-m-Y" avant de la retourner
+        $date = DateTime::createFromFormat('Y-m-d', $this->date_beginning);
+        if ($date) {
+            return $date->format('d-m-Y');
+        } else {
+            return $this->date_beginning;
+        }
+       
     }
 
-    public function getDateEnd(): string
+    public function getDate_end(): string
     {
-        return $this->date_end;
+       //Convertir la date au format "d-m-Y" avant de la retourner
+        $date = DateTime::createFromFormat('Y-m-d', $this->date_end);
+        if ($date) {
+            return $date->format('d-m-Y');
+        } else {
+            return $this->date_end;
+        }
+       
     }
 
-    public function getNbPredecs(): int
+    public function getNb_predecs(): int
     {
         return $this->nb_predec;
     }
 
-    public function getIsCleaning(): bool
+    public function getIs_cleaning(): bool
     {
         return $this->is_cleaning;
     }
 
-    public function getIsAlone(): bool
+    public function getIs_alone(): bool
     {
         return $this->is_alone;
     }
 
-    public function getScriptFilePath(): string
+    public function getScript_path(): string
     {
         return $this->script_path;
     }
 
-    public function getTemplateFilePath(): ?string
+    public function getTemplate_path(): ?string
     {
         return $this->template_path;
     }
 
-    public function getNbTotalPages(): float
+    public function getNb_total_pages(): float
     {
         return $this->nb_total_pages;
     }
 
-    public function getNbAssignedPages(): float
+    public function getNb_assigned_pages(): float
     {
         return $this->nb_assigned_pages;
     }
 
-    public function getEstimTotalDuration(): float
+    public function getEstimated_total_duration(): float
     {
         return $this->estimated_total_duration;
     }
 
-    public function getEstimCleaningDuration(): float
+    public function getEstimated_cleaning_duration(): ?float
     {
         return $this->estimated_cleaning_duration;
     }
 
-    public function getRecoPagesDays(): float
+    public function getRecommended_pages_per_day(): float
     {
         return $this->recommended_pages_per_day;
     }
 
-    public function getUser(): int
+    public function getFk_user(): int
     {
         return $this->fk_user;
     }
 
-    public function getFinalReport(): int
+    public function getFk_final_report(): int
     {
-        return $this->fk_finalReport;
+        return $this->fk_final_report;
+    }
+
+    public function getAppreciation_label(): string
+    {
+        return $this->appreciation_label;
     }
 
     // Setters
@@ -145,92 +166,100 @@ class Project extends MotherEntity
         $this->studio = $studio;
     }
 
-    public function setEpisodeNb($episodeNb)
+    public function setEpisode_nb($episode_nb)
     {
-        $this->episode_nb = $episodeNb;
+        $this->episode_nb = $episode_nb;
     }
 
-    public function setEpisodeTitle($episodeTitle)
+    public function setEpisode_title($episode_title)
     {
-        $this->episode_title = $episodeTitle;
+        $this->episode_title = $episode_title;
     }
 
-    public function setDateBegin($dateBegin)
+    public function setDate_beginning($date_beginning)
     {
-        $this->date_begining = $dateBegin;
+        $this->date_beginning = $date_beginning;
     }
 
-    public function setDateEnd($dateEnd)
+    public function setDate_end($date_end)
     {
-        $this->date_end = $dateEnd;
+        $this->date_end = $date_end;
     }
 
-    public function setNbPredecs($nbPredecs)
+    public function setNb_predecs($nb_predec)
     {
-        $this->nb_predec = $nbPredecs;
+        $this->nb_predec = $nb_predec;
     }
 
-    public function setIsCleaning($isCleaning)
+    public function setIs_cleaning($is_cleaning)
     {
-        $this->is_cleaning = $isCleaning;
+        $this->is_cleaning = $is_cleaning;
     }
 
-    public function setIsAlone($isAlone)
+    public function setIs_alone($is_alone)
     {
-        $this->is_alone = $isAlone;
+        $this->is_alone = $is_alone;
     }
 
-    public function setScriptFilePath($scriptFilePath)
+    public function setScript_path($script_path)
     {
-        $this->script_path = $scriptFilePath;
+        $this->script_path = $script_path;
     }
 
-    public function setTemplateFilePath($templateFilePath)
+    public function setTemplate_path($template_path)
     {
-        $this->template_path = $templateFilePath;
+        $this->template_path = $template_path;
     }
 
-    public function setNbTotalPages($nbTotalPages)
+    public function setNb_total_pages($nb_total_pages)
     {
-        $this->nb_total_pages = $nbTotalPages;
+        $this->nb_total_pages = $nb_total_pages;
     }
 
-    public function setNbAssignedPages($nbAssignedPages)
+    public function setNb_assigned_pages($nb_assigned_pages)
     {
-        $this->nb_assigned_pages = $nbAssignedPages;
+        $this->nb_assigned_pages = $nb_assigned_pages;
     }
 
-    public function setEstimTotalDuration($estimTotalDuration)
+    public function setEstimated_total_duration($estimated_total_duration)
     {
-        $this->estimated_total_duration = $estimTotalDuration;
+        $this->estimated_total_duration = $estimated_total_duration;
     }
 
-    public function setEstimCleaningDuration($estimCleaningDuration)
+    public function setEstimated_cleaning_duration($estimated_cleaning_duration)
     {
-        $this->estimated_cleaning_duration = $estimCleaningDuration;
+        $this->estimated_cleaning_duration = $estimated_cleaning_duration;
     }
 
-    public function setRecoPagesDays($recoPagesDays)
+    public function setRecommended_pages_per_day($recommended_pages_per_day)
     {
-        $this->recommended_pages_per_day = $recoPagesDays;
+        $this->recommended_pages_per_day = $recommended_pages_per_day;
     }
 
-    public function setUser($user)
+    public function setFk_user($fk_user)
     {
-        $this->fk_user = $user;
+        $this->fk_user = $fk_user;
     }
 
-    public function setFinalReport($finalReport)
+    public function setFkFinal_report($fk_final_report)
     {
-        $this->fk_finalReport = $finalReport;
+        $this->fk_final_report = $fk_final_report;
+    }
+
+    public function setAppreciation_label($appreciation_label)
+    {
+        if($appreciation_label == null) {
+            $appreciation_label = "Non renseigné";
+        }
+        $this->appreciation_label = $appreciation_label;
     }
 
     //Autres méthodes
 
     public function getDuree()
     {
-        $dateBegin = new \DateTime($this->getDateBegin());
-        $dateEnd = new \DateTime($this->getDateEnd());
+        $dateBegin = new \DateTime($this->getDate_beginning());
+        $dateEnd = new \DateTime($this->getDate_end());
         $interval = $dateBegin->diff($dateEnd);
         return $interval->days;
     }

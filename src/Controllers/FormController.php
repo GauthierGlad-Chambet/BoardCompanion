@@ -78,31 +78,31 @@ class FormController extends MotherController {
             $project = new Project();
             $project->setName($name);
             $project->setStudio($studio);
-            $project->setEpisodeNb($episodeNb);
-            $project->setEpisodeTitle($episodeTitle);
-            $project->setDateBegin($dateBegin);
-            $project->setDateEnd($dateEnd);
-            $project->setNbPredecs(intval($nbPredecs));
-            $project->setIsCleaning($isCleaning);
-            $project->setIsAlone($isAlone);
+            $project->setEpisode_nb($episodeNb);
+            $project->setEpisode_title($episodeTitle);
+            $project->setDate_beginning($dateBegin);
+            $project->setDate_end($dateEnd);
+            $project->setNb_predecs(intval($nbPredecs));
+            $project->setIs_cleaning($isCleaning);
+            $project->setIs_alone($isAlone);
 
             if (isset($scriptFilePath)) {
-                $project->setScriptFilePath($scriptFilePath);
+                $project->setScript_path($scriptFilePath);
             }
 
             if (isset($templateFilePath)) {
-                $project->setTemplateFilePath($templateFilePath);
+                $project->setTemplate_path($templateFilePath);
             }
 
             // Récupérer l'identifiant utilisateur de la session ou la valeur par défaut 1 si non défini.
             $userId = $_SESSION['user']['id'];
-            $project->setUser($userId);
+            $project->setFk_user($userId);
 
             try {
                 $newProjectModel = new ProjectModel();
                 $idProject = $newProjectModel->addProject($project);
                 $project->setId($idProject); // Assigner l'ID généré à l'entité Project pour les étapes suivantes
-                $project->getEstimCleaningDuration();
+                $project->getEstimated_cleaning_duration();
                 
 
                 // Commpte le nombre de pages du PDF et l'ajoute à l'entité Project
@@ -111,17 +111,18 @@ class FormController extends MotherController {
                     try {
                         // Créer une instance du parser et analyser le fichier PDF
                         $parser = new \Smalot\PdfParser\Parser();
-                        $pdf = $parser->parseFile($project->getScriptFilePath());
+                        $pdf = $parser->parseFile($project->getScript_path());
                         $metaData = $pdf->getDetails();
                         if (isset($metaData['Pages'])) {
-                            $project->setNbTotalPages(intval($metaData['Pages'])-1);
+                            $project->setNb_total_pages(intval($metaData['Pages'])-1);
+                            $project->setNb_assigned_pages(intval($metaData['Pages'])-1);
                             $newProjectModel->updateNbPagesProject($project);
                             
-                            $project->setEstimTotalDuration($this->estimateTotalDuration($project, $flag));
+                            $project->setEstimated_total_duration($this->estimateTotalDuration($project, $flag));
                             $newProjectModel->updateTotalDurationProject($project);
 
-                            $project->setRecoPagesDays($this->estimateRecommendedPagesPerDay($project, $flag));
-                            $newProjectModel->updateRecoPagesDaysProject($project);
+                            $project->setRecommended_pages_per_day($this->estimateRecommendedPagesPerDay($project, $flag));
+                            $newProjectModel->updateRecommendedPagesPerDayProject($project);
 
                         }
                     } catch (\Exception $e) {
@@ -133,7 +134,9 @@ class FormController extends MotherController {
                 echo "Projet ajouté avec succès.";
                 if($script_detailed === 'oui'){
                     header("Location: index.php?controller=form&action=detailedAnalysis");
-                    }
+                } else {
+                    header("Location: index.php?controller=statistics&action=dashboard");
+                }
             } catch (\Exception $e) {
                 echo "Erreur lors de l'ajout du projet : " . htmlspecialchars($e->getMessage());
                 exit;
@@ -292,7 +295,7 @@ class FormController extends MotherController {
                     'line_number' => $i + 1,
                     'header' => $line,
                     'content' => []
-                ];
+                    ];
             } elseif ($currentSequence) {
                 // Ajouter la ligne à la séquence en cours
                 if (!empty($line)) {
@@ -310,11 +313,12 @@ class FormController extends MotherController {
         return $extracts;
     }
 
+
     // Récupère les séquences assignées depuis la bdd, compte le nombre total de lignes et
     // calcule combien ça représente de pages en supposant qu'une page contient 33 lignes en moyenne
     public function countAssignedPages(int $projectId) {
             $sequenceModel = new SequenceModel();
-            $assignedSequences = $sequenceModel->findSequencesByProjectId($projectId);
+            $assignedSequences = $sequenceModel->findAllSequencesByProjectId($projectId);
                 $totalLines = 0;
                 foreach ($assignedSequences as $seq) {
                     $scriptContent = json_decode($seq['script'], true);
@@ -327,16 +331,17 @@ class FormController extends MotherController {
             return $totalAssignedPages;   
     }
 
+
     // Fonction d'estimation du temps de cleaning :
     // si is_cleaning est true on multiplie le nombre de pages assignées par avg_cleaning_duration de l'utilisateur
     public function estimateCleaningDuration(Project $project) {
-        if ($project->getIsCleaning()) {
+        if ($project->getIs_cleaning()) {
             // Récupérer les informations de l'utilisateur à partir de la base de données en fonction de son ID en session
             $userModel = new UserModel();
             $userData = $userModel->findById($_SESSION['user']['id']);
 
             // Estimation du temps de cleaning en fonction du nombre de pages assignées
-            $assignedPages = $project->getNbAssignedPages();
+            $assignedPages = $project->getNb_assigned_pages();
             $cleaningDuration = $assignedPages * ($userData['avg_cleaning_duration']); // de base, 0.2 jour par  par page assignée
             return $cleaningDuration;
         }
@@ -350,15 +355,12 @@ class FormController extends MotherController {
             $userModel = new UserModel();
             $userData = $userModel->findById($_SESSION['user']['id']);
         if($flag === true){
-            $pagesDuration = $project->getNbAssignedPages() / $userData['avg_pages_per_day'];
+            $pagesDuration = $project->getNb_assigned_pages() / $userData['avg_pages_per_day'];
         } else {
-            $pagesDuration = $project->getNbTotalPages() / $userData['avg_pages_per_day'];
+            $pagesDuration = $project->getNb_total_pages() / $userData['avg_pages_per_day'];
         }
         return $pagesDuration;
     }
-
-
-
 
 
     // Fonction d'estimation du nombre de jours recommandés pour boarder le projet, en fonction du nombre de pages totales ou du nombre de pages assignées, du temps de cleaning estimé et de la durée du projet
@@ -366,21 +368,12 @@ class FormController extends MotherController {
     {
         $interval = $project->getDuree();
         if($flag === true){
-            $recommandation = ($project->getNbAssignedPages() + $project->getEstimCleaningDuration()) / $interval;
+            $recommandation = ($project->getNb_assigned_pages() + $project->getEstimated_cleaning_duration()) / $interval;
         } else {
-            $recommandation = ($project->getNbTotalPages() + $project->getEstimCleaningDuration()) / $interval;
+            $recommandation = ($project->getNb_total_pages() + $project->getEstimated_cleaning_duration()) / $interval;
         }
         return $recommandation;
     }
-
-        
-    
-
-
-
-
-
-
 
                 
     // Affichage du formulaire d'analyse détaillée, en passant le texte extrait et les en-têtes de scènes à la vue
@@ -413,6 +406,9 @@ class FormController extends MotherController {
                     $typeSequence = $value;
                     $isAssigned = (int) ($_POST['is_assigned_' . $index] ?? 0);
 
+                    //récupérer le titre de la séquence
+                    $sequenceHeader = $_POST['sequence_header_' . $index] ?? 'Séquence sans titre';
+
                     // Récupérer le contenu de la séquence
                     $sequenceContent = $_POST['sequence_content_' . $index] ?? '[]';
                     $sequenceContent = json_decode($sequenceContent, true);
@@ -421,11 +417,16 @@ class FormController extends MotherController {
                     $sequenceContentJson = json_encode($sequenceContent);
 
                     // Enregistrer ces informations dans la base de données
+                    var_dump($_POST);die;
                     $sequence = new Sequence();
+                    $sequence->setNumber($index + 1);
+                    $sequence->setTitle($sequenceHeader);
                     $sequence->setType($typeSequence);
-                    $sequence->setIsAssigned($isAssigned);
+                    $sequence->setIs_assigned($isAssigned);
                     $sequence->setScript($sequenceContentJson); // Stocker en tant que JSON
+                    $sequence->setLines_count(count($sequenceContent)); // Stocker le nombre de lignes de la séquence
                     $sequence->setProject($projectId);
+                    var_dump($sequence);die;
 
                     $sequenceModel = new SequenceModel();
                     $sequenceModel->addSequence($sequence);
@@ -437,25 +438,25 @@ class FormController extends MotherController {
 
                 //récupérer les attributs du projets en bdd en fonction de l'ID
                 $projectModel = new ProjectModel();
-                $projectData = $projectModel->findById($projectId);
+                $projectData = $projectModel->getProjectById($projectId);
 
-                $project->setIsCleaning($projectData['is_cleaning']);
-                $project->setNbTotalPages($projectData['nb_total_pages']);
-                $project->setDateBegin($projectData['date_beginning']);
-                $project->setDateEnd($projectData['date_end']);
+                $project->setIs_cleaning($projectData['is_cleaning']);
+                $project->setNb_total_pages($projectData['nb_total_pages']);
+                $project->setDate_beginning($projectData['date_beginning']);
+                $project->setDate_end($projectData['date_end']);
 
-                $project->setNbAssignedPages($this->countAssignedPages($projectId));
-                $project->setEstimCleaningDuration($this->estimateCleaningDuration($project));
-                $project->setEstimTotalDuration($this->estimateTotalDuration($project, $flag));
-                $project->setRecoPagesDays($this->estimateRecommendedPagesPerDay($project, $flag));
+                $project->setNb_assigned_pages($this->countAssignedPages($projectId));
+                $project->setEstimated_cleaning_duration($this->estimateCleaningDuration($project));
+                $project->setEstimated_total_duration($this->estimateTotalDuration($project, $flag));
+                $project->setRecommended_pages_per_day($this->estimateRecommendedPagesPerDay($project, $flag));
                 
                 $projectModel->updateNbPagesAssignedProject($project);
                 $projectModel->updateAvgCleaningProject($project);
                 $projectModel->updateTotalDurationProject($project);
-                $projectModel->updateRecoPagesDaysProject($project);
+                $projectModel->updateRecommendedPagesPerDayProject($project);
                 
 
-            header("Location: index.php");
+            header("Location: index.php?controller=statistics&action=dashboard");
         } else {
             // Utilisation de smalot/pdfparser pour extraire le texte du PDF
         try {

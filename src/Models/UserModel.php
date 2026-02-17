@@ -2,8 +2,9 @@
 
 namespace GauthierGladchambet\BoardCompanion\Models;
 
-use PDO;
 use GauthierGladchambet\BoardCompanion\Entities\User;
+use GauthierGladchambet\BoardCompanion\Models\MotherModel;
+use PDO;
 
 class UserModel extends MotherModel {
 

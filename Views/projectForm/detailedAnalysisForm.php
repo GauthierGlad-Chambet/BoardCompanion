@@ -10,6 +10,8 @@
     <input type="hidden" name="project_id" value="<?= htmlspecialchars($projectId) ?>">
 
   <?php  foreach ($sequenceHeaders as $index => $sequence): ?>
+     <!-- Champ caché pour transmettre le titre de la séquence -->
+    <input type="hidden" name="sequence_header_<?= $index ?>" value="<?= htmlspecialchars($sequence['header']) ?>">
         <div class="sequence-block">
             <h3>Séquence <?= $index + 1 ?> - <?= htmlspecialchars($sequence['header']) ?></h3>
             <p><strong>Ligne <?= $sequence['line_number'] ?></strong></p>
