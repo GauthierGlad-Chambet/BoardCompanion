@@ -6,6 +6,11 @@ use GauthierGladchambet\BoardCompanion\Entities\MotherEntity;
 
 class FinalReport extends MotherEntity
 {
+
+    function __construct() {
+        $this->_strPrefix = "_finalReport";
+    }
+
     private string $id;
     private float $totalDuration;
     private float $cleaningDuration;

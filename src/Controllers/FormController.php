@@ -3,11 +3,12 @@
 namespace GauthierGladchambet\BoardCompanion\Controllers;
 
 use GauthierGladchambet\BoardCompanion\Controllers\MotherController; 
-use GauthierGladchambet\BoardCompanion\Models\UserModel;
 use GauthierGladchambet\BoardCompanion\Entities\Project;
 use GauthierGladchambet\BoardCompanion\Entities\Sequence;
 use GauthierGladchambet\BoardCompanion\Models\ProjectModel;
 use GauthierGladchambet\BoardCompanion\Models\SequenceModel;
+use GauthierGladchambet\BoardCompanion\Models\UserModel;
+use GauthierGladchambet\BoardCompanion\Models\UserStatByTypeModel;
 
 
 class FormController extends MotherController {
@@ -148,6 +149,126 @@ class FormController extends MotherController {
         
     }
 
+    // Affichage du formulaire d'analyse détaillée, en passant le texte extrait et les en-têtes de scènes à la vue
+    public function detailedAnalysis(){
+        require_once __DIR__ . '/../../vendor/autoload.php';
+
+        $flag = true;
+        $scriptPath = new ProjectModel();
+        $scriptPath = $scriptPath->findLastScriptPath();
+
+        if (!$scriptPath || !file_exists($scriptPath)) {
+            echo "Fichier PDF introuvable.";
+            exit;
+        }
+
+        if (isset($_POST['submit_sequences'])) {
+            // Récupérer l'ID du projet
+            $projectId = $_POST['project_id'] ?? null;
+            if (!$projectId) {
+                echo "ID du projet manquant.";
+                exit;
+            }
+
+            // Traiter les données du formulaire ici
+            foreach ($_POST as $key => $value) {
+                // Identifier les champs de type de séquence en utilisant le préfixe "typeSequence_"
+                if (strpos($key, 'typeSequence_') === 0) {
+                    // Extraire l'index de la séquence à partir du nom du champ
+                    $index = str_replace('typeSequence_', '', $key);
+                    
+                    // Si le type de séquence est "action" insérer 1
+                    if ($value === 'Action') {
+                        $typeSequence = 1;
+                    } elseif ($value === 'Comedie') {
+                        $typeSequence = 2;
+                    } else {
+                        $typeSequence = 3;
+                    }
+
+                    $isAssigned = (int) ($_POST['is_assigned_' . $index] ?? 0);
+
+                    //récupérer le titre de la séquence
+                    $sequenceHeader = $_POST['sequence_header_' . $index] ?? 'Séquence sans titre';
+
+                    // Récupérer le contenu de la séquence
+                    $sequenceContent = $_POST['sequence_content_' . $index] ?? '[]';
+                    $sequenceContent = json_decode($sequenceContent, true);
+
+                    // Convertir le contenu en JSON pour le stockage
+                    $sequenceContentJson = json_encode($sequenceContent);
+
+                    // Enregistrer ces informations dans la base de données
+                    $sequence = new Sequence();
+                    $sequence->setNumber($index + 1);
+                    $sequence->setTitle($sequenceHeader);
+                    $sequence->setFk_type($typeSequence);
+                    $sequence->setIs_assigned($isAssigned);
+                    $sequence->setScript($sequenceContentJson); // Stocker en tant que JSON
+                    $sequence->setLines_count(count($sequenceContent)); // Stocker le nombre de lignes de la séquence
+                    $sequence->setDuration_estimated($this->estimateDurationBySequence($sequence)); // Estimer la durée de boarding de la séquence
+                    $sequence->setFk_project($projectId);
+
+                    $sequenceModel = new SequenceModel();
+                    $sequenceModel->addSequence($sequence);
+                }
+            }
+
+                $project = new Project();
+                $project->setId($projectId);
+
+                //récupérer les attributs du projets en bdd en fonction de l'ID
+                $projectModel = new ProjectModel();
+                $projectData = $projectModel->getProjectById($projectId);
+
+                $project->setIs_cleaning($projectData['is_cleaning']);
+                $project->setNb_total_pages($projectData['nb_total_pages']);
+                $project->setDate_beginning($projectData['date_beginning']);
+                $project->setDate_end($projectData['date_end']);
+
+                $project->setNb_assigned_pages($this->countAssignedPages($projectId));
+                $project->setEstimated_cleaning_duration($this->estimateCleaningDuration($project));
+                $project->setEstimated_total_duration($this->estimateTotalDuration($project, $flag));
+                $project->setRecommended_pages_per_day($this->estimateRecommendedPagesPerDay($project, $flag));
+                
+                $projectModel->updateNbPagesAssignedProject($project);
+                $projectModel->updateAvgCleaningProject($project);
+                $projectModel->updateTotalDurationProject($project);
+                $projectModel->updateRecommendedPagesPerDayProject($project);
+                
+
+            header("Location: index.php?controller=statistics&action=details&project_id=" . $project->getId());
+        } else {
+            // Utilisation de smalot/pdfparser pour extraire le texte du PDF
+        try {
+            $parser = new \Smalot\PdfParser\Parser();
+            $pdf = $parser->parseFile($scriptPath);
+            $text = $pdf->getText();
+
+            // Nettoyage du texte pour supprimer les éléments répétitifs, les numéros en trop, les caractères spéciaux, etc.
+            $text = $this->cleanPDF($text);
+
+            // Extraction des séquences
+            $sequences = $this->extractSequences($text);
+
+            // Récupérer l'ID du dernier projet ajouté
+            $projectModel = new ProjectModel();
+            $projectId = $projectModel->findLastProjectId();
+
+            // Passer à la vue
+            $data = [
+                'extractedText' => $text,
+                'sequenceHeaders' => $sequences,
+                'projectId' => $projectId
+            ];
+            $this->_display("projectForm/detailedAnalysisForm", true, $data);
+        } catch (\Exception $e) {
+            echo "Erreur : " . $e->getMessage();
+            exit;
+        }
+        }
+    }
+
     // Nettoyage du texte extrait du PDF pour supprimer les en-têtes, pieds de page, autres éléments répétitifs, numéros en trop, caractères spéciaux, ...
     public function cleanPDF($text) {
         $lines = explode("\n", $text);
@@ -168,8 +289,8 @@ class FormController extends MotherController {
         // Détecter uniquement les lignes LONGUES similaires
         $linesToRemove = [];
         $similarGroups = $this->findSimilarLongLines($longLines);
-        // Seules les lignes longues qui se répètent plus de 2 fois sont considérées comme des éléments à supprimer
-        $threshold = 2;
+        // Seules les lignes longues qui se répètent plus de 3 fois sont considérées comme des éléments à supprimer
+        $threshold = 3;
         
         // Marquer les indices des lignes longues similaires qui dépassent le seuil pour suppression
         foreach ($similarGroups as $group) {
@@ -272,10 +393,17 @@ class FormController extends MotherController {
         for ($i = 0; $i < count($lines); $i++) {
             $line = trim($lines[$i]);
 
-            // Vérifier si la ligne contient un des mots-clés
+            // Vérifier si la ligne commence par un des mots-clés
             $isKeywordLine = false;
+
+            // foreach ($keywords as $keyword) {
+            //     if (stripos($line, $keyword) !== false) {
+            //         $isKeywordLine = true;
+            //         break;
+            //     }
+            
             foreach ($keywords as $keyword) {
-                if (stripos($line, $keyword) !== false) {
+                if (preg_match('/^\s*' . preg_quote($keyword, '/') . '/i', $line)) {
                     $isKeywordLine = true;
                     break;
                 }
@@ -321,12 +449,14 @@ class FormController extends MotherController {
             $assignedSequences = $sequenceModel->findAllSequencesByProjectId($projectId);
                 $totalLines = 0;
                 foreach ($assignedSequences as $seq) {
-                    $scriptContent = json_decode($seq['script'], true);
-                    if (is_array($scriptContent)) {
-                        $totalLines += count($scriptContent);
+                    $sequence = New Sequence();
+                    // On ne compte que les lignes des séquences assignées
+                    if (isset($seq['is_assigned']) && $seq['is_assigned'] == 1) {
+                    $sequence->setLines_count($seq['lines_count']);
+                    $totalLines += $sequence->getLines_count();
                     }
                 }
-                $totalAssignedPages = ceil($totalLines / 33); // En supposant 33 lignes par page
+                $totalAssignedPages = round(($totalLines / 33),1); // En moyenne 33 lignes par page, arrondi à 1 décimale pour plus de lisibilité
 
             return $totalAssignedPages;   
     }
@@ -375,117 +505,19 @@ class FormController extends MotherController {
         return $recommandation;
     }
 
-                
-    // Affichage du formulaire d'analyse détaillée, en passant le texte extrait et les en-têtes de scènes à la vue
-    public function detailedAnalysis(){
-        require_once __DIR__ . '/../../vendor/autoload.php';
+    // Fonction d'estimation du temps de boarding d'une séquence en fonction de son type et de son nombre de lignes
+    public function estimateDurationBySequence(Sequence $sequence) {
+        // Récupérer les informations de l'utilisateur à partir de la base de données en fonction de son ID en session
+        $userStatByTypeModel = new UserStatByTypeModel();
+        $userStatByTypeData = $userStatByTypeModel->findByUserIdAndType($_SESSION['user']['id'], $sequence->getFk_type());
+        
+        $nb_lines = $sequence->getLines_count();
 
-        $flag = true;
-        $scriptPath = new ProjectModel();
-        $scriptPath = $scriptPath->findLastScriptPath();
-
-        if (!$scriptPath || !file_exists($scriptPath)) {
-            echo "Fichier PDF introuvable.";
-            exit;
+        $nbPagesPerSequence = ceil($nb_lines / 33); // En moyenne 33 lignes par page
+        $durationInDays = $nbPagesPerSequence / $userStatByTypeData[0]['avg_pages_per_day'];
+        $durationInHours = $durationInDays * 8; // Convertir en heures, en supposant 8 heures de travail par jour
+        
+        return round($durationInHours, 2); // Arrondir à 2 décimales pour plus de lisibilité
         }
-
-        if (isset($_POST['submit_sequences'])) {
-            // Récupérer l'ID du projet
-            $projectId = $_POST['project_id'] ?? null;
-            if (!$projectId) {
-                echo "ID du projet manquant.";
-                exit;
-            }
-
-            // Traiter les données du formulaire ici
-            foreach ($_POST as $key => $value) {
-                // Identifier les champs de type de séquence en utilisant le préfixe "typeSequence_"
-                if (strpos($key, 'typeSequence_') === 0) {
-                    // Extraire l'index de la séquence à partir du nom du champ
-                    $index = str_replace('typeSequence_', '', $key);
-                    $typeSequence = $value;
-                    $isAssigned = (int) ($_POST['is_assigned_' . $index] ?? 0);
-
-                    //récupérer le titre de la séquence
-                    $sequenceHeader = $_POST['sequence_header_' . $index] ?? 'Séquence sans titre';
-
-                    // Récupérer le contenu de la séquence
-                    $sequenceContent = $_POST['sequence_content_' . $index] ?? '[]';
-                    $sequenceContent = json_decode($sequenceContent, true);
-
-                    // Convertir le contenu en JSON pour le stockage
-                    $sequenceContentJson = json_encode($sequenceContent);
-
-                    // Enregistrer ces informations dans la base de données
-                    var_dump($_POST);die;
-                    $sequence = new Sequence();
-                    $sequence->setNumber($index + 1);
-                    $sequence->setTitle($sequenceHeader);
-                    $sequence->setType($typeSequence);
-                    $sequence->setIs_assigned($isAssigned);
-                    $sequence->setScript($sequenceContentJson); // Stocker en tant que JSON
-                    $sequence->setLines_count(count($sequenceContent)); // Stocker le nombre de lignes de la séquence
-                    $sequence->setProject($projectId);
-                    var_dump($sequence);die;
-
-                    $sequenceModel = new SequenceModel();
-                    $sequenceModel->addSequence($sequence);
-                }
-            }
-
-                $project = new Project();
-                $project->setId($projectId);
-
-                //récupérer les attributs du projets en bdd en fonction de l'ID
-                $projectModel = new ProjectModel();
-                $projectData = $projectModel->getProjectById($projectId);
-
-                $project->setIs_cleaning($projectData['is_cleaning']);
-                $project->setNb_total_pages($projectData['nb_total_pages']);
-                $project->setDate_beginning($projectData['date_beginning']);
-                $project->setDate_end($projectData['date_end']);
-
-                $project->setNb_assigned_pages($this->countAssignedPages($projectId));
-                $project->setEstimated_cleaning_duration($this->estimateCleaningDuration($project));
-                $project->setEstimated_total_duration($this->estimateTotalDuration($project, $flag));
-                $project->setRecommended_pages_per_day($this->estimateRecommendedPagesPerDay($project, $flag));
-                
-                $projectModel->updateNbPagesAssignedProject($project);
-                $projectModel->updateAvgCleaningProject($project);
-                $projectModel->updateTotalDurationProject($project);
-                $projectModel->updateRecommendedPagesPerDayProject($project);
-                
-
-            header("Location: index.php?controller=statistics&action=dashboard");
-        } else {
-            // Utilisation de smalot/pdfparser pour extraire le texte du PDF
-        try {
-            $parser = new \Smalot\PdfParser\Parser();
-            $pdf = $parser->parseFile($scriptPath);
-            $text = $pdf->getText();
-
-            // Nettoyage du texte pour supprimer les éléments répétitifs, les numéros en trop, les caractères spéciaux, etc.
-            $text = $this->cleanPDF($text);
-
-            // Extraction des séquences
-            $sequences = $this->extractSequences($text);
-
-            // Récupérer l'ID du dernier projet ajouté
-            $projectModel = new ProjectModel();
-            $projectId = $projectModel->findLastProjectId();
-
-            // Passer à la vue
-            $data = [
-                'extractedText' => $text,
-                'sequenceHeaders' => $sequences,
-                'projectId' => $projectId
-            ];
-            $this->_display("projectForm/detailedAnalysisForm", true, $data);
-        } catch (\Exception $e) {
-            echo "Erreur : " . $e->getMessage();
-            exit;
-        }
-        }
-    }
 
 }

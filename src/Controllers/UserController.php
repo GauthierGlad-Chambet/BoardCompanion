@@ -5,6 +5,7 @@ namespace GauthierGladchambet\BoardCompanion\Controllers;
 use GauthierGladchambet\BoardCompanion\Controllers\MotherController;
 use GauthierGladchambet\BoardCompanion\Entities\User;
 use GauthierGladchambet\BoardCompanion\Models\UserModel;
+use GauthierGladchambet\BoardCompanion\Models\UserStatByTypeModel;
 
 class UserController extends MotherController
 {
@@ -38,13 +39,23 @@ class UserController extends MotherController
 
                 // Enregistrement de l'utilisateur dans la base de données
                 try {
-                    $UserModel = new UserModel();
-                    $UserModel->addUser($user);
-                    echo "Utilisateur ajouté avec succès.";
+                    $userModel = new UserModel();
+                    $userModel->addUser($user);
+
+                    $userStatByTypeModel = new UserStatByTypeModel();
+                    for ($i = 1; $i <= 3; $i++) {
+                        $userStatByTypeModel->addUserStatByType($userModel->findByMail($user->getEmail())['id'], $i, 1);
+                    }
+
+                    $_SESSION['message'] = "Utilisateur ajouté avec succès.";
+
+                
                 } catch (\Exception $e) {
                     echo "Erreur lors de l'ajout de l'utilisateur : " . htmlspecialchars($e->getMessage());
                     exit;
                 }
+
+                
 
                 // Si on a cliqué sur le bouton se connecter
             } else if (isset($_POST['submit_signIn'])) {

@@ -6,12 +6,16 @@ use GauthierGladchambet\BoardCompanion\Entities\MotherEntity;
 
 class Appreciation extends MotherEntity
 {
-    private string $id;
+    function __construct() {
+        $this->_strPrefix = "_appreciation";
+    }
+
+    private int $id;
     private string $label;
 
     // Getters
 
-    public function getId(): string
+    public function getId(): int
     {
         return $this->id;
     }

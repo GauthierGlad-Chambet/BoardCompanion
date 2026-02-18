@@ -62,26 +62,13 @@ class Project extends MotherEntity
 
     public function getDate_beginning(): string
     {
-        //Convertir la date au format "d-m-Y" avant de la retourner
-        $date = DateTime::createFromFormat('Y-m-d', $this->date_beginning);
-        if ($date) {
-            return $date->format('d-m-Y');
-        } else {
-            return $this->date_beginning;
-        }
-       
+        return $this->date_beginning;
+
     }
 
     public function getDate_end(): string
     {
-       //Convertir la date au format "d-m-Y" avant de la retourner
-        $date = DateTime::createFromFormat('Y-m-d', $this->date_end);
-        if ($date) {
-            return $date->format('d-m-Y');
-        } else {
-            return $this->date_end;
-        }
-       
+       return $this->date_end;
     }
 
     public function getNb_predecs(): int
@@ -146,6 +133,9 @@ class Project extends MotherEntity
 
     public function getAppreciation_label(): string
     {
+        if($this->appreciation_label == '') {
+            $this->appreciation_label = "Non renseigné";
+        }
         return $this->appreciation_label;
     }
 
@@ -255,6 +245,30 @@ class Project extends MotherEntity
     }
 
     //Autres méthodes
+
+    
+    public function getDate_beginningFormatted()
+    {
+       //Convertir la date au format "d-m-Y" avant de la retourner
+        $date = DateTime::createFromFormat('Y-m-d', $this->date_beginning);
+        if ($date) {
+            return $date->format('d-m-Y');
+        } else {
+            return $this->date_beginning;
+        }
+    }
+
+    public function getDate_endFormatted()
+    {
+       //Convertir la date au format "d-m-Y" avant de la retourner
+        $date = DateTime::createFromFormat('Y-m-d', $this->date_end);
+        if ($date) {
+            return $date->format('d-m-Y');
+        } else {
+            return $this->date_end;
+        } 
+    }
+
 
     public function getDuree()
     {

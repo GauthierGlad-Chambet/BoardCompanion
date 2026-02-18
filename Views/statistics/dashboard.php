@@ -16,20 +16,20 @@
                 <td></td>
                 <td><?= $project->getName() ?></td>
                 <td>
-                    <?= $project->getDate_beginning() ?>
+                    du <?= $project->getDate_beginningFormatted() ?>
                     <br>
-                    <?= $project->getDate_end() ?>
+                    au <?= $project->getDate_endFormatted() ?>
                     <br>
                     (
                     <?=  $project->getDuree() ?> jours
                     )
                 </td>
                 <td><?= $project->getNb_assigned_pages() ?></td>
-                <td><?= $project->getEstimated_total_duration() ?> heures</td>
+                <td><?= $project->getEstimated_total_duration() ?> jours</td>
                 <td><?= $project->getRecommended_pages_per_day() ?> pages/jour</td>
                 <td>
                     <?= $project->getAppreciation_label() ?></td>
-                <td><a href="index.php?controller=statistics&action=details&id=<?= $project->getId() ?>">Voir les détails</a></td>
+                <td><a href="index.php?controller=statistics&action=details&project_id=<?= $project->getId() ?>">Voir les détails</a></td>
             </tr> <?php endforeach; ?>
         </tbody>
     </table>

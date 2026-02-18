@@ -112,7 +112,7 @@ CREATE TABLE IF NOT EXISTS `sequence` (
 DROP TABLE IF EXISTS `type`;
 CREATE TABLE IF NOT EXISTS `type` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `label` enum('comedy','action','mixte') NOT NULL,
+  `label` enum('comédie','action','mixte') NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 

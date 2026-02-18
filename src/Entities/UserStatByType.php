@@ -7,7 +7,7 @@ use GauthierGladchambet\BoardCompanion\Entities\MotherEntity;
 class UserStatByType extends MotherEntity
 {
     private string $id;
-    private float $avgPagesDays;
+    private float $avgPagesDays = 1;
     private int $fk_type;
     private int $fk_user;
 

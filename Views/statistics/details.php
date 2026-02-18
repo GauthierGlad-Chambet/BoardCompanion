@@ -1,16 +1,27 @@
 <main>
     <h1>Statistiques</h1>
-    <h2>
-        <?= $project->getName() ?>, <?= $project->getStudio() ?>, Épisode n<sup>o</sup><?= $project->getEpisode_nb() ?> : "<?= $project->getEpisode_title() ?>"
-    </h2>
+    <form action="index.php" method="get">
+
+        <!-- Conserver les paramètres controller et action -->
+        <input type="hidden" name="controller" value="statistics">
+        <input type="hidden" name="action" value="details">
+
+        <select name="project_id" id="">
+            <?php foreach ($arrProjects as $proj) : ?>
+                <option value="<?= $proj->getId() ?>" <?= ($proj->getId() == $project->getId()) ? 'selected' : '' ?>>
+                    <?= $proj->getName() ?>, <?= $proj->getStudio() ?>, Épisode n<sup>o</sup> <?= $proj->getEpisode_nb() ?> : "<?= $proj->getEpisode_title() ?>"
+                </option> <?php endforeach; ?>
+        </select>
+        <input type="submit" value="Changer de projet">
+    </form>
     <h3>Pages attribuées :</h3>
     <p><?= $project->getNb_assigned_pages() ?> pages assignées / <?= $project->getNb_total_pages() ?> pages totales</p>
     <h3>Durée estimée pour boarder le projet :</h3>
-    <p><?= $project->getEstimated_total_duration() ?> heures</p>
+    <p><?= $project->getEstimated_total_duration() ?> jours</p>
     <h3>Temps moyen estimé par page (en fonction des types de séquences) :</h3>
     <p>FONCTION A CREER</p>
     <?php //si le projet est en cleaning, on affiche la durée estimée du cleaning
-        if ($project->getIs_cleaning() === 1) {
+        if ($project->getIs_cleaning() === true) {
     ?>
     <h3>Durée estimée du cleaning :</h3>
     <p><?=  $project->getEstimated_cleaning_duration() . " jours" ?></p>
@@ -22,8 +33,40 @@
     <h3>Durées estimées par séquence :</h3>
     <ul>
         <?php foreach ($sequences as $sequence) { ?>
-            <li><?= $sequence->getId() ?> (<?= $sequence->getType() ?>): <?= $sequence->getDuration_estimated() ?> jours</li>
+            <li> Séquence <?= $sequence->getNumber() ?> : <?= $sequence->getTitle() ?> (<?= $sequence->getTypeLabel() ?>): <?= $sequence->getDuration_estimated() ?> heures</li>
         <?php } ?>
     </ul>
     <?php }  ?>
+    <h3>Rythme recommandé pour respecter la deadline :</h3>
+    <p><?= $project->getRecommended_pages_per_day() ?> pages / jour</p>
+    <p>Calculs réalisés à partir de votre rythme constaté sur les précédents projets</p>
+    <a href="">Modifier les informations</a>
+    <a href="index.php?controller=statistics&action=finalReport&project_id=<?= $project->getId() ?>">Formulaire de fin de projet</a>
+
+    <hr>
+
+    <!-- BILAN FINAL -->
+    <h3>Appréciation globale :</h3>
+    <p></p>
+
+    <h3>Durée totale du projet :</h3>
+    <p></p>
+
+    <h3>Total de plans réalisés :</h3>
+    <p></p>
+
+    <h3>Durée du cleaning :</h3>
+    <p></p>
+
+    <h3>Durée par séquence :</h3>
+    <ul>
+        <?php foreach ($sequences as $sequence) { ?>
+            <li> Séquence <?= $sequence->getNumber() ?> : <?= $sequence->getTitle() ?> (<?= $sequence->getTypeLabel() ?>): heures</li>
+        <?php } ?>
+    </ul>
+
+    <h3>Commentaire :</h3>
+    <p></p>
+
+
 </main>

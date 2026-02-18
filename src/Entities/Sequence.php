@@ -4,6 +4,7 @@ namespace GauthierGladchambet\BoardCompanion\Entities;
 
 
 use GauthierGladchambet\BoardCompanion\Entities\MotherEntity;
+use GauthierGladchambet\BoardCompanion\Models\TypeModel;
 
 class Sequence extends MotherEntity
 {
@@ -18,7 +19,7 @@ class Sequence extends MotherEntity
     private int $lines_count;
     private bool $is_assigned;
     private float $duration_estimated = 0;
-    private string $type;
+    private int $fk_type;
     private int $fk_project;
 
 
@@ -59,12 +60,12 @@ class Sequence extends MotherEntity
         return $this->duration_estimated;
     }
 
-    public function getType(): string
+    public function getFk_type(): int
     {
-        return $this->type;
+        return $this->fk_type;
     }
 
-    public function getProject(): int
+    public function getFk_project(): int
     {
         return $this->fk_project;
     }
@@ -107,13 +108,24 @@ class Sequence extends MotherEntity
         $this->duration_estimated = $duration_estimated;
     }
 
-    public function setType($type)
+    public function setFk_type($fk_type)
     {
-        $this->type = $type;
+        $this->fk_type = $fk_type;
     }
 
-    public function setProject($fk_project)
+    public function setFk_project($fk_project)
     {
         $this->fk_project = $fk_project;
     }
+
+
+    // Autres méthodes
+
+    public function getTypeLabel(): string
+    {
+        $typeModel = new TypeModel();
+        $typeLabel = $typeModel->findLabelById($this->fk_type);
+        return $typeLabel['label'] ?? 'Inconnu';
+    }
+
 }
