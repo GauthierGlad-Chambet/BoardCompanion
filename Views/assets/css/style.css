@@ -58,3 +58,8 @@ svg {
   display: block;
   max-width: 100%;
 }
+
+
+.popup {
+  display : none;
+}

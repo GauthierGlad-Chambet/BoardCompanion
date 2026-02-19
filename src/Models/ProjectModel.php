@@ -78,6 +78,25 @@ class ProjectModel extends MotherModel {
         return $prepare->fetch(PDO::FETCH_ASSOC); // Retourne les données du projet sous forme de tableau associatif
     }
 
+    function deleteProjetbyId($id) {
+
+     $query = "
+            DELETE FROM final_report WHERE fk_project = :id;
+            DELETE FROM sequence WHERE fk_project = :id;
+            DELETE FROM project WHERE id = :id;
+        ";
+    
+    $prepare = $this->_db->prepare($query);
+    $prepare->bindValue(':id', $id, PDO::PARAM_INT);
+
+    // Exécution de la requête
+    if (!$prepare->execute()) {
+        throw new \Exception("Erreur lors de la récupération du projet : " . implode(", ", $prepare->errorInfo()));
+    }
+    return $prepare->fetch(PDO::FETCH_ASSOC); // Retourne les données du projet sous forme de tableau associatif
+
+    }
+
 
     // trouve l'id du dernier projet ajouté
     function findLastProjectId() {
@@ -217,6 +236,25 @@ class ProjectModel extends MotherModel {
             }
     }
 
+    //Mise à jour de la durée moyenne estimée par page en fonction des séquences et de leur type
+    function updateAvgDurationEstimatedPerPage(Project $project) {
+         
+    $query = " 
+            UPDATE project
+            SET avg_duration_estimated_per_pages = :avg_duration_estimated_per_pages
+            WHERE id = :project_id
+        ";
+            
+        $prepare = $this->_db->prepare($query);
+        $prepare->bindValue(':avg_duration_estimated_per_pages', $project->getAvg_duration_estimated_per_pages(), PDO::PARAM_STR);
+        $prepare->bindValue(':project_id', $project->getId(), PDO::PARAM_INT);
+
+        if (!$prepare->execute()) { 
+            throw new \Exception("Erreur lors de la mise à jour de la durée moyenne par page : " . implode(", ", $prepare->errorInfo())); 
+        } 
+
+    }
+
 
     // Mise à jour du rythme recommandé du projet
     function updateRecommendedPagesPerDayProject(Project $project) {
@@ -235,5 +273,7 @@ class ProjectModel extends MotherModel {
             throw new \Exception("Erreur lors de la mise à jour du nombre de pages recommandées par jour du projet : " . implode(", ", $prepare->errorInfo())); 
         } 
     }
+
+
 }
 

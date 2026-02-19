@@ -38,7 +38,7 @@
         <label for="total_plans"><h3>Total de plans réalisés :</h3></label>
         <input type="number" min="0" name="total_plans">
 
-        <label for="duree_cleaning"><h3>Durée du cleaning :</h3></label>
+        <label for="duree_cleaning"><h3>Durée du cleaning (en jours) :</h3></label>
         <input type="number" step="0.1" min="0" name="duree_cleaning">
         
         <?php

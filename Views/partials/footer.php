@@ -2,7 +2,7 @@
       
     </footer>
 
-   <script src="view/assets/js/script.js"></script>
+   <script src="Views/assets/js/script.js"></script>
 
   </body>
 </html>

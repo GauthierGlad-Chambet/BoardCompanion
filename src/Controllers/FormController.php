@@ -240,11 +240,13 @@ class FormController extends MotherController {
                 $project->setNb_assigned_pages($this->countAssignedPages($projectId));
                 $project->setEstimated_cleaning_duration($this->estimateCleaningDuration($project));
                 $project->setEstimated_total_duration($this->estimateTotalDuration($project, $flag));
+                $project->setAvg_duration_estimated_per_pages($this->avgDurationEstimatedPerPage($project));
                 $project->setRecommended_pages_per_day($this->estimateRecommendedPagesPerDay($project, $flag));
                 
                 $projectModel->updateNbPagesAssignedProject($project);
                 $projectModel->updateAvgCleaningProject($project);
                 $projectModel->updateTotalDurationProject($project);
+                $projectModel->updateAvgDurationEstimatedPerPage($project);
                 $projectModel->updateRecommendedPagesPerDayProject($project);
                 
 
@@ -531,4 +533,8 @@ class FormController extends MotherController {
         return round($durationInHours, 2); // Arrondir à 2 décimales pour plus de lisibilité
         }
 
+    public function avgDurationEstimatedPerPage(Project $project)
+    {
+        return $avgDurationEstimatedPerPage = ($project->getEstimated_total_duration()) / ($project->getNb_assigned_pages());
+    }
 }

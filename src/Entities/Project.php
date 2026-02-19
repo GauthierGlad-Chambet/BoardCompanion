@@ -27,9 +27,9 @@ class Project extends MotherEntity
     private int $nb_assigned_pages;
     private float $estimated_total_duration;
     private ?float $estimated_cleaning_duration = 0;
+    private float $avg_duration_estimated_per_pages;
     private float $recommended_pages_per_day;
     private int $fk_user;
-    private int $fk_final_report;
     private string $appreciation_label = "";
 
 
@@ -116,6 +116,11 @@ class Project extends MotherEntity
         return $this->estimated_cleaning_duration;
     }
 
+    public function getAvg_duration_estimated_per_pages() : float
+    {
+        return $this->avg_duration_estimated_per_pages;
+    }
+
     public function getRecommended_pages_per_day(): float
     {
         return $this->recommended_pages_per_day;
@@ -124,11 +129,6 @@ class Project extends MotherEntity
     public function getFk_user(): int
     {
         return $this->fk_user;
-    }
-
-    public function getFk_final_report(): int
-    {
-        return $this->fk_final_report;
     }
 
     public function getAppreciation_label(): string
@@ -221,6 +221,11 @@ class Project extends MotherEntity
         $this->estimated_cleaning_duration = $estimated_cleaning_duration;
     }
 
+    public function setAvg_duration_estimated_per_pages($avg_duration_estimated_per_pages)
+    {
+        $this->avg_duration_estimated_per_pages = $avg_duration_estimated_per_pages;
+    }
+
     public function setRecommended_pages_per_day($recommended_pages_per_day)
     {
         $this->recommended_pages_per_day = $recommended_pages_per_day;
@@ -229,11 +234,6 @@ class Project extends MotherEntity
     public function setFk_user($fk_user)
     {
         $this->fk_user = $fk_user;
-    }
-
-    public function setFkFinal_report($fk_final_report)
-    {
-        $this->fk_final_report = $fk_final_report;
     }
 
     public function setAppreciation_label($appreciation_label)
@@ -268,7 +268,6 @@ class Project extends MotherEntity
             return $this->date_end;
         } 
     }
-
 
     public function getDuree()
     {

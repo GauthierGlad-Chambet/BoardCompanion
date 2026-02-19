@@ -7,7 +7,7 @@
         <input type="hidden" name="action" value="details">
 
         <select name="project_id" id="">
-            <?php foreach ($Projects as $proj) : ?>
+            <?php foreach ($projects as $proj) : ?>
                 <option value="<?= $proj->getId() ?>" <?= ($proj->getId() == $project->getId()) ? 'selected' : '' ?>>
                     <?= $proj->getName() ?>, <?= $proj->getStudio() ?>, Épisode n<sup>o</sup> <?= $proj->getEpisode_nb() ?> : "<?= $proj->getEpisode_title() ?>"
                 </option> <?php endforeach; ?>
@@ -19,7 +19,7 @@
     <h3>Durée estimée pour boarder le projet :</h3>
     <p><?= $project->getEstimated_total_duration() ?> jours</p>
     <h3>Temps moyen estimé par page (en fonction des types de séquences) :</h3>
-    <p>FONCTION A CREER</p>
+    <p><?= $project->getAvg_duration_estimated_per_pages() ?> jours</p>
     <?php //si le projet est en cleaning, on affiche la durée estimée du cleaning
         if ($project->getIs_cleaning() === true) {
     ?>
@@ -45,32 +45,43 @@
     <?php if(!$finalReport) { ?>
         <a href="index.php?controller=statistics&action=finalReport&project_id=<?= $project->getId() ?>">Formulaire de fin de projet</a>
     <?php } else { ?>           
-    <hr>
+        <hr>
 
-    <!-- BILAN FINAL -->
-     <h2 id="bilanFinal">BILAN FINAL</h2>
-    <h3>Appréciation globale : <?= $finalReport->getAppreciationLabel() ?></h3>
-    <p></p>
+        <!-- BILAN FINAL -->
+        <h2 id="bilanFinal">BILAN FINAL</h2>
+        <h3>Appréciation globale : </h3>
+        <p><?= $finalReport->getAppreciationLabel() ?></p>
 
-    <h3>Durée totale du projet : <?= $finalReport->getTotal_duration() ?> jours</h3>
-    <p></p>
+        <h3>Durée totale du projet : </h3>
+        <p><?= $finalReport->getTotal_duration() ?> jours</p>
 
-    <h3>Total de plans réalisés : <?= $finalReport->getNb_shots() ?></h3>
-    <p></p>
+        <h3>Total de plans réalisés : </h3>
+        <p><?= $finalReport->getNb_shots() ?></p>
 
-    <h3>Durée du cleaning : <?= $finalReport->getCleaning_duration() ?> jours</h3>
-    <p></p>
+        <h3>Durée du cleaning : </h3>
+        <p><?= $finalReport->getCleaning_duration() ?> jours</p>
 
-    <h3>Durées réelles par séquence :</h3>
-    <ul>
-        <?php foreach ($sequences as $sequence) { ?>
+        <h3>Durées réelles par séquence :</h3>
+        <ul>
+            <?php 
+                foreach ($sequences as $sequence) { 
+                    if($sequence->getDuration_real() != 0 || $sequence->getDuration_real() != null) {
+            ?>
             <li> Séquence <?= $sequence->getNumber() ?> : <?= $sequence->getTitle() ?> (<?= $sequence->getTypeLabel() ?>): <?= $sequence->getDuration_real() ?> heures</li>
-        <?php } ?>
-    </ul>
-
-    <h3>Commentaire : <?= $finalReport->getCommentary() ?></h3>
-    
+            <?php }} ?>
+        </ul>
+        <h3>Commentaire : </h3>
+        <p><?= $finalReport->getCommentary() ?></p>
     <?php } ?> 
+    <button id="supprimerProjet">Supprimer le projet</button>
+    <div id="popupSupprProjet" class="popup">
+        <p>Êtes-vous sûr de vouloir supprimer ce projet ? Cette action est irréversible.</p>
+        <button id="annulerSupprimer">Annuler</button>
+        <form method="POST" action="index.php?controller=statistics&action=deleteProject">
+            <input type="hidden" name="project_id" value="<?= $project->getId() ?>">
+            <button type="submit">Supprimer le projet</button>
+        </form>
+    </div>
 
 
 </main>

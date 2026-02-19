@@ -13,4 +13,9 @@ require_once("Views/partials/head.php");
             <a href="index.php?controller=user&action=index">Compte</a>
             <a name="logout" href="index.php?controller=user&action=logout">Se déconnecter</a>
         </nav>
+        <img src="https://placehold.co/120x120" alt="Logo de Board Companion">
+        <?php if($_SESSION) { ?>
+       <p>Bonjour <?php echo($_SESSION['user']['pseudo']); ?></p>
+        <?php } ?>
+    
     </header>

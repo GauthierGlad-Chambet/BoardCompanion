@@ -38,7 +38,7 @@ class StatisticsController extends MotherController
         }
       
 
-        $this->_arrData['Projects'] = $projectsToDisplay;
+        $this->_arrData['projects'] = $projectsToDisplay;
         $this->_display("statistics/dashboard");
     }
 
@@ -68,11 +68,8 @@ class StatisticsController extends MotherController
 
         $project = new Project();
         $project->hydrate($projectData);
-        
         $this->_arrData['project'] = $project;
-
-
-
+        
         // Récupérer les séquences du projet
         $sequenceModel = new SequenceModel();
         $sequences = $sequenceModel->findAllSequencesByProjectId($projectId);
@@ -80,12 +77,12 @@ class StatisticsController extends MotherController
         // On parcourt le tableau pour créer des objets
         $sequencesToDisplay = array();
 
-        foreach($sequences as $detSequence){
+        foreach($sequences as $detSequence) {
             $sequence = new Sequence();
             $sequence->hydrate($detSequence);
 
             // On n'affiche que les séquences du projet assignées à l'utilisateur
-            if (isset($detSequence['is_assigned']) && $detSequence['is_assigned'] == 1 && $detSequence['duration_real'] != 0) {
+            if (isset($detSequence['is_assigned']) && $detSequence['is_assigned'] == 1) {
             $sequencesToDisplay[] = $sequence;
             }
         }
@@ -96,13 +93,12 @@ class StatisticsController extends MotherController
         
         $finalReport = null; // Par défaut il n'y a pas de bilan
 
-        if (!$finalReportData) {
-            echo "Projet non trouvé.";
-            
-        } else {
+        // Ne créer un objet finalreport que s'il en existe un en BDD
+        if ($finalReportData) {
             $finalReport = new FinalReport();
-            $finalReport->hydrate($finalReportData);
-        }
+            $finalReport->hydrate($finalReportData);  
+        } 
+        
 
         // Récupération de tous les autres projets
 
@@ -119,10 +115,9 @@ class StatisticsController extends MotherController
             $project = new Project();
             $project->hydrate($detProject);
             $projectsToDisplay[] = $project;
-            }
-      
+        }
 
-        $this->_arrData['Projects'] = $projectsToDisplay;
+        $this->_arrData['projects'] = $projectsToDisplay;
         $this->_arrData['sequences'] = $sequencesToDisplay;
         $this->_arrData['finalReport'] = $finalReport;
         
@@ -210,7 +205,7 @@ class StatisticsController extends MotherController
         
         $this->_arrData['sequences'] = $sequencesToDisplay;
         $this->_arrData['arrAppreciations'] = $appreciationsToDisplay;
-        $this->_arrData['Projects'] = $projectsToDisplay;
+        $this->_arrData['projects'] = $projectsToDisplay;
 
 
         // Récupération des infos du formulaire et mise en BDD
@@ -282,6 +277,19 @@ class StatisticsController extends MotherController
         }
    
         $this->_display("statistics/finalReportForm");
+
+    }
+
+    public function deleteProject()
+    {
+        
+        $project_id = $_POST['project_id']??'';
+
+        $projectModel = new ProjectModel();
+        $projectModel->deleteProjetbyId($project_id);
+        
+
+        header("Location: index.php?controller=statistics&action=dashboard");
 
     }
 }
