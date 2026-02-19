@@ -3,6 +3,7 @@
 namespace GauthierGladchambet\BoardCompanion\Entities;
 
 use GauthierGladchambet\BoardCompanion\Entities\MotherEntity;
+use GauthierGladchambet\BoardCompanion\Models\AppreciationModel;
 
 class FinalReport extends MotherEntity
 {
@@ -12,9 +13,9 @@ class FinalReport extends MotherEntity
     }
 
     private string $id;
-    private float $totalDuration;
-    private float $cleaningDuration;
-    private int $nbShots;
+    private float $total_duration;
+    private float $cleaning_duration;
+    private int $nb_shots;
     private string $commentary;
     private int $fk_appreciation;
     private int $fk_project;
@@ -27,19 +28,19 @@ class FinalReport extends MotherEntity
         return $this->id;
     }
 
-    public function getTotalDuration(): float
+    public function getTotal_duration(): float
     {
-        return $this->totalDuration;
+        return $this->total_duration;
     }
 
-    public function getCleaningDuration(): float
+    public function getCleaning_duration(): float
     {
-        return $this->cleaningDuration;
+        return $this->cleaning_duration;
     }
 
-    public function getNbShots(): int
+    public function getNb_shots(): int
     {
-        return $this->nbShots;
+        return $this->nb_shots;
     }
 
     public function getCommentary(): string
@@ -47,12 +48,12 @@ class FinalReport extends MotherEntity
         return $this->commentary;
     }
 
-    public function getAppreciation(): int
+    public function getFk_appreciation(): int
     {
         return $this->fk_appreciation;
     }
 
-    public function getProject(): int
+    public function getFk_project(): int
     {
         return $this->fk_project;
     }
@@ -65,19 +66,19 @@ class FinalReport extends MotherEntity
         $this->id = $id;
     }
 
-    public function setTotalDuration($totalDuration)
+    public function setTotal_duration($total_duration)
     {
-        $this->totalDuration = $totalDuration;
+        $this->total_duration = $total_duration;
     }
 
-    public function setCleaningDuration($cleaningDuration)
+    public function setCleaning_duration($cleaning_duration)
     {
-        $this->cleaningDuration = $cleaningDuration;
+        $this->cleaning_duration = $cleaning_duration;
     }
 
-    public function setNbShots($nbShots)
+    public function setNb_shots($nb_shots)
     {
-        $this->nbShots = $nbShots;
+        $this->nb_shots = $nb_shots;
     }
 
     public function setCommentary($commentary)
@@ -85,13 +86,22 @@ class FinalReport extends MotherEntity
         $this->commentary = $commentary;
     }
 
-    public function setAppreciation($appreciation)
+    public function setFk_appreciation($appreciation)
     {
         $this->fk_appreciation = $appreciation;
     }
 
-    public function setProject($project)
+    public function setFk_project($project)
     {
         $this->fk_project = $project;
+    }
+
+    // Autres méthodes
+
+    public function getAppreciationLabel(): string
+    {
+        $appreciationModel = new AppreciationModel();
+        $appreciationLabel = $appreciationModel->findLabelById($this->fk_appreciation);
+        return $appreciationLabel['label'] ?? 'Inconnu';
     }
 }

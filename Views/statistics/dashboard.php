@@ -11,7 +11,7 @@
             <td>Statistiques détaillés</td>
         </th>
         <tbody>
-            <?php foreach ($arrProjects as $project) : ?>
+            <?php foreach ($Projects as $project) : ?>
             <tr>
                 <td></td>
                 <td><?= $project->getName() ?></td>

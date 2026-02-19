@@ -7,7 +7,7 @@
         <input type="hidden" name="action" value="details">
 
         <select name="project_id" id="">
-            <?php foreach ($arrProjects as $proj) : ?>
+            <?php foreach ($Projects as $proj) : ?>
                 <option value="<?= $proj->getId() ?>" <?= ($proj->getId() == $project->getId()) ? 'selected' : '' ?>>
                     <?= $proj->getName() ?>, <?= $proj->getStudio() ?>, Épisode n<sup>o</sup> <?= $proj->getEpisode_nb() ?> : "<?= $proj->getEpisode_title() ?>"
                 </option> <?php endforeach; ?>
@@ -41,32 +41,36 @@
     <p><?= $project->getRecommended_pages_per_day() ?> pages / jour</p>
     <p>Calculs réalisés à partir de votre rythme constaté sur les précédents projets</p>
     <a href="">Modifier les informations</a>
-    <a href="index.php?controller=statistics&action=finalReport&project_id=<?= $project->getId() ?>">Formulaire de fin de projet</a>
 
+    <?php if(!$finalReport) { ?>
+        <a href="index.php?controller=statistics&action=finalReport&project_id=<?= $project->getId() ?>">Formulaire de fin de projet</a>
+    <?php } else { ?>           
     <hr>
 
     <!-- BILAN FINAL -->
-    <h3>Appréciation globale :</h3>
+     <h2 id="bilanFinal">BILAN FINAL</h2>
+    <h3>Appréciation globale : <?= $finalReport->getAppreciationLabel() ?></h3>
     <p></p>
 
-    <h3>Durée totale du projet :</h3>
+    <h3>Durée totale du projet : <?= $finalReport->getTotal_duration() ?> jours</h3>
     <p></p>
 
-    <h3>Total de plans réalisés :</h3>
+    <h3>Total de plans réalisés : <?= $finalReport->getNb_shots() ?></h3>
     <p></p>
 
-    <h3>Durée du cleaning :</h3>
+    <h3>Durée du cleaning : <?= $finalReport->getCleaning_duration() ?> jours</h3>
     <p></p>
 
-    <h3>Durée par séquence :</h3>
+    <h3>Durées réelles par séquence :</h3>
     <ul>
         <?php foreach ($sequences as $sequence) { ?>
-            <li> Séquence <?= $sequence->getNumber() ?> : <?= $sequence->getTitle() ?> (<?= $sequence->getTypeLabel() ?>): heures</li>
+            <li> Séquence <?= $sequence->getNumber() ?> : <?= $sequence->getTitle() ?> (<?= $sequence->getTypeLabel() ?>): <?= $sequence->getDuration_real() ?> heures</li>
         <?php } ?>
     </ul>
 
-    <h3>Commentaire :</h3>
-    <p></p>
+    <h3>Commentaire : <?= $finalReport->getCommentary() ?></h3>
+    
+    <?php } ?> 
 
 
 </main>

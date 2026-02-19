@@ -7,7 +7,7 @@
         <input type="hidden" name="action" value="finalReport">
 
         <select name="project_id" id="">
-            <?php foreach ($arrProjects as $proj) : ?>
+            <?php foreach ($Projects as $proj) : ?>
                 <option value="<?= $proj->getId() ?>" <?= ($proj->getId() == $project->getId()) ? 'selected' : '' ?>>
                     <?= $proj->getName() ?>, <?= $proj->getStudio() ?>, Épisode n<sup>o</sup> <?= $proj->getEpisode_nb() ?> : "<?= $proj->getEpisode_title() ?>"
                 </option> <?php endforeach; ?>
@@ -16,11 +16,15 @@
     </form>
     
     <form action="" method="POST">
+
+        <!-- Champ caché pour transmettre l'ID du projet -->
+        <input type="hidden" name="project_id" value="<?= $_GET['project_id']; ?>">
+
         <fieldset>
             <legend for=""><h3>Appréciation globale :</h3></legend>
             <?php foreach ($arrAppreciations as $appreciation) : ?>
                 <div>
-                    <input type="radio" id="1" name="appreciation" value="<?= $appreciation->getId() ?>" />
+                    <input type="radio" id="1" name="appreciation" value="<?= $appreciation->getId() ?>" required />
                     <label for="appreciation_<?= $appreciation->getId() ?>">
                         <?= htmlspecialchars($appreciation->getLabel()) ?>
                     </label>
@@ -43,10 +47,10 @@
         ?>
         <h3>Durée par séquence (en heures) :</h3>
         <?php foreach ($sequences as $sequence) { ?>
-            <label for="duree_sequence">
+            <label for="duree_sequence[<?= $sequence->getId();?>]">
                 Séquence <?= $sequence->getNumber() ?> : <?= $sequence->getTitle() ?> (<?= $sequence->getTypeLabel() ?>)
             </label>
-            <input type="number" min="0" name="duree_sequence">
+            <input type="number" min="0" name="duree_sequence[<?= $sequence->getId();?>]">
             <br>
         <?php }} ?>
         

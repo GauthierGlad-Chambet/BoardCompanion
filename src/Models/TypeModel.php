@@ -12,7 +12,7 @@ class TypeModel extends MotherModel {
             SELECT label
             FROM type
             WHERE id = :fk_type
-    ";
+        ";
 
         $prepare = $this->_db->prepare($query);
         $prepare->bindValue(':fk_type', $fk_type, PDO::PARAM_INT);

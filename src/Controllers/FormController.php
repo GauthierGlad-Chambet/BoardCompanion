@@ -15,6 +15,11 @@ class FormController extends MotherController {
 
     public function newProject() {
 
+    //Check si l'utilisateur est connecté, sinon renvoie à la page login
+    if (empty($_SESSION)) {
+        header("Location: index.php?controller=user&action=login");
+    }
+
     $flag = false;
         
         if(count($_POST) > 0){
@@ -145,15 +150,21 @@ class FormController extends MotherController {
 
             
         }
-            $this->_display("projectForm/newProjectForm");
+        
+        $this->_display("projectForm/newProjectForm");
         
     }
 
     // Affichage du formulaire d'analyse détaillée, en passant le texte extrait et les en-têtes de scènes à la vue
     public function detailedAnalysis(){
-        require_once __DIR__ . '/../../vendor/autoload.php';
+
+        //Check si l'utilisateur est connecté, sinon renvoie à la page login
+        if (empty($_SESSION)) {
+            header("Location: index.php?controller=user&action=login");
+        }
 
         $flag = true;
+
         $scriptPath = new ProjectModel();
         $scriptPath = $scriptPath->findLastScriptPath();
 

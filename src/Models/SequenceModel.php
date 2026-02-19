@@ -34,6 +34,24 @@ class SequenceModel extends MotherModel {
             }
     }
 
+    //Ajout de la durée réelle d'une séquence
+    function updateRealDuration(Sequence $sequence)
+    {
+        $query = "
+            UPDATE sequence
+            SET duration_real = :duration_real
+            WHERE id = :sequence_id
+            ";
+        
+        $prepare = $this->_db->prepare($query);
+        $prepare->bindValue(':duration_real', $sequence->getDuration_real(), PDO::PARAM_INT);
+        $prepare->bindValue(':sequence_id', $sequence->getId(), PDO::PARAM_INT);
+        
+         if (!$prepare->execute()) {
+            throw new \Exception("Erreur lors de l'insertion de la durée réelle de la séquence : " . implode(", ", $prepare->errorInfo()));
+        }
+    }
+
 
     // Récupération de toutes les séquences d'un projet
     function findAllSequencesByProjectId(int $projectId): array {

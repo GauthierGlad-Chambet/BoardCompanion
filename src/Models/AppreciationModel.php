@@ -19,4 +19,18 @@ class AppreciationModel extends MotherModel {
 
         return $prepare->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    function findLabelById(int $fk_appreciation): array {
+        $query = "
+            SELECT label
+            FROM appreciation
+            WHERE id = :fk_appreciation
+        ";
+
+        $prepare = $this->_db->prepare($query);
+        $prepare->bindValue(':fk_appreciation', $fk_appreciation, PDO::PARAM_INT);
+        $prepare->execute();
+
+        return $prepare->fetch(PDO::FETCH_ASSOC);
+    }
 }

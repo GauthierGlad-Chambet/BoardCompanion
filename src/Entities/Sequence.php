@@ -19,6 +19,7 @@ class Sequence extends MotherEntity
     private int $lines_count;
     private bool $is_assigned;
     private float $duration_estimated = 0;
+    private float $duration_real;
     private int $fk_type;
     private int $fk_project;
 
@@ -58,6 +59,11 @@ class Sequence extends MotherEntity
     public function getDuration_estimated(): float
     {
         return $this->duration_estimated;
+    }
+
+    public function getDuration_real(): float
+    {
+        return $this->duration_real;
     }
 
     public function getFk_type(): int
@@ -106,6 +112,11 @@ class Sequence extends MotherEntity
     public function setDuration_estimated($duration_estimated)
     {
         $this->duration_estimated = $duration_estimated;
+    }
+
+    public function setDuration_real($duration_real)
+    {
+        $this->duration_real = $duration_real;
     }
 
     public function setFk_type($fk_type)
