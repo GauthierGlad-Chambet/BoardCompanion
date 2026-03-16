@@ -292,4 +292,5 @@ class StatisticsController extends MotherController
         header("Location: index.php?controller=statistics&action=dashboard");
 
     }
+
 }

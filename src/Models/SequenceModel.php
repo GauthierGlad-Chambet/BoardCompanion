@@ -34,6 +34,24 @@ class SequenceModel extends MotherModel {
             }
     }
 
+    function updateSequence(Sequence $sequence) {
+        $query = "
+            UPDATE sequence
+            SET fk_type = :fk_type,
+                is_assigned = :is_assigned
+            WHERE id = :id
+        ";
+
+        $prepare = $this->_db->prepare($query);
+        $prepare->bindValue(':fk_type', $sequence->getFk_type(), PDO::PARAM_INT);
+        $prepare->bindValue(':is_assigned', $sequence->getIs_assigned(), PDO::PARAM_BOOL);
+        $prepare->bindValue(':id', $sequence->getId(), PDO::PARAM_INT);
+
+        if (!$prepare->execute()) {
+            throw new \Exception("Erreur lors de la mise à jour de la séquence : " . implode(", ", $prepare->errorInfo()));
+        }
+    }
+
     //Ajout de la durée réelle d'une séquence
     function updateRealDuration(Sequence $sequence)
     {
@@ -55,17 +73,16 @@ class SequenceModel extends MotherModel {
 
     // Récupération de toutes les séquences d'un projet
     function findAllSequencesByProjectId(int $projectId): array {
-
     $query = "
         SELECT *
         FROM sequence
         WHERE fk_project = :project_id
     ";
-
+    
     $prepare = $this->_db->prepare($query);
     $prepare->bindValue(':project_id', $projectId, PDO::PARAM_INT);
     $prepare->execute();
-
+    
     return $prepare->fetchAll(PDO::FETCH_ASSOC);
     }
 

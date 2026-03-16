@@ -40,7 +40,7 @@
     <h3>Rythme recommandé pour respecter la deadline :</h3>
     <p><?= $project->getRecommended_pages_per_day() ?> pages / jour</p>
     <p>Calculs réalisés à partir de votre rythme constaté sur les précédents projets</p>
-    <a href="">Modifier les informations</a>
+    <a href="index.php?controller=form&action=updateProject&project_id=<?= $project->getId() ?>">Modifier les informations</a>
 
     <?php if(!$finalReport) { ?>
         <a href="index.php?controller=statistics&action=finalReport&project_id=<?= $project->getId() ?>">Formulaire de fin de projet</a>

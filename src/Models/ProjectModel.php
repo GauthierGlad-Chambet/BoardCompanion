@@ -40,7 +40,7 @@ class ProjectModel extends MotherModel {
         $prepare->bindValue(':studio', $project->getStudio(), PDO::PARAM_STR);
         $prepare->bindValue(':episode_nb', $project->getEpisode_nb(), PDO::PARAM_STR);
         $prepare->bindValue(':episode_title', $project->getEpisode_title(), PDO::PARAM_STR);
-        $prepare->bindValue(':nb_predec', $project->getNb_predecs(), PDO::PARAM_INT);
+        $prepare->bindValue(':nb_predec', $project->getNb_predec(), PDO::PARAM_INT);
         $prepare->bindValue(':is_alone', $project->getIs_alone(), PDO::PARAM_BOOL);
         $prepare->bindValue(':is_cleaning', $project->getIs_cleaning(), PDO::PARAM_BOOL);
         $prepare->bindValue(':script_path', $project->getScript_path(), PDO::PARAM_STR);
@@ -76,6 +76,43 @@ class ProjectModel extends MotherModel {
             throw new \Exception("Erreur lors de la récupération du projet : " . implode(", ", $prepare->errorInfo()));
         }
         return $prepare->fetch(PDO::FETCH_ASSOC); // Retourne les données du projet sous forme de tableau associatif
+    }
+
+    function updateProject(Project $projectUpdated) {
+
+        // Préparation de la requête pour modifier un projet dans la base de données
+        $query = "
+            UPDATE project
+            SET name = :name,
+                studio = :studio,
+                episode_nb = :episode_nb,
+                episode_title = :episode_title,
+                nb_predec = :nb_predec,
+                is_alone = :is_alone, 
+                is_cleaning = :is_cleaning,
+                date_beginning = :date_beginning,
+                date_end = :date_end
+            WHERE id = :id";
+        
+        $prepare = $this->_db->prepare($query);
+
+        // Liaison des paramètres
+        $prepare->bindValue(':id', $projectUpdated->getId(), PDO::PARAM_STR);
+        $prepare->bindValue(':name', $projectUpdated->getName(), PDO::PARAM_STR);
+        $prepare->bindValue(':studio', $projectUpdated->getStudio(), PDO::PARAM_STR);
+        $prepare->bindValue(':episode_nb', $projectUpdated->getEpisode_nb(), PDO::PARAM_STR);
+        $prepare->bindValue(':episode_title', $projectUpdated->getEpisode_title(), PDO::PARAM_STR);
+        $prepare->bindValue(':nb_predec', $projectUpdated->getNb_predec(), PDO::PARAM_INT);
+        $prepare->bindValue(':is_alone', $projectUpdated->getIs_alone(), PDO::PARAM_BOOL);
+        $prepare->bindValue(':is_cleaning', $projectUpdated->getIs_cleaning(), PDO::PARAM_BOOL);
+        $prepare->bindValue(':date_beginning', $projectUpdated->getDate_beginning(), PDO::PARAM_STR);
+        $prepare->bindValue(':date_end', $projectUpdated->getDate_end(), PDO::PARAM_STR);
+
+        // Exécution de la requête
+        if (!$prepare->execute()) {
+            throw new \Exception("Erreur lors de l'insertion du projet : " . implode(", ", $prepare->errorInfo()));
+        }
+        return $this->_db->lastInsertId(); // Retourne l'ID du projet nouvellement créé
     }
 
     function deleteProjetbyId($id) {
@@ -122,7 +159,7 @@ class ProjectModel extends MotherModel {
     //Trouver tous les projets d'un utilisateur
     function getAllProjectsByUser(int $userId): array {
         $query = "
-            SELECT project.id, name, studio, episode_nb, episode_title, nb_predec, is_alone, is_cleaning, date_beginning, date_end, nb_total_pages, nb_assigned_pages, estimated_total_duration, recommended_pages_per_day, label as appreciation_label
+            SELECT project.id, name, studio, episode_nb, episode_title, nb_predec, is_alone, is_cleaning, is_detailed, date_beginning, date_end, nb_total_pages, nb_assigned_pages, estimated_total_duration, recommended_pages_per_day, label as appreciation_label
             FROM project
             LEFT JOIN final_report ON final_report.fk_project = project.id
             LEFT JOIN appreciation ON final_report.fk_appreciation = appreciation.id
@@ -140,16 +177,16 @@ class ProjectModel extends MotherModel {
 
     
     // Récupération du chemin du dernier script ajouté dans la base de données
-    function findLastScriptPath() {
+    function findScriptPathByProjectId($projectId) {
 
         $query = "
             SELECT script_path
             FROM project
-            ORDER BY id DESC
-            LIMIT 1
+            WHERE id = :project_id
         ";
 
         $prepare = $this->_db->prepare($query);
+        $prepare->bindValue(':project_id', $projectId, PDO::PARAM_INT);
         $prepare->execute();
 
         // Exécution de la requête
@@ -267,6 +304,22 @@ class ProjectModel extends MotherModel {
             
         $prepare = $this->_db->prepare($query);
         $prepare->bindValue(':recommended_pages_per_day', $project->getRecommended_pages_per_day(), PDO::PARAM_STR);
+        $prepare->bindValue(':project_id', $project->getId(), PDO::PARAM_INT);
+
+        if (!$prepare->execute()) { 
+            throw new \Exception("Erreur lors de la mise à jour du nombre de pages recommandées par jour du projet : " . implode(", ", $prepare->errorInfo())); 
+        } 
+    }
+
+    function updateIsDetailed(Project $project) {
+        $query = " 
+            UPDATE project
+            SET is_detailed = :is_detailed
+            WHERE id = :project_id
+        ";
+            
+        $prepare = $this->_db->prepare($query);
+        $prepare->bindValue(':is_detailed', 1, PDO::PARAM_BOOL);
         $prepare->bindValue(':project_id', $project->getId(), PDO::PARAM_INT);
 
         if (!$prepare->execute()) { 

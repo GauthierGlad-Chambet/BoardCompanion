@@ -15,13 +15,14 @@ class FormController extends MotherController {
 
     public function newProject() {
 
-    //Check si l'utilisateur est connecté, sinon renvoie à la page login
-    if (empty($_SESSION)) {
-        header("Location: index.php?controller=user&action=login");
-    }
+        //Check si l'utilisateur est connecté, sinon renvoie à la page login
+        if (empty($_SESSION)) {
+            header("Location: index.php?controller=user&action=login");
+        }
 
-    $flag = false;
-        
+        // Flag pour indiquer si les estimations se font à partir du nombre total de pages ou du nombre de pages assignées
+        $flag = false;
+            
         if(count($_POST) > 0){
 
             $name               =trim($_POST['name']??'');    //La fonction trim supprime les caractères invisibles comme les espaces, avant et après le texte.
@@ -58,7 +59,7 @@ class FormController extends MotherController {
             //pour construire le chemin réel du fichier, en commençant par le répertoire courant
             $uploadDir = __DIR__ . '/../../uploads/scripts/';
 
-            // the place where the file will be saved
+            // L'endroit où le fichier sera sauvegardé
             $destination = $uploadDir . $newFileName;
 
             //move_uploaded_file Déplacer le fichier de l'emplacement temporaire vers la destination
@@ -88,7 +89,7 @@ class FormController extends MotherController {
             $project->setEpisode_title($episodeTitle);
             $project->setDate_beginning($dateBegin);
             $project->setDate_end($dateEnd);
-            $project->setNb_predecs(intval($nbPredecs));
+            $project->setNb_predec(intval($nbPredecs));
             $project->setIs_cleaning($isCleaning);
             $project->setIs_alone($isAlone);
 
@@ -130,6 +131,14 @@ class FormController extends MotherController {
                             $project->setRecommended_pages_per_day($this->estimateRecommendedPagesPerDay($project, $flag));
                             $newProjectModel->updateRecommendedPagesPerDayProject($project);
 
+                            if($project->getIs_cleaning() == true) {
+                                $project->setEstimated_cleaning_duration($this->estimateCleaningDuration($project));
+                                $newProjectModel->updateAvgCleaningProject($project);
+                            }
+
+                            $project->setAvg_duration_estimated_per_pages($this->avgDurationEstimatedPerPage($project));
+                            $newProjectModel->updateAvgDurationEstimatedPerPage($project);
+
                         }
                     } catch (\Exception $e) {
                         echo "Erreur lors de la lecture du PDF : " . htmlspecialchars($e->getMessage());
@@ -138,8 +147,8 @@ class FormController extends MotherController {
                 }
 
                 echo "Projet ajouté avec succès.";
-                if($script_detailed === 'oui'){
-                    header("Location: index.php?controller=form&action=detailedAnalysis");
+                if($script_detailed === '1'){
+                    header("Location: index.php?controller=form&action=detailedAnalysis&project_id=". $idProject );
                 } else {
                     header("Location: index.php?controller=statistics&action=dashboard");
                 }
@@ -165,8 +174,18 @@ class FormController extends MotherController {
 
         $flag = true;
 
+        // Récupérer l'ID du projet
+        $projectId = $_GET['project_id'] ?? null;
+        if (!$projectId) {
+            echo "ID du projet manquant.";
+            exit;
+        }
+
         $scriptPath = new ProjectModel();
-        $scriptPath = $scriptPath->findLastScriptPath();
+
+        // Récupérer le script path en fonction de l'ID du projet
+        $projectModel = new ProjectModel();
+        $scriptPath = $projectModel->findScriptPathByProjectId($projectId);
 
         if (!$scriptPath || !file_exists($scriptPath)) {
             echo "Fichier PDF introuvable.";
@@ -174,13 +193,9 @@ class FormController extends MotherController {
         }
 
         if (isset($_POST['submit_sequences'])) {
-            // Récupérer l'ID du projet
-            $projectId = $_POST['project_id'] ?? null;
-            if (!$projectId) {
-                echo "ID du projet manquant.";
-                exit;
-            }
 
+            $sequenceModel = new SequenceModel();
+            
             // Traiter les données du formulaire ici
             foreach ($_POST as $key => $value) {
                 // Identifier les champs de type de séquence en utilisant le préfixe "typeSequence_"
@@ -220,7 +235,6 @@ class FormController extends MotherController {
                     $sequence->setDuration_estimated($this->estimateDurationBySequence($sequence)); // Estimer la durée de boarding de la séquence
                     $sequence->setFk_project($projectId);
 
-                    $sequenceModel = new SequenceModel();
                     $sequenceModel->addSequence($sequence);
                 }
             }
@@ -228,10 +242,8 @@ class FormController extends MotherController {
                 $project = new Project();
                 $project->setId($projectId);
 
-                //récupérer les attributs du projets en bdd en fonction de l'ID
-                $projectModel = new ProjectModel();
+                
                 $projectData = $projectModel->getProjectById($projectId);
-
                 $project->setIs_cleaning($projectData['is_cleaning']);
                 $project->setNb_total_pages($projectData['nb_total_pages']);
                 $project->setDate_beginning($projectData['date_beginning']);
@@ -242,12 +254,14 @@ class FormController extends MotherController {
                 $project->setEstimated_total_duration($this->estimateTotalDuration($project, $flag));
                 $project->setAvg_duration_estimated_per_pages($this->avgDurationEstimatedPerPage($project));
                 $project->setRecommended_pages_per_day($this->estimateRecommendedPagesPerDay($project, $flag));
+                $project->setIs_detailed(1);
                 
                 $projectModel->updateNbPagesAssignedProject($project);
                 $projectModel->updateAvgCleaningProject($project);
                 $projectModel->updateTotalDurationProject($project);
                 $projectModel->updateAvgDurationEstimatedPerPage($project);
                 $projectModel->updateRecommendedPagesPerDayProject($project);
+                $projectModel->updateIsDetailed($project);
                 
 
             header("Location: index.php?controller=statistics&action=details&project_id=" . $project->getId());
@@ -280,6 +294,232 @@ class FormController extends MotherController {
             exit;
         }
         }
+    }
+
+    public function updateProject() {
+        //Check si l'utilisateur est connecté, sinon renvoie à la page login
+        if (empty($_SESSION)) {
+            header("Location: index.php?controller=user&action=login");
+        }
+
+        // Récupération des attributs du projet
+        $projectId = $_GET['project_id'];
+        $projectModel = new ProjectModel();
+        $projectData = $projectModel->getProjectById($projectId);
+
+
+        if (!$projectData) {
+            echo "Projet non trouvé.";
+            exit;
+        }
+
+        $projectOld = new Project();
+        $projectOld->hydrate($projectData);
+        $this->_arrData['project'] = $projectOld;
+
+        // Récupération de tous les autres projets
+
+        // création d'une entité projet et injection des attributs
+        $projectModel = new ProjectModel();
+
+        // récupération de tous les projets de l'utilisateur connecté
+        $projects = $projectModel->getAllProjectsByUser($_SESSION['user']['id']);
+
+
+        // On parcourt le tableau pour créer des objets
+        $projectsToDisplay = array();
+        foreach($projects as $detProject){
+            $project = new Project();
+            $project->hydrate($detProject);
+            $projectsToDisplay[] = $project;
+        }
+
+        $this->_arrData['projects'] = $projectsToDisplay;
+
+        if(count($_POST) > 0){
+
+            $name               =trim($_POST['name']??'');    //La fonction trim supprime les caractères invisibles comme les espaces, avant et après le texte.
+            $studio             =trim($_POST['studio']??'');
+            $episodeNb          =trim($_POST['episode_nb']??'');
+            $episodeTitle       =trim($_POST['episode_title']??'');
+            $dateBegin          =$_POST['date_begin']??'';
+            $dateEnd            =$_POST['date_end']??'';
+            $nbPredecs          =$_POST['nb_predec']??'';
+            $isCleaning         =$_POST['is_cleaning']??'';
+            $isAlone            =$_POST['is_alone']??'';
+            $script_detailed    =$_POST['script_detailed']??'';
+
+
+            $projectUpdated = new Project();
+            $projectUpdated->setId($_GET['project_id']);
+            $projectUpdated->setName($name);
+            $projectUpdated->setStudio($studio);
+            $projectUpdated->setEpisode_nb($episodeNb);
+            $projectUpdated->setEpisode_title($episodeTitle);
+            $projectUpdated->setDate_beginning($dateBegin);
+            $projectUpdated->setDate_end($dateEnd);
+            $projectUpdated->setNb_predec(intval($nbPredecs));
+            $projectUpdated->setIs_cleaning($isCleaning);
+            $projectUpdated->setIs_alone($isAlone);
+
+            // Récupérer l'identifiant utilisateur de la session ou la valeur par défaut 1 si non défini.
+            $userId = $_SESSION['user']['id'];
+            $projectUpdated->setFk_user($userId);
+
+            try {
+                $newProjectModel = new ProjectModel();
+                $idProject = $newProjectModel->updateProject($projectUpdated);
+                $projectUpdated->setId($idProject); // Assigner l'ID généré à l'entité Project pour les étapes suivantes
+                $projectUpdated->getEstimated_cleaning_duration();
+
+                echo "Projet modifié avec succès.";
+                // Si l'utilisateur veut modifier l'analyse détaillée
+                if($script_detailed === '1'){
+                    // Si il n'y a pas encore d'analyse détaillée pour ce projet
+                    if($projectOld->getIs_detailed() == 0) {
+                        header("Location: index.php?controller=form&action=detailedAnalysis&project_id=". $projectOld->getId());
+                    } else {
+                        header("Location: index.php?controller=form&action=updateDetailedAnalysis&project_id=" . $projectOld->getId());
+                    }
+                } else {
+                    header("Location: index.php?controller=statistics&action=dashboard");
+                }
+            } catch (\Exception $e) {
+                echo "Erreur lors de l'ajout du projet : " . htmlspecialchars($e->getMessage());
+                exit;
+            }
+
+            
+        }
+
+        $this->_display("projectForm/updateProjectForm");
+
+
+    }
+
+    public function updateDetailedAnalysis() {
+        
+        //Check si l'utilisateur est connecté, sinon renvoie à la page login
+        if (empty($_SESSION)) {
+            header("Location: index.php?controller=user&action=login");
+        }
+
+        $flag = true;
+
+        // Récupération des attributs du projet
+        $projectId = $_GET['project_id'];
+        $projectModel = new ProjectModel();
+        $projectData = $projectModel->getProjectById($projectId);
+
+
+        if (!$projectData) {
+            echo "Projet non trouvé.";
+            exit;
+        }
+
+        $project = new Project();
+        $project->hydrate($projectData);
+        $this->_arrData['project'] = $project;
+
+        // Récupération de tous les autres projets
+
+        // création d'une entité projet et injection des attributs
+        $projectModel = new ProjectModel();
+
+        // récupération de tous les projets de l'utilisateur connecté
+        $projects = $projectModel->getAllProjectsByUser($_SESSION['user']['id']);
+
+
+        // On parcourt le tableau pour créer des objets
+        $projectsToDisplay = array();
+        foreach($projects as $detProject){
+            $project = new Project();
+            $project->hydrate($detProject);
+            $projectsToDisplay[] = $project;
+        }
+
+        $this->_arrData['projects'] = $projectsToDisplay;
+
+        // création d'une entité séquence et injection des attributs
+        $sequenceModel = new SequenceModel();
+        
+        // Récupérer l'ID du projet
+        $projectId = $_GET['project_id'] ?? null;
+        if (!$projectId) {
+            echo "ID du projet manquant.";
+            exit;
+        }
+        $this->_arrData['projectId'] = $projectId;
+        // Récupération de toutes les séquences du projet
+        $sequences = $sequenceModel->findAllSequencesByProjectId($projectId);
+
+        // On parcourt le tableau pour créer des objets
+        $sequencesToDisplay = array();
+        foreach($sequences as $detSequence){
+            $sequence = new Sequence();
+            $sequence->hydrate($detSequence);
+            $sequencesToDisplay[] = $sequence;
+        }
+
+        $this->_arrData['sequences'] = $sequencesToDisplay;
+
+        if (isset($_POST['submit_sequences'])) {
+
+            $sequenceModel = new SequenceModel();
+
+            foreach ($_POST as $key => $value) {
+                // Identifier les champs de type de séquence en utilisant le préfixe "typeSequence_"
+                if (strpos($key, 'typeSequence_') === 0) {
+                    // Extraire l'index de la séquence à partir du nom du champ
+                    $index = str_replace('typeSequence_', '', $key);
+
+                    if ($value === 'Action') {
+                        $typeSequence = 1;
+                    } elseif ($value === 'Comedie') {
+                        $typeSequence = 2;
+                    } else {
+                        $typeSequence = 3;
+                    }
+
+                    $isAssigned = (int) ($_POST['is_assigned_' . $index] ?? 0);
+                    $sequenceId  = (int) ($_POST['sequence_id_' . $index] ?? 0);
+
+                    $sequence = new Sequence();
+                    $sequence->setId($sequenceId);
+                    $sequence->setFk_type($typeSequence);
+                    $sequence->setIs_assigned($isAssigned);
+
+                    $sequenceModel->updateSequence($sequence);
+                }
+            }
+
+             $project = new Project();
+            $project->setId($projectId);
+            
+            $projectData = $projectModel->getProjectById($projectId);
+            $project->setIs_cleaning($projectData['is_cleaning']);
+            $project->setNb_total_pages($projectData['nb_total_pages']);
+            $project->setDate_beginning($projectData['date_beginning']);
+            $project->setDate_end($projectData['date_end']);
+
+            $project->setNb_assigned_pages($this->countAssignedPages($projectId));
+            $project->setEstimated_cleaning_duration($this->estimateCleaningDuration($project));
+            $project->setEstimated_total_duration($this->estimateTotalDuration($project, $flag));
+            $project->setAvg_duration_estimated_per_pages($this->avgDurationEstimatedPerPage($project));
+            $project->setRecommended_pages_per_day($this->estimateRecommendedPagesPerDay($project, $flag));
+            
+            $projectModel->updateNbPagesAssignedProject($project);
+            $projectModel->updateAvgCleaningProject($project);
+            $projectModel->updateTotalDurationProject($project);
+            $projectModel->updateAvgDurationEstimatedPerPage($project);
+            $projectModel->updateRecommendedPagesPerDayProject($project);
+            $projectModel->updateIsDetailed($project);
+
+            header("Location: index.php?controller=statistics&action=details&project_id=" . $projectId);
+            exit;
+        }
+
+        $this->_display("projectForm/updateDetailedAnalysisForm");
     }
 
     // Nettoyage du texte extrait du PDF pour supprimer les en-têtes, pieds de page, autres éléments répétitifs, numéros en trop, caractères spéciaux, ...
@@ -507,15 +747,14 @@ class FormController extends MotherController {
 
 
     // Fonction d'estimation du nombre de jours recommandés pour boarder le projet, en fonction du nombre de pages totales ou du nombre de pages assignées, du temps de cleaning estimé et de la durée du projet
-    public function estimateRecommendedPagesPerDay(Project $project, bool $flag)
-    {
+    public function estimateRecommendedPagesPerDay(Project $project, bool $flag) {
         $interval = $project->getDuree();
         if($flag === true){
             $recommandation = ($project->getNb_assigned_pages() + $project->getEstimated_cleaning_duration()) / $interval;
         } else {
             $recommandation = ($project->getNb_total_pages() + $project->getEstimated_cleaning_duration()) / $interval;
         }
-        return $recommandation;
+        return round($recommandation, 2);
     }
 
     // Fonction d'estimation du temps de boarding d'une séquence en fonction de son type et de son nombre de lignes
@@ -531,10 +770,10 @@ class FormController extends MotherController {
         $durationInHours = $durationInDays * 8; // Convertir en heures, en supposant 8 heures de travail par jour
         
         return round($durationInHours, 2); // Arrondir à 2 décimales pour plus de lisibilité
-        }
-
-    public function avgDurationEstimatedPerPage(Project $project)
-    {
-        return $avgDurationEstimatedPerPage = ($project->getEstimated_total_duration()) / ($project->getNb_assigned_pages());
     }
+
+    public function avgDurationEstimatedPerPage(Project $project) {
+        $avgDurationEstimatedPerPage = ($project->getEstimated_total_duration()) / ($project->getNb_assigned_pages());
+        return round($avgDurationEstimatedPerPage, 2);
+        }
 }

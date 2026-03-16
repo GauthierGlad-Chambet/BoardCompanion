@@ -1,7 +1,6 @@
 <main>
 
-<h1>ANALYSE DÉTAILLÉE</h1>
-   <!-- detailedAnalysisForm.php -->
+<h1>Analyse détaillée</h1>
 <h2>Scènes extraites</h2>
 
 <?php if (!empty($sequenceHeaders)): ?>

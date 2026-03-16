@@ -18,9 +18,9 @@
         <input type="number" name="nb_predec" id="nb_predec" min="1" required>
 </br>
         <p>Je m'occupe seul du script</p>
-        <input type="radio" id="alone" name="is_alone" value="oui" checked />
+        <input type="radio" id="alone" name="is_alone" value="1" checked />
         <label for="alone">Oui</label>
-        <input type="radio" id="not_alone" name="is_alone" value="non" />
+        <input type="radio" id="not_alone" name="is_alone" value="0" />
         <label for="not_alone">Non</label>
 </br>
         <p>Je m'occupe du cleaning</p>
@@ -43,9 +43,9 @@
         <input type="date" name="date_end" id="date_end" required>
 </br>
         <p>Je veux une analyse du script détaillée</p>
-        <input type="radio" id="script_detailed" name="script_detailed" value="oui" checked />
+        <input type="radio" id="script_detailed" name="script_detailed" value="1" checked />
         <label for="details">Oui</label>
-        <input type="radio" id="not_alone" name="script_detailed" value="non" />
+        <input type="radio" id="not_alone" name="script_detailed" value="0" />
         <label for="no_details">Non</label>
 </br>
         <input type="submit" name="submit_new_project" id="submit_new_project" value="Valider">

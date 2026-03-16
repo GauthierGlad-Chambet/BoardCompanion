@@ -19,6 +19,7 @@ class Project extends MotherEntity
     private int $nb_predec;
     private bool $is_alone;
     private bool $is_cleaning;
+    private bool $is_detailed;
     private string $script_path;
     private ?string $template_path = null;
     private string $date_beginning;
@@ -71,7 +72,7 @@ class Project extends MotherEntity
        return $this->date_end;
     }
 
-    public function getNb_predecs(): int
+    public function getNb_predec(): int
     {
         return $this->nb_predec;
     }
@@ -84,6 +85,11 @@ class Project extends MotherEntity
     public function getIs_alone(): bool
     {
         return $this->is_alone;
+    }
+
+    public function getIs_detailed(): bool
+    {
+        return $this->is_detailed;
     }
 
     public function getScript_path(): string
@@ -176,7 +182,7 @@ class Project extends MotherEntity
         $this->date_end = $date_end;
     }
 
-    public function setNb_predecs($nb_predec)
+    public function setNb_predec($nb_predec)
     {
         $this->nb_predec = $nb_predec;
     }
@@ -190,6 +196,12 @@ class Project extends MotherEntity
     {
         $this->is_alone = $is_alone;
     }
+
+    public function setIs_detailed($is_detailed)
+    {
+        $this->is_detailed = $is_detailed;
+    }
+    
 
     public function setScript_path($script_path)
     {
