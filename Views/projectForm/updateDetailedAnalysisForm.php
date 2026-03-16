@@ -6,7 +6,11 @@
 
         <!-- Conserver les paramètres controller et action -->
         <input type="hidden" name="controller" value="form">
-        <input type="hidden" name="action" value="updateDetailedAnalysis">
+        <?php if ($project->getIs_detailed() == 0 ) { ?>
+            <input type="hidden" name="action" value="detailedAnalysis">
+        <?php } else { ?>
+            <input type="hidden" name="action" value="updateDetailedAnalysis">
+        <?php } ?>
 
         <select name="project_id" id="">
             <?php foreach ($projects as $proj) : ?>

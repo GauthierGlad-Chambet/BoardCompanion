@@ -1,6 +1,11 @@
 <main>
 
 <h1>Analyse détaillée</h1>
+
+<p>
+<?php echo "{$project->getName()}, {$project->getStudio()}, Épisode n<sup>o</sup> {$project->getEpisode_nb()} : {$project->getEpisode_title()}"?>
+</p>
+
 <h2>Scènes extraites</h2>
 
 <?php if (!empty($sequenceHeaders)): ?>

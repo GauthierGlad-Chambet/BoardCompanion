@@ -43,8 +43,10 @@
     <a href="index.php?controller=form&action=updateProject&project_id=<?= $project->getId() ?>">Modifier les informations</a>
 
     <?php if(!$finalReport) { ?>
-        <a href="index.php?controller=statistics&action=finalReport&project_id=<?= $project->getId() ?>">Formulaire de fin de projet</a>
-    <?php } else { ?>           
+        <a href="index.php?controller=statistics&action=finalReport&project_id=<?= $project->getId() ?>">Bilan final</a>
+    <?php } else { ?>
+        <a href="index.php?controller=statistics&action=updateFinalReport&project_id=<?= $project->getId() ?>">Modifier le bilan final</a>
+     
         <hr>
 
         <!-- BILAN FINAL -->

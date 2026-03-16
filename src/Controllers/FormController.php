@@ -181,6 +181,19 @@ class FormController extends MotherController {
             exit;
         }
 
+        $projectModel = new ProjectModel();
+        $projectData = $projectModel->getProjectById($projectId);
+
+        if (!$projectData) {
+            echo "Projet non trouvé.";
+            exit;
+        }
+
+        $project = new Project();
+        $project->hydrate($projectData);
+
+        $this->_arrData['project'] = $project;
+
         $scriptPath = new ProjectModel();
 
         // Récupérer le script path en fonction de l'ID du projet
@@ -262,7 +275,7 @@ class FormController extends MotherController {
                 $projectModel->updateAvgDurationEstimatedPerPage($project);
                 $projectModel->updateRecommendedPagesPerDayProject($project);
                 $projectModel->updateIsDetailed($project);
-                
+
 
             header("Location: index.php?controller=statistics&action=details&project_id=" . $project->getId());
         } else {

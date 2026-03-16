@@ -31,7 +31,7 @@ class FinalReportModel extends MotherModel {
             }
     }
 
-    // Récupération de toutes les séquences d'un projet
+    // Récupération de toutes les infos d'un bilan
     function getFinalReportByProjectId(int $projectId): array {
 
     $query = "
@@ -48,6 +48,28 @@ class FinalReportModel extends MotherModel {
 
     // Retourner null si aucun résultat au lieu de false
     return $result ?: [];
+    }
+
+    function updateFinalReport(FinalReport $finalReport) {
+        $query = "
+            UPDATE fial_report
+            SET total_duration = :total_duration,
+                cleaning_dration = :cleaning_duration,
+                nb_shots = :nb_shots,
+                commentary = :commentary
+            WHERE id = :id
+        ";
+
+        $prepare = $this->_db->prepare($query);
+        $prepare->bindValue(':total_duration', $finalReport->getTotal_duration(), PDO::PARAM_STR);
+        $prepare->bindValue(':cleaning_dration', $finalReport->getCleaning_duration(), PDO::PARAM_STR);
+        $prepare->bindValue(':nb_shots', $finalReport->getNb_shots(), PDO::PARAM_INT);
+        $prepare->bindValue(':commentary', $finalReport->getCommentary(), PDO::PARAM_STR);
+        $prepare->bindValue(':id', $finalReport->getId(), PDO::PARAM_INT);
+
+        if (!$prepare->execute()) {
+            throw new \Exception("Erreur lors de la mise à jour de la séquence : " . implode(", ", $prepare->errorInfo()));
+        }
     }
 
 }
