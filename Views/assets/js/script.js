@@ -1,16 +1,19 @@
-const POPUP_SUPPR = document.getElementById("popupSupprProjet");
-const BTN_SUPPR_PROJET = document.getElementById("supprimerProjet");
-const BTN_ANNULER_SUPPR = document.getElementById("annulerSupprimer");
+const POPUP_SUPPR = document.querySelectorAll(".popupSuppr");
+const BTN_SUPPR = document.querySelectorAll(".bouttonSupprimer");
+const BTN_ANNULER_SUPPR = document.querySelectorAll(".annulerSuppr");
 
+BTN_SUPPR.forEach(btn => {
+    btn.addEventListener("click", () => {
+        POPUP_SUPPR.forEach(btn =>{
+            btn.style.display = "flex";
+        });
+    });
+});
 
-BTN_SUPPR_PROJET.addEventListener("click", () => {
-
-    POPUP_SUPPR.style.display="flex";
-
-})
-
-BTN_ANNULER_SUPPR.addEventListener("click", () => {
-
-    POPUP_SUPPR.style.display="none";
-
-})
+BTN_ANNULER_SUPPR.forEach(btn => {
+    btn.addEventListener("click", () => {
+        POPUP_SUPPR.forEach(btn =>{
+            btn.style.display = "none";
+        });
+    });
+});

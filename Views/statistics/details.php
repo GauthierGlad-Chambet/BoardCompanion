@@ -77,10 +77,11 @@
         <h3>Commentaire : </h3>
         <p><?= $finalReport->getCommentary() ?></p>
     <?php } ?> 
-    <button id="supprimerProjet">Supprimer le projet</button>
-    <div id="popupSupprProjet" class="popup">
+
+    <button class="bouttonSupprimer">Supprimer le projet</button>
+    <div class="popup popupSuppr" id="popupProjet">
         <p>Êtes-vous sûr de vouloir supprimer ce projet ? Cette action est irréversible.</p>
-        <button id="annulerSupprimer">Annuler</button>
+        <button class="annulerSuppr">Annuler</button>
         <form method="POST" action="index.php?controller=statistics&action=deleteProject">
             <input type="hidden" name="project_id" value="<?= $project->getId() ?>">
             <button type="submit">Supprimer le projet</button>

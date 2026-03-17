@@ -174,7 +174,6 @@ class ProjectModel extends MotherModel {
 
         return $prepare->fetchAll(PDO::FETCH_ASSOC); // Retourne un tableau de tous les projets de l'utilisateur
     }
-
     
     // Récupération du chemin du dernier script ajouté dans la base de données
     function findScriptPathByProjectId($projectId) {

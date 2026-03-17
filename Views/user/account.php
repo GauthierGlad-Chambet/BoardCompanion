@@ -4,19 +4,31 @@
         <h2>Modifier le compte</h2>
         <form action="POST">
             <label for="pseudo">Modifier le pseudo</label>
-            <input type="text"  name="pseudo" value="<?= $user->getPseudo() ?>">
+            <input id="pseudo" type="text"  name="pseudo" value="<?= $user->getPseudo() ?>">
             </br>
             <label for="password">Mot de passe actuel :</label>
-            <input type="password" name="password" placeholder="**********" required>
+            <input id="password" type="password" name="password" placeholder="**********" required>
             </br>
             <label for="newPassword">Nouveau mot de passe :</label>
-            <input type="password" name="newPassword" placeholder="**********">
+            <input id="newPassword" type="password" name="newPassword" placeholder="**********">
             </br>
             <label for="newPasswordConfirmation">Confirmez le nouveau mot de passe :</label>
-            <input type="password" name="newPasswordConfirmation" placeholder="**********">
+            <input id="newPasswordConfirmation" type="password" name="newPasswordConfirmation" placeholder="**********">
             <input type="submit" name="modifier" value="Modifier">
         </form>
-            <button>Supprimer</button>
+
+
+        <button class="bouttonSupprimer">Supprimer le compte</button>
+        <div class="popup popupSuppr" id="popupCompte">
+        <p>Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.</p>
+        <button class="annulerSuppr">Annuler</button>
+        <form method="POST" action="index.php?controller=user&action=deleteAccount">
+            <button type="submit">Supprimer le compte</button>
+        </form>
+
+
+
+    </div>
     </div>
     <div>
         <h2>Statistiques du compte</h2>

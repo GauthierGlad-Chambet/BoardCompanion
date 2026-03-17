@@ -89,6 +89,26 @@ class UserModel extends MotherModel {
         return $prepare->fetch();
     }
 
+
+    function deleteUserById(int $userId) {
+        $queries = [
+            "DELETE FROM sequence WHERE fk_project IN (SELECT id FROM project WHERE fk_user = :user_id)",
+            "DELETE FROM final_report WHERE fk_project IN (SELECT id FROM project WHERE fk_user = :user_id)",
+            "DELETE FROM project WHERE fk_user = :user_id",
+            "DELETE FROM user_type_statistics WHERE fk_user = :user_id",
+            "DELETE FROM user WHERE id = :user_id",
+        ];
+
+        foreach ($queries as $query) {
+            $prepare = $this->_db->prepare($query);
+            $prepare->bindValue(':user_id', $userId, PDO::PARAM_INT);
+
+            if (!$prepare->execute()) {
+                throw new \Exception("Erreur lors de la suppression de l'utilisateur : " . implode(", ", $prepare->errorInfo()));
+            }
+        }
+    }
+
     function updateAvgPagesPerDay(int $userId, float $avgPagesPerDay) {
 
         $query = "

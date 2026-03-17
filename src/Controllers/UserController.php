@@ -106,4 +106,13 @@ class UserController extends MotherController
 
         $this->_display("user/account");
     }
+
+    public function deleteAccount() {
+        
+        $userModel = new UserModel();
+        $userModel->deleteUserById($_SESSION['user']['id']);
+        
+        session_destroy();
+        header("Location: index.php?controller=user&action=login");
+    }
 }
