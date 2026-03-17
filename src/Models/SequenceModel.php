@@ -86,5 +86,26 @@ class SequenceModel extends MotherModel {
     return $prepare->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    
+    function findSequenceStatsByUserAndType(int $userId, int $typeId) {
+        $query = "
+            SELECT sequence.lines_count, sequence.duration_real
+            FROM sequence
+            JOIN project ON sequence.fk_project = project.id
+            WHERE project.fk_user = :user_id
+            AND sequence.fk_type = :type_id
+            AND sequence.duration_real IS NOT NULL
+            AND sequence.duration_real > 0
+            AND sequence.lines_count > 0
+        ";
+
+        $prepare = $this->_db->prepare($query);
+        $prepare->bindValue(':user_id', $userId, PDO::PARAM_INT);
+        $prepare->bindValue(':type_id', $typeId, PDO::PARAM_INT);
+
+        if (!$prepare->execute()) {
+            throw new \Exception("Erreur lors de la récupération des stats par type : " . implode(", ", $prepare->errorInfo()));
+        }
+
+        return $prepare->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

@@ -26,7 +26,7 @@ class Project extends MotherEntity
     private string $date_end;
     private int $nb_total_pages;
     private int $nb_assigned_pages;
-    private float $estimated_total_duration;
+    private float $estimated_total_duration ;
     private ?float $estimated_cleaning_duration = 0;
     private float $avg_duration_estimated_per_pages;
     private float $recommended_pages_per_day;

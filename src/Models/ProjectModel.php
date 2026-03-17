@@ -347,23 +347,5 @@ class ProjectModel extends MotherModel {
         return $prepare->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    function findAllCleaningDurationsByUser(int $userId) {
-        $query = "
-            SELECT final_report.cleaning_duration
-            FROM final_report
-            JOIN project ON final_report.fk_project = project.id
-            WHERE project.fk_user = :user_id
-            AND final_report.cleaning_duration > 0
-        ";
-
-        $prepare = $this->_db->prepare($query);
-        $prepare->bindValue(':user_id', $userId, PDO::PARAM_INT);
-
-        if (!$prepare->execute()) {
-            throw new \Exception("Erreur lors de la récupération des durées de cleaning : " . implode(", ", $prepare->errorInfo()));
-        }
-
-        return $prepare->fetchAll(PDO::FETCH_ASSOC);
-    }
 }
 

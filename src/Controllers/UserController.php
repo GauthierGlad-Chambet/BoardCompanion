@@ -82,9 +82,28 @@ class UserController extends MotherController
         $this->_display("user/signIn", false);
     }
 
-    function logout() {
+    public function logout() {
         // Détruit la session utilisateur
         session_destroy();
         header("Location: index.php?controller=user&action=login");
+    }
+
+    public function showAccount() {
+
+        $userModel = new UserModel();
+        $userData = $userModel->findById($_SESSION['user']['id']);
+
+        $user = new User();
+        $user->hydrate($userData);
+
+        $this->_arrData['user'] = $user;
+
+        // Récupération des stats par type
+        $userStatByTypeModel = new UserStatByTypeModel();
+        $this->_arrData['statAction']  = $userStatByTypeModel->findByUserIdAndType($_SESSION['user']['id'], 1)['avg_pages_per_day'] ?? 1;
+        $this->_arrData['statComedie'] = $userStatByTypeModel->findByUserIdAndType($_SESSION['user']['id'], 2)['avg_pages_per_day'] ?? 1;
+        $this->_arrData['statMixte']   = $userStatByTypeModel->findByUserIdAndType($_SESSION['user']['id'], 3)['avg_pages_per_day'] ?? 1;
+
+        $this->_display("user/account");
     }
 }

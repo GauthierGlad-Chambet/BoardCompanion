@@ -74,4 +74,62 @@ class FinalReportModel extends MotherModel {
         }
     }
 
+    function findAllCleaningDurationsByUser(int $userId) {
+        $query = "
+            SELECT final_report.cleaning_duration
+            FROM final_report
+            JOIN project ON final_report.fk_project = project.id
+            WHERE project.fk_user = :user_id
+            AND final_report.cleaning_duration > 0
+        ";
+
+        $prepare = $this->_db->prepare($query);
+        $prepare->bindValue(':user_id', $userId, PDO::PARAM_INT);
+
+        if (!$prepare->execute()) {
+            throw new \Exception("Erreur lors de la récupération des durées de cleaning : " . implode(", ", $prepare->errorInfo()));
+        }
+
+        return $prepare->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    function findAllAppreciationsByUser(int $userId) {
+        $query = "
+            SELECT final_report.fk_appreciation
+            FROM final_report
+            JOIN project ON final_report.fk_project = project.id
+            WHERE project.fk_user = :user_id
+        ";
+
+        $prepare = $this->_db->prepare($query);
+        $prepare->bindValue(':user_id', $userId, PDO::PARAM_INT);
+
+        if (!$prepare->execute()) {
+            throw new \Exception("Erreur lors de la récupération des appréciations : " . implode(", ", $prepare->errorInfo()));
+        }
+
+        return $prepare->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    function findAllShotsAndPagesByUser(int $userId): array
+    {
+        $query = "
+            SELECT final_report.nb_shots, project.nb_assigned_pages
+            FROM final_report
+            JOIN project ON final_report.fk_project = project.id
+            WHERE project.fk_user = :user_id
+            AND final_report.nb_shots > 0
+            AND project.nb_assigned_pages > 0
+        ";
+
+        $prepare = $this->_db->prepare($query);
+        $prepare->bindValue(':user_id', $userId, PDO::PARAM_INT);
+
+        if (!$prepare->execute()) {
+            throw new \Exception("Erreur lors de la récupération des plans/pages : " . implode(", ", $prepare->errorInfo()));
+        }
+
+        return $prepare->fetchAll(PDO::FETCH_ASSOC);
+    }
+
 }

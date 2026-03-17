@@ -16,7 +16,7 @@
     </form>
     <form action="" method="POST">
         <label for="name">Nom du Projet</label>
-        <input type="text" name="name" id="name" required value="<?= $project->getname() ?>">
+        <input type="text" name="name" id="name" required value="<?= $project->getName() ?>">
 </br>
         <label for="studio">Nom du Studio</label>
         <input type="text" name="studio" id="studio" value="<?= $project->getStudio() ?>" required>
@@ -50,9 +50,9 @@
         <input type="date" name="date_end" id="date_end" value="<?= $project->getDate_end() ?>" required>
 </br>
         <p>Je veux modifier l'analyse détaillée du script</p>
-        <input type="radio" id="script_detailed" name="script_detailed" value="1" checked />
+        <input type="radio" id="script_detailed" name="script_detailed" value="1" <?php if ($project->getIs_detailed() == true) echo"checked"; ?> />
         <label for="details">Oui</label>
-        <input type="radio" id="not_alone" name="script_detailed" value="0" />
+        <input type="radio" id="not_alone" name="script_detailed" value="0" <?php if ($project->getIs_detailed() == false) echo"checked"; ?>/>
         <label for="no_details">Non</label>
 </br>
         <input type="submit" name="submit_new_project" id="submit_new_project" value="Valider">

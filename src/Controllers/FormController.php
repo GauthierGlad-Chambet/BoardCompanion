@@ -184,11 +184,6 @@ class FormController extends MotherController {
         $projectModel = new ProjectModel();
         $projectData = $projectModel->getProjectById($projectId);
 
-        if (!$projectData) {
-            echo "Projet non trouvé.";
-            exit;
-        }
-
         $project = new Project();
         $project->hydrate($projectData);
 
@@ -755,7 +750,7 @@ class FormController extends MotherController {
         } else {
             $pagesDuration = $project->getNb_total_pages() / $userData['avg_pages_per_day'];
         }
-        return $pagesDuration;
+        return round($pagesDuration,2);
     }
 
 
@@ -779,7 +774,12 @@ class FormController extends MotherController {
         $nb_lines = $sequence->getLines_count();
 
         $nbPagesPerSequence = ceil($nb_lines / 33); // En moyenne 33 lignes par page
-        $durationInDays = $nbPagesPerSequence / $userStatByTypeData[0]['avg_pages_per_day'];
+        // Evite bug de division par 0
+        // if($userStatByTypeData['avg_pages_per_day'] > 0) {
+            $durationInDays = $nbPagesPerSequence / $userStatByTypeData['avg_pages_per_day'];
+        // } else {
+        //    $durationInDays = $nbPagesPerSequence / 1; 
+        // }
         $durationInHours = $durationInDays * 8; // Convertir en heures, en supposant 8 heures de travail par jour
         
         return round($durationInHours, 2); // Arrondir à 2 décimales pour plus de lisibilité

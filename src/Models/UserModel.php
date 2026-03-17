@@ -54,9 +54,10 @@ class UserModel extends MotherModel {
     function getPasswordHash(string $email) {
 
         // Requête préparée pour trouver le hash du mot de passe de l'utilisateur
-        $query =
-            "SELECT pwd FROM user
-            WHERE email=:email";
+        $query ="
+            SELECT pwd FROM user
+            WHERE email=:email
+            ";
 
         $prepare = $this->_db->prepare($query);
 
@@ -71,9 +72,12 @@ class UserModel extends MotherModel {
     function findById(string $id) {
 
         // Requête préparée pour récupérer les informations de l'utilisateur
-        $query =
-            "SELECT id, pseudo, email, avg_pages_per_day, avg_cleaning_duration FROM user
-            WHERE id=:id";
+        $query ="
+            SELECT user.id, pseudo, email, avg_pages_per_day, avg_cleaning_duration, avg_shots_per_page, user.fk_appreciation, appreciation.label as appreciation_label
+            FROM user
+            LEFT JOIN appreciation ON user.fk_appreciation = appreciation.id
+            WHERE user.id=:id
+            ";
 
         $prepare = $this->_db->prepare($query);
 
@@ -117,5 +121,37 @@ class UserModel extends MotherModel {
             throw new \Exception("Erreur lors de la mise à jour de avg_cleaning_duration : " . implode(", ", $prepare->errorInfo()));
         }
     }
-    
+
+    function updateAvgAppreciation(int $userId, int $avgAppreciation) {
+        $query = "
+            UPDATE user
+            SET fk_appreciation = :fk_appreciation
+            WHERE id = :user_id
+        ";
+
+        $prepare = $this->_db->prepare($query);
+        $prepare->bindValue(':fk_appreciation', $avgAppreciation, PDO::PARAM_INT);
+        $prepare->bindValue(':user_id', $userId, PDO::PARAM_INT);
+
+        if (!$prepare->execute()) {
+            throw new \Exception("Erreur lors de la mise à jour de fk_appreciation : " . implode(", ", $prepare->errorInfo()));
+        }
+    }
+
+    function updateAvgShotsPerPage(int $userId, int $avgShotsPerPage) {
+        $query = "
+            UPDATE user
+            SET avg_shots_per_page = :avg_shots_per_page
+            WHERE id = :user_id
+        ";
+
+        $prepare = $this->_db->prepare($query);
+        $prepare->bindValue(':avg_shots_per_page', $avgShotsPerPage, PDO::PARAM_STR);
+        $prepare->bindValue(':user_id', $userId, PDO::PARAM_INT);
+
+        if (!$prepare->execute()) {
+            throw new \Exception("Erreur lors de la mise à jour de avg_shots_per_page : " . implode(", ", $prepare->errorInfo()));
+        }
+    }
+
 }

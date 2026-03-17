@@ -10,7 +10,7 @@ require_once("Views/partials/head.php");
             <a href="index.php?controller=statistics&action=dashboard">Tableau de bord</a>
             <a href="index.php?controller=calendar&action=index">Planning</a>
             <a href="index.php?controller=folder&action=index">Arborescence</a>
-            <a href="index.php?controller=user&action=index">Compte</a>
+            <a href="index.php?controller=user&action=showAccount">Compte</a>
             <a name="logout" href="index.php?controller=user&action=logout">Se déconnecter</a>
         </nav>
         <img src="https://placehold.co/120x120" alt="Logo de Board Companion">
