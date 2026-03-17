@@ -84,4 +84,38 @@ class UserModel extends MotherModel {
         $prepare->execute();
         return $prepare->fetch();
     }
+
+    function updateAvgPagesPerDay(int $userId, float $avgPagesPerDay) {
+
+        $query = "
+            UPDATE user
+            SET avg_pages_per_day = :avg_pages_per_day
+            WHERE id = :user_id
+        ";
+
+        $prepare = $this->_db->prepare($query);
+        $prepare->bindValue(':avg_pages_per_day', $avgPagesPerDay, PDO::PARAM_STR);
+        $prepare->bindValue(':user_id', $userId, PDO::PARAM_INT);
+
+        if (!$prepare->execute()) {
+            throw new \Exception("Erreur lors de la mise à jour de avg_pages_per_day : " . implode(", ", $prepare->errorInfo()));
+        }
+    }
+
+   function updateAvgCleaningDuration(int $userId, float $avgCleaningDuration) {
+        $query = "
+            UPDATE user
+            SET avg_cleaning_duration = :avg_cleaning_duration
+            WHERE id = :user_id
+        ";
+
+        $prepare = $this->_db->prepare($query);
+        $prepare->bindValue(':avg_cleaning_duration', $avgCleaningDuration, PDO::PARAM_STR);
+        $prepare->bindValue(':user_id', $userId, PDO::PARAM_INT);
+
+        if (!$prepare->execute()) {
+            throw new \Exception("Erreur lors de la mise à jour de avg_cleaning_duration : " . implode(", ", $prepare->errorInfo()));
+        }
+    }
+    
 }

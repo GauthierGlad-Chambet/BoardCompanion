@@ -327,6 +327,43 @@ class ProjectModel extends MotherModel {
         } 
     }
 
+    function findAllProjectsWithFinalReportByUser(int $userId) {
+        $query = "
+            SELECT project.nb_assigned_pages,
+                final_report.total_duration,
+                final_report.cleaning_duration
+            FROM project
+            JOIN final_report ON final_report.fk_project = project.id
+            WHERE project.fk_user = :user_id
+        ";
 
+        $prepare = $this->_db->prepare($query);
+        $prepare->bindValue(':user_id', $userId, PDO::PARAM_INT);
+
+        if (!$prepare->execute()) {
+            throw new \Exception("Erreur lors de la récupération des projets : " . implode(", ", $prepare->errorInfo()));
+        }
+
+        return $prepare->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    function findAllCleaningDurationsByUser(int $userId) {
+        $query = "
+            SELECT final_report.cleaning_duration
+            FROM final_report
+            JOIN project ON final_report.fk_project = project.id
+            WHERE project.fk_user = :user_id
+            AND final_report.cleaning_duration > 0
+        ";
+
+        $prepare = $this->_db->prepare($query);
+        $prepare->bindValue(':user_id', $userId, PDO::PARAM_INT);
+
+        if (!$prepare->execute()) {
+            throw new \Exception("Erreur lors de la récupération des durées de cleaning : " . implode(", ", $prepare->errorInfo()));
+        }
+
+        return $prepare->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
 

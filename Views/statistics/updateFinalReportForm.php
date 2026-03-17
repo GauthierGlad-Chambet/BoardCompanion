@@ -38,8 +38,10 @@
         <label for="total_plans"><h3>Total de plans réalisés :</h3></label>
         <input type="number" min="0" name="total_plans" value="<?= $finalReport->getNb_shots() ?>">
 
+        <?php if ($project->getIs_cleaning() == 1) { ?>
         <label for="duree_cleaning"><h3>Durée du cleaning (en jours) :</h3></label>
         <input type="number" step="0.1" min="0" name="duree_cleaning" value="<?= $finalReport->getCleaning_duration() ?>">
+        <?php } ?>
         
         <?php
         //si des séquences sont assignées au projet, on affiche les durées estimées par séquence

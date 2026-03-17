@@ -35,7 +35,7 @@ class FinalReportModel extends MotherModel {
     function getFinalReportByProjectId(int $projectId): array {
 
     $query = "
-        SELECT total_duration, cleaning_duration, nb_shots, commentary, fk_appreciation, fk_project
+        SELECT id, total_duration, cleaning_duration, nb_shots, commentary, fk_appreciation, fk_project
         FROM final_report
         WHERE fk_project = :project_id
     ";
@@ -52,19 +52,21 @@ class FinalReportModel extends MotherModel {
 
     function updateFinalReport(FinalReport $finalReport) {
         $query = "
-            UPDATE fial_report
+            UPDATE final_report
             SET total_duration = :total_duration,
-                cleaning_dration = :cleaning_duration,
+                cleaning_duration = :cleaning_duration,
                 nb_shots = :nb_shots,
-                commentary = :commentary
+                commentary = :commentary,
+                fk_appreciation = :fk_appreciation
             WHERE id = :id
         ";
 
         $prepare = $this->_db->prepare($query);
         $prepare->bindValue(':total_duration', $finalReport->getTotal_duration(), PDO::PARAM_STR);
-        $prepare->bindValue(':cleaning_dration', $finalReport->getCleaning_duration(), PDO::PARAM_STR);
+        $prepare->bindValue(':cleaning_duration', $finalReport->getCleaning_duration(), PDO::PARAM_STR);
         $prepare->bindValue(':nb_shots', $finalReport->getNb_shots(), PDO::PARAM_INT);
         $prepare->bindValue(':commentary', $finalReport->getCommentary(), PDO::PARAM_STR);
+        $prepare->bindValue(':fk_appreciation', $finalReport->getFk_appreciation(), PDO::PARAM_INT);
         $prepare->bindValue(':id', $finalReport->getId(), PDO::PARAM_INT);
 
         if (!$prepare->execute()) {

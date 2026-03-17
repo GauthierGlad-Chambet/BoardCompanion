@@ -59,9 +59,11 @@
 
         <h3>Total de plans réalisés : </h3>
         <p><?= $finalReport->getNb_shots() ?></p>
-
+        
+        <?php if ($project->getIs_cleaning() == 1) { ?>
         <h3>Durée du cleaning : </h3>
         <p><?= $finalReport->getCleaning_duration() ?> jours</p>
+        <?php } ?>
 
         <h3>Durées réelles par séquence :</h3>
         <ul>

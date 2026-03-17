@@ -7,10 +7,12 @@ use GauthierGladchambet\BoardCompanion\Entities\Appreciation;
 use GauthierGladchambet\BoardCompanion\Entities\FinalReport;
 use GauthierGladchambet\BoardCompanion\Entities\Project;
 use GauthierGladchambet\BoardCompanion\Entities\Sequence;
+use GauthierGladchambet\BoardCompanion\Entities\User;
 use GauthierGladchambet\BoardCompanion\Models\AppreciationModel;
 use GauthierGladchambet\BoardCompanion\Models\FinalReportModel;
 use GauthierGladchambet\BoardCompanion\Models\ProjectModel;
 use GauthierGladchambet\BoardCompanion\Models\SequenceModel;
+use GauthierGladchambet\BoardCompanion\Models\UserModel;
 
 class StatisticsController extends MotherController
 {
@@ -23,7 +25,6 @@ class StatisticsController extends MotherController
             header("Location: index.php?controller=user&action=login");
         }
 
-        // création d'une entité projet et injection des attributs
         $projectModel = new ProjectModel();
 
         // récupération de tous les projets de l'utilisateur connecté
@@ -170,7 +171,6 @@ class StatisticsController extends MotherController
                 $projectsToDisplay[] = $project;
             }
         }
-      
         
         // Récupération des différentes appréciations possibles
 
@@ -272,7 +272,11 @@ class StatisticsController extends MotherController
                 echo "Durées réelles des séquences ajoutées avec succès.";
                 
             }
-                
+            
+            //Modifier statistiques utilisateur avec les nouvelles infos du bilan :
+            $this->updateUserAvgPagesPerDay($_SESSION['user']['id']);
+            $this->updateUserAvgCleaningDuration($_SESSION['user']['id']);
+
              header("Location: index.php?controller=statistics&action=details&project_id=" . $project->getId() . "#bilanFinal");
 
         }
@@ -375,12 +379,75 @@ class StatisticsController extends MotherController
         $this->_arrData['arrAppreciations'] = $appreciationsToDisplay;
         $this->_arrData['projects'] = $projectsToDisplay;
 
+        if(count($_POST) > 0){
+
+            $dureeTotale        =$_POST['duree_totale_projet']??'';
+            $dureeCleaning      =$_POST['duree_cleaning']??0;
+            $totalPlans         =$_POST['total_plans']??'';
+            $commentaire        =$_POST['commentaire']??'';
+            $appreciation       =$_POST['appreciation']??'';
+            $projectId          =$_POST['project_id']??'';
+         
+            $finalReportUpdated = new FinalReport();
+            $finalReportUpdated->setId($finalReport->getId());
+            $finalReportUpdated->setTotal_duration($dureeTotale);
+            $finalReportUpdated->setCleaning_duration($dureeCleaning);
+            $finalReportUpdated->setNb_shots($totalPlans);
+            $finalReportUpdated->setCommentary($commentaire);
+            $finalReportUpdated->setFk_appreciation($appreciation);
+            $finalReportUpdated->setFk_project($projectId);
+
+            try {
+                $newFinalReportModel = new FinalReportModel();
+                $newFinalReportModel->updateFinalReport($finalReportUpdated);
+                
+            } catch (\Exception $e) {
+                echo "Erreur lors de la modification du bilan final : " . htmlspecialchars($e->getMessage());
+                exit;
+            }
+
+           // Récupération des durées réelles de séquences depuis le tableau dans le POST
+            $dureeSequencesForm = $_POST['duree_sequence']??[];
+
+            // Boucle de création des objets séquence et insertion dans la BDD
+            foreach($dureeSequencesForm as $sequenceId => $duree) {
+
+                // Reinitialiser les champs vides
+                if ($duree === '' ||$duree == 0 ) {
+                    $duree = NULL;
+                    // continue;
+                } else {
+                    // Convertir la durée en float
+                    $duree = (float)$duree;
+                }
+
+                //Création de l'objet séquence
+                $sequence = new Sequence();
+                $sequence ->setId($sequenceId);
+                $sequence->setDuration_real($duree);
+
+                try {
+                    $sequenceModel = new SequenceModel();
+                    $sequenceModel->updateRealDuration($sequence);
+                    
+                } catch (\Exception $e) {
+                    echo "Erreur lors de l'ajout du bilan : " . htmlspecialchars($e->getMessage());
+                    exit;
+                }
+            }
+
+            //Modifier statistiques utilisateur avec les nouvelles infos du bilan :
+            $this->updateUserAvgPagesPerDay($_SESSION['user']['id']);
+            $this->updateUserAvgCleaningDuration($_SESSION['user']['id']);
+    
+            header("Location: index.php?controller=statistics&action=dashboard");
+
+        }
 
         $this->_display("statistics/updateFinalReportForm");
     }
 
-    public function deleteProject()
-    {
+    public function deleteProject() {
         
         $project_id = $_POST['project_id']??'';
 
@@ -391,5 +458,37 @@ class StatisticsController extends MotherController
         header("Location: index.php?controller=statistics&action=dashboard");
 
     }
+
+    public function updateUserAvgPagesPerDay(int $userId) {
+        // récupération de tous les projets de l'utilisateur connecté
+        $projectModel = new ProjectModel();
+        $projects = $projectModel->findAllProjectsWithFinalReportByUser($userId);
+
+        $total = 0;
+        foreach ($projects as $project) {
+            $boardingDuration = $project['total_duration'] - $project['cleaning_duration'];
+            $total += $project['nb_assigned_pages'] / $boardingDuration;
+        }
+
+        $avgPagesPerDay = $total / count($projects);
+        
+        $userModel = new UserModel();
+        $userModel->updateAvgPagesPerDay($userId, round($avgPagesPerDay, 2));
+    }
+
+    public function updateUserAvgCleaningDuration(int $userId) {
+        $projectModel = new ProjectModel();
+        $cleaningDurations = $projectModel->findAllCleaningDurationsByUser($userId);
+
+        $total = 0;
+        foreach ($cleaningDurations as $cleaningDuration) {
+            $total += $cleaningDuration['cleaning_duration'];
+        }
+
+        $avgCleaningDuration = $total / count($cleaningDurations);
+
+        $userModel = new UserModel();
+        $userModel->updateAvgCleaningDuration($userId, round($avgCleaningDuration, 2));
+    } 
 
 }

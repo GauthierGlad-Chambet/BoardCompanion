@@ -713,16 +713,16 @@ class FormController extends MotherController {
     public function countAssignedPages(int $projectId) {
             $sequenceModel = new SequenceModel();
             $assignedSequences = $sequenceModel->findAllSequencesByProjectId($projectId);
-                $totalLines = 0;
-                foreach ($assignedSequences as $seq) {
-                    $sequence = New Sequence();
-                    // On ne compte que les lignes des séquences assignées
-                    if (isset($seq['is_assigned']) && $seq['is_assigned'] == 1) {
-                    $sequence->setLines_count($seq['lines_count']);
-                    $totalLines += $sequence->getLines_count();
-                    }
+            $totalLines = 0;
+            foreach ($assignedSequences as $seq) {
+                $sequence = New Sequence();
+                // On ne compte que les lignes des séquences assignées
+                if (isset($seq['is_assigned']) && $seq['is_assigned'] == 1) {
+                $sequence->setLines_count($seq['lines_count']);
+                $totalLines += $sequence->getLines_count();
                 }
-                $totalAssignedPages = round(($totalLines / 33),1); // En moyenne 33 lignes par page, arrondi à 1 décimale pour plus de lisibilité
+            }
+            $totalAssignedPages = round(($totalLines / 33),1); // En moyenne 33 lignes par page, arrondi à 1 décimale pour plus de lisibilité
 
             return $totalAssignedPages;   
     }
