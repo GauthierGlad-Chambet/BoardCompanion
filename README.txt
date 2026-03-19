@@ -1,6 +1,11 @@
 # BoardCompanion
 A web application designed to help storyboarders manage their projects and optimize their workflow.
 
+Versions :
+PHP : 8.1.31
+MySQL : 9.1
+
+
 Démarrer le projet :
 git clone https://github.com/GauthierGlad-Chambet/BoardCompanion.git
 
@@ -9,7 +14,7 @@ dans le terminal : composer install
 
 Modifier les paramètres serveur :
 
-Dans php.ini :
+Dans php.ini (accessible depuis l'interface wamp) :
 
 upload_max_filesize = 5G
 post_max_size = 5G
