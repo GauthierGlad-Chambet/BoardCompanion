@@ -6,10 +6,6 @@ use PDO;
 use PDOException;
 
 abstract class MotherModel {
-    const HOST = "localhost";
-    const DB = "board_companion";
-    const USER = "root";
-    const PASS = "";
 
     // Connexion à la base de données en singleton en utilisant les informations çi dessus
     protected object $_db;
@@ -20,9 +16,9 @@ abstract class MotherModel {
                 if (self::$_dbInstance === null) {
                     try{
                         self::$_dbInstance = new PDO(
-                            "mysql:host=" . MotherModel::HOST . ";dbname=" . MotherModel::DB . ";charset=utf8",
-                            MotherModel::USER,
-                            MotherModel::PASS,
+                            "mysql:host=" . $_ENV['DB_HOSTNAME'] . ";dbname=" . $_ENV['DB_DATABASE'] . ";charset=utf8",
+                            $_ENV['DB_USERNAME'],
+                            $_ENV['DB_PASSWORD'],
                             array(PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC)
                         );
                         self::$_dbInstance->exec("SET CHARACTER SET utf8");

@@ -63,3 +63,15 @@ svg {
 .popup {
   display : none;
 }
+
+.champObligatoire {
+  color :red;
+}
+
+.messageError {
+  color: red;
+}
+
+.messageSuccess {
+  color: rgb(90, 134, 90);
+}

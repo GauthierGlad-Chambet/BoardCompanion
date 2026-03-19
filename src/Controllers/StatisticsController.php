@@ -23,6 +23,7 @@ class StatisticsController extends MotherController
         //Check si l'utilisateur est connecté, sinon renvoie à la page login
         if (empty($_SESSION)) {
             header("Location: index.php?controller=user&action=login");
+            exit;
         }
 
         $projectModel = new ProjectModel();
@@ -48,6 +49,7 @@ class StatisticsController extends MotherController
         //Check si l'utilisateur est connecté, sinon renvoie à la page login
         if (empty($_SESSION)) {
             header("Location: index.php?controller=user&action=login");
+            exit;
         }
 
         if (!isset($_GET['project_id'])) {
@@ -128,6 +130,7 @@ class StatisticsController extends MotherController
         //Check si l'utilisateur est connecté, sinon renvoie à la page login
         if (empty($_SESSION)) {
             header("Location: index.php?controller=user&action=login");
+            exit;
         }
 
         // Récupération du projet en cours
@@ -210,13 +213,14 @@ class StatisticsController extends MotherController
         // Récupération des infos du formulaire et mise en BDD
         if(count($_POST) > 0)
         {
+       
             // Récupération de toutes les données du post qui concernent la table final_report en BDD
-            $dureeTotaleProjetForm = (float)$_POST['duree_totale_projet']??'';
-            $dureeCleaningForm = (float)$_POST['duree_cleaning']??'';
-            $totalPlansForm = (int)$_POST['total_plans']??'';
-            $commentaireForm = $_POST['commentaire']??'';
-            $idAppreciationForm = (int)($_POST['appreciation']??0);
-            $idProjectForm = (int)$_POST['project_id']??'';
+            $dureeTotaleProjetForm      = (float)trim(filter_input(INPUT_POST,"duree_totale_projet", FILTER_SANITIZE_NUMBER_FLOAT))??'';
+            $dureeCleaningForm          = (float)trim(filter_input(INPUT_POST,"duree_cleaning", FILTER_SANITIZE_NUMBER_FLOAT))??'';
+            $totalPlansForm             = (int)trim(filter_input(INPUT_POST,"total_plans", FILTER_SANITIZE_NUMBER_INT))??'';
+            $commentaireForm            = trim(filter_input(INPUT_POST,"commentaire", FILTER_SANITIZE_SPECIAL_CHARS))??'';
+            $idAppreciationForm         = (int)filter_input(INPUT_POST,"appreciation", FILTER_SANITIZE_NUMBER_INT)??0;
+            $idProjectForm              = (int)filter_input(INPUT_POST,"project_id", FILTER_SANITIZE_NUMBER_INT)??'';
 
             // création de l'objet final report
             $finalReport = new FinalReport();
@@ -278,7 +282,8 @@ class StatisticsController extends MotherController
             $this->updateUserAvgShotsPerPage($_SESSION['user']['id']);
             $this->updateUserStatsByType($_SESSION['user']['id']);
 
-             header("Location: index.php?controller=statistics&action=details&project_id=" . $project->getId() . "#bilanFinal");
+            header("Location: index.php?controller=statistics&action=details&project_id=" . $project->getId() . "#bilanFinal");
+            exit;
 
         }
    
@@ -290,6 +295,7 @@ class StatisticsController extends MotherController
          //Check si l'utilisateur est connecté, sinon renvoie à la page login
         if (empty($_SESSION)) {
             header("Location: index.php?controller=user&action=login");
+            exit;
         }
 
         // Récupération du projet en cours
@@ -382,12 +388,12 @@ class StatisticsController extends MotherController
 
         if(count($_POST) > 0){
 
-            $dureeTotale        =$_POST['duree_totale_projet']??'';
-            $dureeCleaning      =$_POST['duree_cleaning']??0;
-            $totalPlans         =$_POST['total_plans']??'';
-            $commentaire        =$_POST['commentaire']??'';
-            $appreciation       =$_POST['appreciation']??'';
-            $projectId          =$_POST['project_id']??'';
+            $dureeTotale      = (float)trim(filter_input(INPUT_POST,"duree_totale_projet", FILTER_SANITIZE_NUMBER_FLOAT))??'';
+            $dureeCleaning    = (float)trim(filter_input(INPUT_POST,"duree_cleaning", FILTER_SANITIZE_NUMBER_FLOAT))??'';
+            $totalPlans       = (int)trim(filter_input(INPUT_POST,"total_plans", FILTER_SANITIZE_NUMBER_INT))??'';
+            $commentaire      = trim(filter_input(INPUT_POST,"commentaire", FILTER_SANITIZE_SPECIAL_CHARS))??'';
+            $appreciation     = (int)filter_input(INPUT_POST,"appreciation", FILTER_SANITIZE_NUMBER_INT)??0;
+            $projectId        = (int)filter_input(INPUT_POST,"project_id", FILTER_SANITIZE_NUMBER_INT)??'';
          
             $finalReportUpdated = new FinalReport();
             $finalReportUpdated->setId($finalReport->getId());
@@ -445,6 +451,7 @@ class StatisticsController extends MotherController
             $this->updateUserStatsByType($_SESSION['user']['id']);
     
             header("Location: index.php?controller=statistics&action=dashboard");
+            exit;
 
         }
 
@@ -466,6 +473,7 @@ class StatisticsController extends MotherController
         $this->updateUserStatsByType($_SESSION['user']['id']);
 
         header("Location: index.php?controller=statistics&action=dashboard");
+        exit;
 
     }
 

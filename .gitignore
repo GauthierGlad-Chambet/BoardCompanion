@@ -1,3 +1,9 @@
 /Fichiers d'exemple/
 /vendor/
 /uploads/
+
+# On ignore les fichiers de configuration (données sensibles)
+.env*
+
+# On conserve tout de même un fichier d'exemple avec les clés nécessaires
+!.env.example

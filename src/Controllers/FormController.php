@@ -18,6 +18,7 @@ class FormController extends MotherController {
         //Check si l'utilisateur est connecté, sinon renvoie à la page login
         if (empty($_SESSION)) {
             header("Location: index.php?controller=user&action=login");
+            exit;
         }
 
         // Flag pour indiquer si les estimations se font à partir du nombre total de pages ou du nombre de pages assignées
@@ -25,13 +26,13 @@ class FormController extends MotherController {
             
         if(count($_POST) > 0){
 
-            $name               =trim($_POST['name']??'');    //La fonction trim supprime les caractères invisibles comme les espaces, avant et après le texte.
-            $studio             =trim($_POST['studio']??'');
-            $episodeNb          =trim($_POST['episode_nb']??'');
-            $episodeTitle       =trim($_POST['episode_title']??'');
-            $dateBegin          =$_POST['date_begin']??'';
-            $dateEnd            =$_POST['date_end']??'';
-            $nbPredecs          =$_POST['nb_predec']??'';
+            $name               = trim(filter_input(INPUT_POST,"name", FILTER_SANITIZE_SPECIAL_CHARS))??'';    //La fonction trim supprime les caractères invisibles comme les espaces, avant et après le texte.
+            $studio             = trim(filter_input(INPUT_POST,"studio", FILTER_SANITIZE_SPECIAL_CHARS))??'';
+            $episodeNb          = trim(filter_input(INPUT_POST,"episode_nb", FILTER_SANITIZE_NUMBER_INT))??'';
+            $episodeTitle       = trim(filter_input(INPUT_POST,"episode_title", FILTER_SANITIZE_SPECIAL_CHARS))??'';
+            $dateBegin          = $_POST['date_begin']??'';
+            $dateEnd            = $_POST['date_end']??'';
+            $nbPredecs          = trim(filter_input(INPUT_POST,"nb_predec", FILTER_SANITIZE_NUMBER_INT))??'';
             $isCleaning         =$_POST['is_cleaning']??'';
             $isAlone            =$_POST['is_alone']??'';
             $script_detailed    =$_POST['script_detailed']??'';
@@ -149,8 +150,10 @@ class FormController extends MotherController {
                 echo "Projet ajouté avec succès.";
                 if($script_detailed === '1'){
                     header("Location: index.php?controller=form&action=detailedAnalysis&project_id=". $idProject );
+                    exit;
                 } else {
                     header("Location: index.php?controller=statistics&action=dashboard");
+                    exit;
                 }
             } catch (\Exception $e) {
                 echo "Erreur lors de l'ajout du projet : " . htmlspecialchars($e->getMessage());
@@ -170,6 +173,7 @@ class FormController extends MotherController {
         //Check si l'utilisateur est connecté, sinon renvoie à la page login
         if (empty($_SESSION)) {
             header("Location: index.php?controller=user&action=login");
+            exit;
         }
 
         $flag = true;
@@ -272,7 +276,8 @@ class FormController extends MotherController {
                 $projectModel->updateIsDetailed($project);
 
 
-            header("Location: index.php?controller=statistics&action=details&project_id=" . $project->getId());
+                header("Location: index.php?controller=statistics&action=details&project_id=" . $project->getId());
+                exit;
         } else {
             // Utilisation de smalot/pdfparser pour extraire le texte du PDF
         try {
@@ -308,6 +313,7 @@ class FormController extends MotherController {
         //Check si l'utilisateur est connecté, sinon renvoie à la page login
         if (empty($_SESSION)) {
             header("Location: index.php?controller=user&action=login");
+            exit;
         }
 
         // Récupération des attributs du projet
@@ -346,13 +352,13 @@ class FormController extends MotherController {
 
         if(count($_POST) > 0){
 
-            $name               =trim($_POST['name']??'');    //La fonction trim supprime les caractères invisibles comme les espaces, avant et après le texte.
-            $studio             =trim($_POST['studio']??'');
-            $episodeNb          =trim($_POST['episode_nb']??'');
-            $episodeTitle       =trim($_POST['episode_title']??'');
-            $dateBegin          =$_POST['date_begin']??'';
-            $dateEnd            =$_POST['date_end']??'';
-            $nbPredecs          =$_POST['nb_predec']??'';
+            $name               = trim(filter_input(INPUT_POST,"name", FILTER_SANITIZE_SPECIAL_CHARS))??'';    //La fonction trim supprime les caractères invisibles comme les espaces, avant et après le texte.
+            $studio             = trim(filter_input(INPUT_POST,"studio", FILTER_SANITIZE_SPECIAL_CHARS))??'';
+            $episodeNb          = trim(filter_input(INPUT_POST,"episode_nb", FILTER_SANITIZE_NUMBER_INT))??'';
+            $episodeTitle       = trim(filter_input(INPUT_POST,"episode_title", FILTER_SANITIZE_SPECIAL_CHARS))??'';
+            $dateBegin          = $_POST['date_begin']??'';
+            $dateEnd            = $_POST['date_end']??'';
+            $nbPredecs          = trim(filter_input(INPUT_POST,"nb_predec", FILTER_SANITIZE_NUMBER_INT))??'';
             $isCleaning         =$_POST['is_cleaning']??'';
             $isAlone            =$_POST['is_alone']??'';
             $script_detailed    =$_POST['script_detailed']??'';
@@ -386,11 +392,14 @@ class FormController extends MotherController {
                     // Si il n'y a pas encore d'analyse détaillée pour ce projet
                     if($projectOld->getIs_detailed() == 0) {
                         header("Location: index.php?controller=form&action=detailedAnalysis&project_id=". $projectOld->getId());
+                        exit;
                     } else {
                         header("Location: index.php?controller=form&action=updateDetailedAnalysis&project_id=" . $projectOld->getId());
+                        exit;
                     }
                 } else {
                     header("Location: index.php?controller=statistics&action=dashboard");
+                    exit;
                 }
             } catch (\Exception $e) {
                 echo "Erreur lors de l'ajout du projet : " . htmlspecialchars($e->getMessage());
@@ -410,6 +419,7 @@ class FormController extends MotherController {
         //Check si l'utilisateur est connecté, sinon renvoie à la page login
         if (empty($_SESSION)) {
             header("Location: index.php?controller=user&action=login");
+            exit;
         }
 
         $flag = true;

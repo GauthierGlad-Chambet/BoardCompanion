@@ -4,6 +4,8 @@ session_start();
 
 // Autoloader de composer
 require 'vendor/autoload.php';
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
 
 // Détermine le controleur à appeler et son action en fonction de l'url
 if(empty($_SESSION)){

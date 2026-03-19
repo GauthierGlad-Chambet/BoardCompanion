@@ -2,33 +2,48 @@
     <h1>Compte</h1>
     <div>
         <h2>Modifier le compte</h2>
-        <form action="POST">
-            <label for="pseudo">Modifier le pseudo</label>
+        <form method="POST" action="index.php?controller=user&action=updatePassword">
+            <label for="pseudo">Pseudo<span class="champObligatoire"> *</span> :</label>
             <input id="pseudo" type="text"  name="pseudo" value="<?= $user->getPseudo() ?>">
             </br>
-            <label for="password">Mot de passe actuel :</label>
-            <input id="password" type="password" name="password" placeholder="**********" required>
+            <label for="oldPassword">Mot de passe<span class="champObligatoire"> *</span> :</label>
+            <input id="oldPassword" type="password" name="oldPassword" placeholder="**********" required>
             </br>
-            <label for="newPassword">Nouveau mot de passe :</label>
-            <input id="newPassword" type="password" name="newPassword" placeholder="**********">
+            <label for="newPassword">Nouveau mot de passe<span class="champObligatoire"> *</span> :</label>
+            <input id="newPassword" type="password" name="newPassword">
             </br>
-            <label for="newPasswordConfirmation">Confirmez le nouveau mot de passe :</label>
-            <input id="newPasswordConfirmation" type="password" name="newPasswordConfirmation" placeholder="**********">
+            <label for="newPasswordConfirmation">Confirmez le nouveau mot de passe<span class="champObligatoire"> *</span> :</label>
+            <input id="newPasswordConfirmation" type="password" name="newPasswordConfirmation">
             <input type="submit" name="modifier" value="Modifier">
         </form>
 
 
         <button class="bouttonSupprimer">Supprimer le compte</button>
         <div class="popup popupSuppr" id="popupCompte">
-        <p>Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.</p>
-        <button class="annulerSuppr">Annuler</button>
         <form method="POST" action="index.php?controller=user&action=deleteAccount">
+            <p>Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.</p>
+            </br>
+            <label for="confirmPassword">Veuillez entrer votre mot de passe pour confirmer la suppression :</label>
+            <input id="confirmPassword" type="password" name="confirmPassword" placeholder="**********" required/>
+            </br>
             <button type="submit">Supprimer le compte</button>
         </form>
-
-
-
+        <button class="annulerSuppr">Annuler</button>
     </div>
+
+    <?php if (!empty($_SESSION['error'])){ 
+        foreach($_SESSION['error'] as $message) {
+    ?>
+        <p class="messageError"><?= $message ?></p>
+    <?php }
+        unset($_SESSION['error']);
+    } ?>
+
+    <?php if (!empty($_SESSION['success'])) { ?>
+        <p class="messageSuccess"><?= $_SESSION['success']['CompteMAJ'] ?></p>
+        <?php unset($_SESSION['success']['CompteMAJ']); ?>
+    <?php }; ?>
+
     </div>
     <div>
         <h2>Statistiques du compte</h2>

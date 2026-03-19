@@ -109,6 +109,24 @@ class UserModel extends MotherModel {
         }
     }
 
+    function updateAccount(User $user) {
+        $query = "
+            UPDATE user
+            SET pseudo = :pseudo,
+            pwd = :pwd
+            WHERE id = :id
+    ";
+
+    $prepare = $this->_db->prepare($query);
+    $prepare->bindValue(':pseudo', $user->getPseudo(), PDO::PARAM_STR);
+    $prepare->bindValue(':pwd', $user->getPwd(), PDO::PARAM_STR);
+    $prepare->bindValue(':id', $user->getId(), PDO::PARAM_INT);
+
+    if (!$prepare->execute()) {
+        throw new \Exception("Erreur lors de la mise à jour du compte : " . implode(", ", $prepare->errorInfo()));
+    }
+    }
+
     function updateAvgPagesPerDay(int $userId, float $avgPagesPerDay) {
 
         $query = "

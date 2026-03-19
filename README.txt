@@ -10,7 +10,8 @@ Démarrer le projet :
 git clone https://github.com/GauthierGlad-Chambet/BoardCompanion.git
 
 
-dans le terminal : composer install
+dans le terminal :
+composer install
 
 Modifier les paramètres serveur :
 

@@ -27,6 +27,8 @@ abstract class MotherController
         // Chemins relatifs depuis le dossier Controllers vers le dossier Views
         if ($header) {
             require __DIR__ . '/../../Views/partials/header.php';
+        } else {
+            require __DIR__ . '/../../Views/partials/head.php';
         }
         include __DIR__ . '/../../Views/' . $strTemplate . '.php';
         require __DIR__ . '/../../Views/partials/footer.php';
