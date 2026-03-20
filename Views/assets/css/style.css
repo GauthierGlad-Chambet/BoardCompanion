@@ -1,13 +1,19 @@
 :root {
-  --primary-color-gradient : linear-gradient(180deg, #7CEE00, #3A6E01);
+  --primary-color-gradient : linear-gradient(180deg, #7CEE00 15%, #3A6E01);
   --primary-color : #7CEE00;
   --secondary-color : #1C1C1C;
   --third-color : #ffffff;
   --background-color : #000000;
+  --accent-color : #FFD800;
 }
 
-/* @font-face {
-} */
+@font-face {
+  font-family: "Bionix";
+  font-weight: 200;
+  font-style: italic;
+  src: url("../fonts/Bionix-demo.otf")
+      format("opentype"),
+}
 
 /* --------------------------------------------------  RESET CSS  --------------------------------------------------*/
 
@@ -20,6 +26,7 @@ header {
   border: 0;
   box-sizing: border-box;
   overflow-x: hidden;
+  font-family: "inter";
 }
 
 /* tous les élements, et pseudo-éléments héritent de la valeur de box-sizing du parent */
@@ -41,18 +48,11 @@ a {
   padding: 0;
 }
 
-h1,
-h2 {
-  font-family: "Berlin";
-}
-
 a {
   text-decoration: none;
+  color: var(--third-color);
   cursor: pointer;
   display: flex;
-  align-items: center; /* Centre le texte verticalement */
-  justify-content: center; /* Centre le texte horizontalement */
-  min-height: 48px; /* Hauteur minimale des éléments clicables selon les guidelines Google et Apple */
 }
 
 /* enlever le style des listes */
@@ -63,7 +63,7 @@ ol {
   list-style: none;
 }
 
-button {
+.button {
   cursor: pointer; /* Ajoute un pointeur au survol */
 }
 
@@ -82,35 +82,102 @@ body {
   background: var(--background-color);
 }
 
+main {
+   width: 90dvw;
+   margin: 0 auto;
+}
 h1 {
-  color: var(--primary-color);
+  /* font-family: "Julius Sans One", sans-serif; */
+  /* color: var(--primary-color); */
+  font-family: "Bionix";
+  color: var(--third-color);
   text-align: center;
+  font-size: 56px;
 }
 
-p, li {
+p, li, td {
   color: var(--third-color);
 }
 
-.logo {
-  margin: 0 auto;
-  width: 120px;
+strong {
+  /* color: var(--forth-color);*/
+  font-family: "Bionix"; 
+}
 
+.text-primary-color {
+  color: var(--primary-color);
+}
+
+.logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 5dvh auto;
+  width: 120px;
+  color: var(--primary-color);
+  font-family: "Just Me Again Down Here", cursive;
+  font-size: 22px;
 }
 
 .container {
-background-color: var(--secondary-color);
-border-radius: 10px;
-width: 90dvw;
-margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+  background-color: var(--secondary-color);
+  border-radius: 10px;
+  margin: 2dvh auto;
+  padding: 20px;
+  text-align: justify;
+ 
 }
 
-/* ------------- BOUTON ------------ */
+.container ul {
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+  list-style-type: disc;
+}
+
+/* ------------- BOUTONS ------------ */
 .button {
- background: var(--primary-color-gradient);
- color: var(--background-color);
- border-radius: 5px;
- width: 40dvw;
- margin: 0 auto;
+  background: var(--primary-color-gradient);
+  color: var(--background-color);
+  border-radius: 5px;
+  width: 40dvw;
+  margin: 0 auto;
+  display: flex;
+  align-items: center; /* Centre le texte verticalement */
+  justify-content: center; /* Centre le texte horizontalement */
+  min-height: 48px; /* Hauteur minimale des éléments clicables selon les guidelines Google et Apple */
+}
+
+/* ------------- FORMULAIRES ------------ */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  color: var(--third-color);
+  background-color: var(--secondary-color);
+  text-align: left;
+}
+
+form textarea, input:not([type="submit"]) {
+  background-color: var(--secondary-color);
+  border-color: var(--primary-color);
+  border-radius: 15px;
+  font-size: 24px;
+  color: var(--third-color);
+  height: 34px;
+  margin: 0;
+  padding-left : 10px;
+}
+
+form textarea:focus, input:not([type="submit"]):focus {
+  border-color: var(--accent-color);
+  outline:none;
 }
 
 
@@ -122,12 +189,54 @@ nav {
   position:fixed;
   bottom: 0;
   width: 100%;
+  height: 60px;
+}
+
+nav a {
+  display: flex;
+  align-items: center; /* Centre le texte verticalement */
+  justify-content: center; /* Centre le texte horizontalement */
+  min-height: 48px; /* Hauteur minimale des éléments clicables selon les guidelines Google et Apple */
 }
 
 svg {
   stroke : var(--third-color);
   color: var(--third-color);
   height: 40px;
+}
+
+/* ------------- FOOTER ------------ */
+
+footer {
+  display: flex;
+  justify-content: center;
+  border-top: solid 1px var(--secondary-color);
+  margin: 5dvh 0 60px;
+}
+
+footer a {
+  margin: 10px auto;
+}
+
+/* ------------- SignIn- Login ------------ */
+
+.logo-signIn {
+  width: auto;
+}
+
+.logo-signIn h1 {
+  font-size: 38px;
+}
+.container-signIn {
+  /* height: calc(95dvh - 80px); */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.main-signIn + footer{
+  margin: 5dvh 0 0;
 }
 
 

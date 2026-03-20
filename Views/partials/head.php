@@ -44,6 +44,15 @@
       type="image/png"
       href="#########insérer_chemin_favicon##########"
     />
+
+    <!-- Appel de la police Julius Sans One -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Julius+Sans+One&display=swap" rel="stylesheet">
+    <!-- Appel de la police Just Me Again Down Here -->
+    <link href="https://fonts.googleapis.com/css2?family=Just+Me+Again+Down+Here&display=swap" rel="stylesheet">
+    <!-- Appel de la police Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
     
     <link href="Views/assets/css/style.css" rel="stylesheet" type="text/css" />
   </head>
