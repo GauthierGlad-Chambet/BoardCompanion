@@ -26,13 +26,13 @@ class FormController extends MotherController {
             
         if(count($_POST) > 0){
 
-            $name               = trim(filter_input(INPUT_POST,"name", FILTER_SANITIZE_SPECIAL_CHARS))??'';    //La fonction trim supprime les caractères invisibles comme les espaces, avant et après le texte.
-            $studio             = trim(filter_input(INPUT_POST,"studio", FILTER_SANITIZE_SPECIAL_CHARS))??'';
-            $episodeNb          = trim(filter_input(INPUT_POST,"episode_nb", FILTER_SANITIZE_NUMBER_INT))??'';
-            $episodeTitle       = trim(filter_input(INPUT_POST,"episode_title", FILTER_SANITIZE_SPECIAL_CHARS))??'';
+            $name               = trim(filter_input(INPUT_POST,"name", FILTER_SANITIZE_SPECIAL_CHARS)??'');    //La fonction trim supprime les caractères invisibles comme les espaces, avant et après le texte.
+            $studio             = trim(filter_input(INPUT_POST,"studio", FILTER_SANITIZE_SPECIAL_CHARS)??'');
+            $episodeNb          = trim(filter_input(INPUT_POST,"episode_nb", FILTER_SANITIZE_NUMBER_INT)??'');
+            $episodeTitle       = trim(filter_input(INPUT_POST,"episode_title", FILTER_SANITIZE_SPECIAL_CHARS)??'');
             $dateBegin          = $_POST['date_begin']??'';
             $dateEnd            = $_POST['date_end']??'';
-            $nbPredecs          = trim(filter_input(INPUT_POST,"nb_predec", FILTER_SANITIZE_NUMBER_INT))??'';
+            $nbPredecs          = trim(filter_input(INPUT_POST,"nb_predec", FILTER_SANITIZE_NUMBER_INT)??'');
             $isCleaning         =$_POST['is_cleaning']??'';
             $isAlone            =$_POST['is_alone']??'';
             $script_detailed    =$_POST['script_detailed']??'';

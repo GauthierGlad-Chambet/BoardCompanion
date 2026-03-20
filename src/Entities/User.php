@@ -13,7 +13,7 @@ class User extends MotherEntity
     private int $id;
     private string $pseudo;
     private string $email;
-    private string $pwd;
+    private string $pwd ='';
     private float $avg_pages_per_day = 1;
     private float $avg_cleaning_duration = 0.2; // en jours, par page assignée
     private int $avg_shots_per_page = 0; 

@@ -30,8 +30,8 @@ class UserController extends MotherController
             if(isset($_POST['submit_signUp'])) {
 
                 // Récupération des données du formulaire
-                $pseudo                 = trim(filter_input(INPUT_POST,"pseudo", FILTER_SANITIZE_SPECIAL_CHARS));//trim remove invisibles characters like spaces, before and after the text
-                $email                  = trim(filter_input(INPUT_POST,"email", FILTER_SANITIZE_EMAIL));
+                $pseudo                 = trim(filter_input(INPUT_POST,"pseudo", FILTER_SANITIZE_SPECIAL_CHARS)??'');//trim remove invisibles characters like spaces, before and after the text
+                $email                  = trim(filter_input(INPUT_POST,"email", FILTER_SANITIZE_EMAIL)??'');
                 $password               = $_POST['password']??'';
                 $passwordConfirmation   = $_POST['passwordConfirmation']??'';
                 $accepteCGU             = $_POST['accepteCGU']??'off';
@@ -91,7 +91,7 @@ class UserController extends MotherController
             } else if (isset($_POST['submit_signIn'])) {
 
                 // Récupération des données du formulaire
-                $email    = trim(filter_input(INPUT_POST,"email", FILTER_SANITIZE_EMAIL));
+                $email    = trim(filter_input(INPUT_POST,"email", FILTER_SANITIZE_EMAIL)??'');
                 $password = $_POST['password']??'';
 
                 // Récupération de l'utilisateur par email
@@ -176,45 +176,74 @@ class UserController extends MotherController
         $this->_display("user/account");
     }
 
-    public function updatePassword() {
+    public function updateAccount() {
 
-        $pseudo = trim(filter_input(INPUT_POST,"pseudo", FILTER_SANITIZE_SPECIAL_CHARS));
+        $pseudo = trim(filter_input(INPUT_POST,"pseudo", FILTER_SANITIZE_SPECIAL_CHARS)??'');
         $oldPassword = $_POST['oldPassword']??'';
-        $newPassword = $_POST['newPassword']??'';
+        $newPassword = $_POST['newPassword'];
         $newPasswordConfirmation = $_POST['newPasswordConfirmation']??'';
 
         $userModel = new UserModel();
         $passwordHash = $userModel->getPasswordHash($_SESSION['user']['email']);
 
+    // var_dump($newPassword);die;
 
-        // Validateurs des différents champs
+    // COndition pour savoir si on modifie juste le pseudo ou tout le compte
+    if(!$newPassword) {
         // Array_filter permet de collecter uniquement les erreurs non nulles
-        $errors = array_filter([
-            'pseudo'            => $this->validator->validerPseudo($pseudo),
-            'incorrectPassword' => $this->validator->verifierMdp($oldPassword, $passwordHash),
-            'differenceMdp'     => $this->validator->differenceMdp($oldPassword, $newPassword),
-            'regex'             => $this->validator->regexMdp($newPassword),
-            'matching'          => $this->validator->matcherMdp($newPassword, $newPasswordConfirmation),
-        ]);
+        // Validateurs des différents champs
+            $errors = array_filter([
+                'pseudo'            => $this->validator->validerPseudo($pseudo),
+                'incorrectPassword' => $this->validator->verifierMdp($oldPassword, $passwordHash)
+            ]);
 
-        // S'il y a des erreurs, on les met en session et on redirige
-        if (!empty($errors)) {
-            $_SESSION['error'] = $errors;
+            // S'il y a des erreurs, on les met en session et on redirige
+            if (!empty($errors)) {
+                $_SESSION['error'] = $errors;
+                header("Location: index.php?controller=user&action=showAccount");
+                exit;
+            }
+
+            $user = new User();
+            $user->setId($_SESSION['user']['id']);
+            $user->setPseudo($pseudo);
+
+            $userModel->updateAccount($user);
+
+            $_SESSION['success']['CompteMAJ'] = "Compte mis à jour avec succès !";
+            header("Location: index.php?controller=user&action=showAccount");
+            exit;
+
+
+        } else {
+            $errors = array_filter([
+                'pseudo'            => $this->validator->validerPseudo($pseudo),
+                'incorrectPassword' => $this->validator->verifierMdp($oldPassword, $passwordHash),
+                'differenceMdp'     => $this->validator->differenceMdp($oldPassword, $newPassword),
+                'regex'             => $this->validator->regexMdp($newPassword),
+                'matching'          => $this->validator->matcherMdp($newPassword, $newPasswordConfirmation),
+            ]);
+
+            // S'il y a des erreurs, on les met en session et on redirige
+            if (!empty($errors)) {
+                $_SESSION['error'] = $errors;
+                header("Location: index.php?controller=user&action=showAccount");
+                exit;
+            }
+    
+            $user = new User();
+            $user->setId($_SESSION['user']['id']);
+            $user->setPseudo($pseudo);
+            $hashedPassword = password_hash($newPassword, PASSWORD_BCRYPT);
+            $user->setPwd($hashedPassword);
+    
+            $userModel->updateAccount($user);
+    
+            $_SESSION['success']['CompteMAJ'] = "Compte mis à jour avec succès !";
             header("Location: index.php?controller=user&action=showAccount");
             exit;
         }
 
-        $user = new User();
-        $user->setId($_SESSION['user']['id']);
-        $user->setPseudo($pseudo);
-        $hashedPassword = password_hash($newPassword, PASSWORD_BCRYPT);
-        $user->setPwd($hashedPassword);
-
-        $userModel->updateAccount($user);
-
-        $_SESSION['success']['CompteMAJ'] = "Compte mis à jour avec succès !";
-        header("Location: index.php?controller=user&action=showAccount");
-        exit;
 
     }
 

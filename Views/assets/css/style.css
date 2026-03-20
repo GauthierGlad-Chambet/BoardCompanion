@@ -1,7 +1,12 @@
-/* :root {
+:root {
+  --primary-color-gradient : linear-gradient(180deg, #7CEE00, #3A6E01);
+  --primary-color : #7CEE00;
+  --secondary-color : #1C1C1C;
+  --third-color : #ffffff;
+  --background-color : #000000;
 }
 
-@font-face {
+/* @font-face {
 } */
 
 /* --------------------------------------------------  RESET CSS  --------------------------------------------------*/
@@ -41,12 +46,25 @@ h2 {
   font-family: "Berlin";
 }
 
+a {
+  text-decoration: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center; /* Centre le texte verticalement */
+  justify-content: center; /* Centre le texte horizontalement */
+  min-height: 48px; /* Hauteur minimale des éléments clicables selon les guidelines Google et Apple */
+}
+
 /* enlever le style des listes */
 ul,
 ol {
   margin: 0 auto;
   padding: 0;
   list-style: none;
+}
+
+button {
+  cursor: pointer; /* Ajoute un pointeur au survol */
 }
 
 /* corriger l’affichage des images */
@@ -58,6 +76,61 @@ svg {
   display: block;
   max-width: 100%;
 }
+
+/* ------------- GENERAL ------------ */
+body {
+  background: var(--background-color);
+}
+
+h1 {
+  color: var(--primary-color);
+  text-align: center;
+}
+
+p, li {
+  color: var(--third-color);
+}
+
+.logo {
+  margin: 0 auto;
+  width: 120px;
+
+}
+
+.container {
+background-color: var(--secondary-color);
+border-radius: 10px;
+width: 90dvw;
+margin: 0 auto;
+}
+
+/* ------------- BOUTON ------------ */
+.button {
+ background: var(--primary-color-gradient);
+ color: var(--background-color);
+ border-radius: 5px;
+ width: 40dvw;
+ margin: 0 auto;
+}
+
+
+/* ------------- HEADER - NAVBAR ------------ */
+nav {
+  background: var(--primary-color-gradient);
+  display: flex;
+  justify-content: space-evenly;
+  position:fixed;
+  bottom: 0;
+  width: 100%;
+}
+
+svg {
+  stroke : var(--third-color);
+  color: var(--third-color);
+  height: 40px;
+}
+
+
 
 
 .popup {
@@ -73,5 +146,5 @@ svg {
 }
 
 .messageSuccess {
-  color: rgb(90, 134, 90);
+  color: var(--primary-color);
 }

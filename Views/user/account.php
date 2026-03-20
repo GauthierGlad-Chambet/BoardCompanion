@@ -2,13 +2,15 @@
     <h1>Compte</h1>
     <div>
         <h2>Modifier le compte</h2>
-        <form method="POST" action="index.php?controller=user&action=updatePassword">
+        <form method="POST" action="index.php?controller=user&action=updateAccount">
+            <h3>Modifier le pseudo :</h3>
             <label for="pseudo">Pseudo<span class="champObligatoire"> *</span> :</label>
             <input id="pseudo" type="text"  name="pseudo" value="<?= $user->getPseudo() ?>">
             </br>
             <label for="oldPassword">Mot de passe<span class="champObligatoire"> *</span> :</label>
             <input id="oldPassword" type="password" name="oldPassword" placeholder="**********" required>
             </br>
+            <h3>Modifier le mot de passe :</h3>
             <label for="newPassword">Nouveau mot de passe<span class="champObligatoire"> *</span> :</label>
             <input id="newPassword" type="password" name="newPassword">
             </br>

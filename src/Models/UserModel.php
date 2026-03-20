@@ -112,14 +112,21 @@ class UserModel extends MotherModel {
     function updateAccount(User $user) {
         $query = "
             UPDATE user
-            SET pseudo = :pseudo,
-            pwd = :pwd
+            SET pseudo = :pseudo";
+        
+        if($user->getPwd() !== '') {
+            $query .= ",pwd = :pwd";
+        }
+
+        $query .= "   
             WHERE id = :id
-    ";
+        ";
 
     $prepare = $this->_db->prepare($query);
     $prepare->bindValue(':pseudo', $user->getPseudo(), PDO::PARAM_STR);
-    $prepare->bindValue(':pwd', $user->getPwd(), PDO::PARAM_STR);
+    if($user->getPwd() !== '') {
+        $prepare->bindValue(':pwd', $user->getPwd(), PDO::PARAM_STR);
+    }
     $prepare->bindValue(':id', $user->getId(), PDO::PARAM_INT);
 
     if (!$prepare->execute()) {

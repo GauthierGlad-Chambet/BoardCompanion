@@ -215,10 +215,10 @@ class StatisticsController extends MotherController
         {
        
             // Récupération de toutes les données du post qui concernent la table final_report en BDD
-            $dureeTotaleProjetForm      = (float)trim(filter_input(INPUT_POST,"duree_totale_projet", FILTER_SANITIZE_NUMBER_FLOAT))??'';
-            $dureeCleaningForm          = (float)trim(filter_input(INPUT_POST,"duree_cleaning", FILTER_SANITIZE_NUMBER_FLOAT))??'';
-            $totalPlansForm             = (int)trim(filter_input(INPUT_POST,"total_plans", FILTER_SANITIZE_NUMBER_INT))??'';
-            $commentaireForm            = trim(filter_input(INPUT_POST,"commentaire", FILTER_SANITIZE_SPECIAL_CHARS))??'';
+            $dureeTotaleProjetForm      = (float)trim(filter_input(INPUT_POST,"duree_totale_projet", FILTER_SANITIZE_NUMBER_FLOAT)??'');
+            $dureeCleaningForm          = (float)trim(filter_input(INPUT_POST,"duree_cleaning", FILTER_SANITIZE_NUMBER_FLOAT)??'');
+            $totalPlansForm             = (int)trim(filter_input(INPUT_POST,"total_plans", FILTER_SANITIZE_NUMBER_INT)??'');
+            $commentaireForm            = trim(filter_input(INPUT_POST,"commentaire", FILTER_SANITIZE_SPECIAL_CHARS)??'');
             $idAppreciationForm         = (int)filter_input(INPUT_POST,"appreciation", FILTER_SANITIZE_NUMBER_INT)??0;
             $idProjectForm              = (int)filter_input(INPUT_POST,"project_id", FILTER_SANITIZE_NUMBER_INT)??'';
 
@@ -388,10 +388,10 @@ class StatisticsController extends MotherController
 
         if(count($_POST) > 0){
 
-            $dureeTotale      = (float)trim(filter_input(INPUT_POST,"duree_totale_projet", FILTER_SANITIZE_NUMBER_FLOAT))??'';
-            $dureeCleaning    = (float)trim(filter_input(INPUT_POST,"duree_cleaning", FILTER_SANITIZE_NUMBER_FLOAT))??'';
-            $totalPlans       = (int)trim(filter_input(INPUT_POST,"total_plans", FILTER_SANITIZE_NUMBER_INT))??'';
-            $commentaire      = trim(filter_input(INPUT_POST,"commentaire", FILTER_SANITIZE_SPECIAL_CHARS))??'';
+            $dureeTotale      = (float)trim(filter_input(INPUT_POST,"duree_totale_projet", FILTER_SANITIZE_NUMBER_FLOAT)??'');
+            $dureeCleaning    = (float)trim(filter_input(INPUT_POST,"duree_cleaning", FILTER_SANITIZE_NUMBER_FLOAT)??'');
+            $totalPlans       = (int)trim(filter_input(INPUT_POST,"total_plans", FILTER_SANITIZE_NUMBER_INT)??'');
+            $commentaire      = trim(filter_input(INPUT_POST,"commentaire", FILTER_SANITIZE_SPECIAL_CHARS)??'');
             $appreciation     = (int)filter_input(INPUT_POST,"appreciation", FILTER_SANITIZE_NUMBER_INT)??0;
             $projectId        = (int)filter_input(INPUT_POST,"project_id", FILTER_SANITIZE_NUMBER_INT)??'';
          
