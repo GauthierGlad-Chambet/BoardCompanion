@@ -1,6 +1,6 @@
 <main>
 
-<h1>Modifier l'analyse détaillée</h1>
+<h1>Modifier l'analyse detaillee</h1>
 
 <form action="index.php" method="get">
 
@@ -22,7 +22,7 @@
 </form>
 
 <h2>Scènes extraites</h2>
-
+<div class="container" >
 <?php if (!empty($sequences)): ?>
     
     <form action="" method="POST">
@@ -35,27 +35,40 @@
             <div class="sequence-block">
                 <h3>Séquence <?= $sequence->getNumber() ?> - <?= htmlspecialchars($sequence->getTitle()) ?></h3>
                 <p><strong><?= $sequence->getLines_count() ?> lignes</strong></p>
-                <ul>
-                    <?php foreach (array_slice(json_decode($sequence->getScript(), true) ?? [], 0, 5) as $line): ?>
-                        <li><?= htmlspecialchars($line) ?></li>
-                    <?php endforeach; ?>
-                    <li>…</li>
-                </ul>
+                <div class="containerSequence">
+                    <ul>
+                        <?php foreach (array_slice(json_decode($sequence->getScript(), true) ?? [], 0, 5) as $line): ?>
+                            <li><?= htmlspecialchars($line) ?></li>
+                        <?php endforeach; ?>
+                        <li>…</li>
+                    </ul>
+                </div>
             </div>
             
             <p>Type de séquence :</p>
-            <input type="radio" id="SequenceAction_<?= $index ?>" name="typeSequence_<?= $index ?>" value="Action" <?= $sequence->getFk_type() == 1 ? 'checked' : '' ?> />
-            <label for="SequenceAction_<?= $index ?>">Action</label>
-            <input type="radio" id="SequenceComedie_<?= $index ?>" name="typeSequence_<?= $index ?>" value="Comedie" <?= $sequence->getFk_type() == 2 ? 'checked' : '' ?> />
-            <label for="SequenceComedie_<?= $index ?>">Comédie</label>
-            <input type="radio" id="SequenceMixte_<?= $index ?>" name="typeSequence_<?= $index ?>" value="Mixte" <?= $sequence->getFk_type() == 3 ? 'checked' : '' ?> />
-            <label for="SequenceMixte_<?= $index ?>">Mixte</label>
+            <label class="customLabel radioLabel" for="SequenceAction_<?= $index ?>">Action
+                <input type="radio" id="SequenceAction_<?= $index ?>" name="typeSequence_<?= $index ?>" value="Action" <?= $sequence->getFk_type() == 1 ? 'checked' : '' ?> />
+                <span class="checkmark"></span>
+            </label>
+
+            <label class="customLabel radioLabel" for="SequenceComedie_<?= $index ?>">Comédie
+                <input type="radio" id="SequenceComedie_<?= $index ?>" name="typeSequence_<?= $index ?>" value="Comedie" <?= $sequence->getFk_type() == 2 ? 'checked' : '' ?> />
+                <span class="checkmark"></span>
+            </label>
+            <label class="customLabel radioLabel" for="SequenceMixte_<?= $index ?>">Mixte
+                <input type="radio" id="SequenceMixte_<?= $index ?>" name="typeSequence_<?= $index ?>" value="Mixte" <?= $sequence->getFk_type() == 3 ? 'checked' : '' ?> />
+                <span class="checkmark"></span>
+            </label>
 
             <p>Je m'en occupe :</p>
-            <input type="radio" id="assigned_<?= $index ?>" name="is_assigned_<?= $index ?>" value="1" <?= $sequence->getIs_assigned() ? 'checked' : '' ?> />
-            <label for="assigned_<?= $index ?>">Oui</label>
-            <input type="radio" id="not_assigned_<?= $index ?>" name="is_assigned_<?= $index ?>" value="0" <?= !$sequence->getIs_assigned() ? 'checked' : '' ?> />
-            <label for="not_assigned_<?= $index ?>">Non</label>
+            <label class="customLabel radioLabel" for="assigned_<?= $index ?>">Oui
+                <input type="radio" id="assigned_<?= $index ?>" name="is_assigned_<?= $index ?>" value="1" <?= $sequence->getIs_assigned() ? 'checked' : '' ?> />
+                <span class="checkmark"></span>
+            </label>
+            <label class="customLabel radioLabel" for="not_assigned_<?= $index ?>">Non
+                <input type="radio" id="not_assigned_<?= $index ?>" name="is_assigned_<?= $index ?>" value="0" <?= !$sequence->getIs_assigned() ? 'checked' : '' ?> />
+                <span class="checkmark"></span>
+            </label>
             <hr>
         <?php endforeach; ?>
 
@@ -64,4 +77,5 @@
 <?php else: ?>
     <p>Aucune scène trouvée.</p>
 <?php endif; ?>
+</div>
 </main>

@@ -64,7 +64,7 @@
                         <input type="password" name="passwordConfirmation" id="passwordConfirmation" required>
                     </div>
                     <div>
-                        <label class="checkboxLabel" for="accepteCGU">J'accepte les termes et conditions d'utilisation
+                        <label class="customLabel" id="checkboxLabel" for="accepteCGU">J'accepte les termes et conditions d'utilisation
                             <input type="checkbox" id="accepteCGU" name="accepteCGU" required>
                             <span class="checkmark"></span>
                         </label>

@@ -93,7 +93,7 @@ h1 {
   font-family: "Bionix";
   color: var(--third-color);
   text-align: center;
-  font-size: 56px;
+  font-size: 34px;
 }
 
 h2, p, li, td {
@@ -107,6 +107,11 @@ strong {
 
 label {
   cursor: pointer;
+}
+
+hr {
+  width: 90%;
+  border-color: var(--primary-color);
 }
 
 .text-primary-color {
@@ -128,7 +133,7 @@ label {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 10px;
+  gap: 20px;
   background-color: var(--secondary-color);
   border-radius: 10px;
   margin: 2dvh auto;
@@ -150,6 +155,7 @@ label {
 .button {
   background: var(--primary-color-gradient);
   color: var(--background-color);
+  border: none;
   border-radius: 5px;
   width: 40dvw;
   max-width: 40dvw;
@@ -181,7 +187,7 @@ form label {
   margin-bottom: 10px;
 }
 
-form textarea, input:not([type="submit"]) {
+form textarea, input:not([type="submit"], [type="file"], [type="radio"]) {
   background-color: var(--secondary-color);
   border-color: var(--primary-color);
   border-radius: 15px;
@@ -197,9 +203,57 @@ form textarea:focus, input:not([type="submit"]):focus {
   outline:none;
 }
 
-/* Personnalisation de la checkbox */
+form .note {
+  font-size: 12px;
+}
 
-#accepteCGU {
+form .block-radio {
+  width: 90%;
+}
+
+.block-radio div {
+  display: flex;
+  flex-direction: row;
+  align-self: baseline;
+  gap: 50px;
+  height: 40px;
+}
+
+.block-radio p {
+  margin-bottom: 10px;
+}
+
+.radioLabel {
+  margin-bottom: 0;
+}
+
+.block-files {
+  width: 90%;
+}
+
+.block-dates {
+  width: 90%;
+}
+
+.block-dates p {
+  margin-bottom: 10px;
+}
+
+.block-dates label {
+  display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Inverse la couleur de l'icone par défaut, car pas stylisable directement, solution simple et rapide */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1); /* blanc */
+}
+
+
+/* Personnalisation de la checkbox */
+.customLabel input {
   position: absolute;
   opacity: 0;
   cursor: pointer;
@@ -207,7 +261,7 @@ form textarea:focus, input:not([type="submit"]):focus {
   width: 0;
 }
 
-.checkboxLabel {
+.customLabel {
   display: block;
   position: relative;
   padding-left: 35px;
@@ -222,20 +276,20 @@ form textarea:focus, input:not([type="submit"]):focus {
   position: absolute;
   top: 0;
   left: 0;
-  height: 25px;
-  width: 25px;
+  height: 26px;
+  width: 26px;
   background-color: var(--background-color);
-  border: 1px solid var(--primary-color);
+  border: 1px solid var(--third-color);
   border-radius: 5px;
 }
 
 /* Quand la souris passe dessus, éclairci le fond */
-.checkboxLabel:hover input ~ .checkmark {
+.customLabel:hover input ~ .checkmark {
   background-color: var(--secondary-color);
 }
 
 /* Quand c'est checké, ajoute un fond vert */
-.checkboxLabel input:checked ~ .checkmark {
+.customLabel input:checked ~ .checkmark {
   background-color: var(--primary-color);
 }
 
@@ -247,22 +301,68 @@ form textarea:focus, input:not([type="submit"]):focus {
 }
 
 /* Montre le checkmark quand checké */
-.checkboxLabel input:checked ~ .checkmark:after {
+.customLabel input:checked ~ .checkmark:after {
   display: block;
 }
 
 /* Stylise le checkmark */
-.checkboxLabel .checkmark:after {
-  left: 9px;
-  top: 5px;
+.customLabel .checkmark:after {
+  left: 10px;
+  top: 7px;
   width: 5px;
   height: 10px;
-  border: solid white;
+  border: solid var(--third-color);
   border-width: 0 3px 3px 0;
   -webkit-transform: rotate(45deg);
   -ms-transform: rotate(45deg);
   transform: rotate(45deg);
 }
+
+/* Personnalisation des boutons radio */
+
+/* Style the checkmark/indicator */
+.radioLabel .checkmark:after {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--third-color);
+}
+
+.radioLabel .checkmark {
+  background-color: var(--background-color);
+  border-radius: 50%;
+}
+
+/* Quand la souris passe dessus, éclairci le fond */
+.radioLabel:hover input ~ .checkmark {
+  background-color: var(--secondary-color);
+}
+
+/* Quand c'est checké, ajoute un fond vert */
+.radioLabel input:checked ~ .checkmark {
+  background-color: var(--primary-color);
+}
+
+
+/* ------------- ANALYSE DETAILLEE ------------ */
+.containerSequence {
+  background-color: var(--background-color);
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+}
+
+.containerSequence ul {
+  list-style: none;
+  padding: 0;
+  gap : 0;
+}
+
+
+
 
 
 /* ------------- HEADER - NAVBAR ------------ */
@@ -404,7 +504,6 @@ footer a {
   background-image: radial-gradient(circle at 0%  100%, transparent 13px, var(--primary-color) 12px);
 }
 
-
 #block-connection {
   display: none;
   border-radius: 10px 0 10px 10px;
@@ -452,7 +551,6 @@ footer a {
   background-image: radial-gradient(circle at 0%  0%, transparent 13px, var(--secondary-color) 12px);
 }
 
-
 .color-green, .color-green h2 {
   background-color: var(--primary-color);
   color: var(--secondary-color);
@@ -463,11 +561,11 @@ footer a {
   color: var(--third-color);
 }
 
-
-
 .main-signIn + footer{
   margin: 5dvh 0 0;
 }
+
+
 
 
 
