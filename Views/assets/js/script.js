@@ -8,7 +8,25 @@ const LABEL_INSCRIPTION = document.getElementById("label-inscription");
 const LABEL_CONNECTION = document.getElementById("label-connection");
 const BLOCK_CONNECTION = document.getElementById("block-connection");
 const BLOCK_INSCRIPTION = document.getElementById("block-inscription");
+const ICONES_MENU = document.querySelectorAll(".icones-menu");
 
+
+
+// Mise en évidence de l'onglet actif
+document.addEventListener('DOMContentLoaded', () => {
+    
+    ICONES_MENU.forEach(link => {
+        // On récupère l'URL du lien du bouton et l'url de la page
+        const linkUrl = new URL(link.href);
+        const currentUrl = new URL(window.location.href);
+
+        // Compare le pathname ET les paramètres GET
+        if (linkUrl.pathname === currentUrl.pathname && 
+            linkUrl.search === currentUrl.search) {
+            link.classList.add('menu-active');
+        }
+    });
+});
 
 
 // Ouvre la popup de confirmation de suppression
@@ -35,16 +53,11 @@ BTN_INSCRIPTION.addEventListener("click", () => {
     BLOCK_INSCRIPTION.style.display = "flex";
     BLOCK_CONNECTION.style.display = "none";
 
-
     BTN_CONNECTION.classList.add("color-green");
-    LABEL_CONNECTION.classList.add("color-green");
     BTN_CONNECTION.classList.remove("color-grey");
-    LABEL_CONNECTION.classList.remove("color-grey");
 
     BTN_INSCRIPTION.classList.add("color-grey");
-    LABEL_INSCRIPTION.classList.add("color-grey");
     BTN_INSCRIPTION.classList.remove("color-green");
-    LABEL_INSCRIPTION.classList.remove("color-green");
 
     BTN_CONNECTION.style.zIndex = "0";
     BTN_INSCRIPTION.style.zIndex = "2";
@@ -56,16 +69,14 @@ BTN_CONNECTION.addEventListener("click", () => {
 
 
     BTN_INSCRIPTION.classList.add("color-green");
-    LABEL_INSCRIPTION.classList.add("color-green");
     BTN_INSCRIPTION.classList.remove("color-grey");
-    LABEL_INSCRIPTION.classList.remove("color-grey");
-
 
     BTN_CONNECTION.classList.add("color-grey");
-    LABEL_CONNECTION.classList.add("color-grey");
     BTN_CONNECTION.classList.remove("color-green");
-    LABEL_CONNECTION.classList.remove("color-green");
+
 
     BTN_INSCRIPTION.style.zIndex = "0";
     BTN_CONNECTION.style.zIndex = "2";
 })
+
+

@@ -5,28 +5,28 @@ require_once("Views/partials/head.php");
 <body>
     <header>
         <nav>
-            <a href="index.php">
-                <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" id="Home--Streamline-Solar-Broken">
-                <path d="M41.25 22.8823125v2.8520624999999997c0 7.314 0 10.971187500000001 -2.1967499999999998 13.2433125C36.8566875 41.25 33.321 41.25 26.25 41.25h-7.5c-7.071075 0 -10.60659375 0 -12.80330625 -2.2723125C3.75 36.7055625 3.75 33.048375 3.75 25.734375v-2.8520624999999997c0 -4.29076875 0 -6.4361625 0.9735 -8.214675000000002 0.9735 -1.77849375 2.7520312500000004 -2.88230625 6.30905625 -5.08989375l3.75 -2.3273625C18.542606250000002 4.91679375 20.4226875 3.75 22.5 3.75c2.0773125 0 3.957375 1.16679375 7.717499999999999 3.50038125l3.75 2.32734375c3.5570625 2.20760625 5.335500000000001 3.31141875 6.308999999999999 5.0899125000000005" stroke-linecap="round" stroke-width="3"></path>
-                <path d="M28.125 33.75H16.875" stroke-linecap="round" stroke-width="3"></path>
+            <a class="icones-menu" href="index.php">
+                <svg viewBox="-1.5 -1.5 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" id="Home--Streamline-Solar-Broken">
+                    <path d="M41.25 22.8823125v2.8520624999999997c0 7.314 0 10.971187500000001 -2.1967499999999998 13.2433125C36.8566875 41.25 33.321 41.25 26.25 41.25h-7.5c-7.071075 0 -10.60659375 0 -12.80330625 -2.2723125C3.75 36.7055625 3.75 33.048375 3.75 25.734375v-2.8520624999999997c0 -4.29076875 0 -6.4361625 0.9735 -8.214675000000002 0.9735 -1.77849375 2.7520312500000004 -2.88230625 6.30905625 -5.08989375l3.75 -2.3273625C18.542606250000002 4.91679375 20.4226875 3.75 22.5 3.75c2.0773125 0 3.957375 1.16679375 7.717499999999999 3.50038125l3.75 2.32734375c3.5570625 2.20760625 5.335500000000001 3.31141875 6.308999999999999 5.0899125000000005" stroke-linecap="round" stroke-width="3"></path>
+                    <path d="M28.125 33.75H16.875" stroke-linecap="round" stroke-width="3"></path>
                 </svg>
             </a>
-            <a href="index.php?controller=form&action=newProject">
-                <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" id="Add-Circle--Streamline-Solar-Broken">
+            <a class="icones-menu" href="index.php?controller=form&action=newProject">
+                <svg viewBox="-1.5 -1.5 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" id="Add-Circle--Streamline-Solar-Broken">
                     <path d="m28.125 22.5 -5.625 0m0 0 -5.625 0m5.625 0 0 -5.625m0 5.625 0 5.625" stroke-linecap="round" stroke-width="3"></path>
                     <path d="M13.125 6.2584124999999995C15.882881249999999 4.66306875 19.084875 3.75 22.5 3.75c10.35525 0 18.75 8.39465625 18.75 18.75 0 10.35525 -8.39475 18.75 -18.75 18.75 -10.35534375 0 -18.75 -8.39475 -18.75 -18.75 0 -3.4151249999999997 0.91306875 -6.6171187499999995 2.5084125 -9.375" stroke-linecap="round" stroke-width="3"></path>
                 </svg>
             </a>
-            <a href="index.php?controller=statistics&action=dashboard">
-                <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" id="Library--Streamline-Solar-Broken">
+            <a class="icones-menu" href="index.php?controller=statistics&action=dashboard">
+                <svg viewBox="-1.5 -1.5 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" id="Library--Streamline-Solar-Broken">
                     <path d="M36.6781875 13.125c0.4288125 -2.44644375 -1.453875 -4.6875 -3.9375 -4.6875H12.258525C9.774806250000001 8.4375 7.8922875 10.67855625 8.32095 13.125" stroke-width="3"></path>
                     <path d="M32.8123125 8.4375c0.053250000000000006 -0.48577499999999996 0.079875 -0.72871875 0.08025 -0.9293437499999999 0.0043125 -1.91930625 -1.4415 -3.53195625 -3.349875 -3.73674375C29.3431875 3.75 29.098875 3.75 28.61025 3.75H16.38935625c-0.48869999999999997 0 -0.7330687499999999 0 -0.93256875 0.0214125 -1.9083374999999998 0.20478749999999998 -3.35401875 1.8174375 -3.3498375 3.736725 0.00043125 0.20064374999999998 0.027037500000000003 0.44355 0.08023125 0.9293625" stroke-width="3"></path>
                     <path d="M28.125 33.75H16.875" stroke-linecap="round" stroke-width="3"></path>
                     <path d="M39.737812500000004 31.486874999999998c-0.655875 4.6516875 -0.983625 6.9774375 -2.6658749999999998 8.370375C35.3896875 41.25 32.908500000000004 41.25 27.946125000000002 41.25H17.0538c-4.96228125 0 -7.44343125 0 -9.1256625 -1.39275 -1.68223125 -1.3929375 -2.01015 -3.7186875 -2.6659875 -8.370375l-0.79306875 -5.625c-0.8363062499999999 -5.93175 -1.2544499999999998 -8.89753125 0.52276875 -10.81719375C6.769068750000001 13.125 9.9329625 13.125 16.26073125 13.125h12.478518750000001c6.32775 0 9.491624999999999 0 11.268937500000002 1.91968125 1.4040000000000001 1.51659375 1.43775 3.686175 0.9778125 7.45531875" stroke-linecap="round" stroke-width="3"></path>
                 </svg>
             </a>
-            <a href="index.php?controller=calendar&action=index">
-                <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" id="Calendar--Streamline-Solar-Broken">
+            <!-- <a class="icones-menu" href="index.php?controller=calendar&action=index">
+                <svg viewBox="-1.5 -1.5 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" id="Calendar--Streamline-Solar-Broken">
                     <path d="M26.25 41.25h-7.5c-7.071075 0 -10.60659375 0 -12.80330625 -2.1967499999999998C3.75 36.8566875 3.75 33.321 3.75 26.25v-3.75c0 -7.071075 0 -10.60659375 2.19669375 -12.80330625C8.14340625 7.5 11.678925000000001 7.5 18.75 7.5h7.5c7.071 0 10.6066875 0 12.80325 2.19669375C41.25 11.89340625 41.25 15.428925 41.25 22.5v3.75c0 7.071 0 10.6066875 -2.1967499999999998 12.80325 -1.22475 1.22475 -2.8655625 1.7666250000000001 -5.303249999999999 2.0064375" stroke-linecap="round" stroke-width="3"></path>
                     <path d="M13.125 7.5V4.6875" stroke-linecap="round" stroke-width="3"></path>
                     <path d="M31.875 7.5V4.6875" stroke-linecap="round" stroke-width="3"></path>
@@ -39,24 +39,24 @@ require_once("Views/partials/head.php");
                     <path fill="currentColor" d="M15 24.375c0 1.0355625 -0.839475 1.875 -1.875 1.875s-1.875 -0.8394375 -1.875 -1.875 0.839475 -1.875 1.875 -1.875 1.875 0.8394375 1.875 1.875Z" stroke-width="0"></path>
                 </svg>
             </a>
-            <a href="index.php?controller=tree&action=index">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="-1.5 -1.5 36 36" fill="none" stroke-linecap="round" stroke-linejoin="round" id="Folder-Tree--Streamline-Lucide">
+            <a class="icones-menu" href="index.php?controller=tree&action=index">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="-1.5 -3 36 36" fill="none" stroke-linecap="round" stroke-linejoin="round" id="Folder-Tree--Streamline-Lucide">
                     <path d="M27.5 13.75a1.375 1.375 0 0 0 1.375 -1.375V8.25a1.375 1.375 0 0 0 -1.375 -1.375h-3.4375a1.375 1.375 0 0 1 -1.1 -0.55l-1.2375 -1.65A1.375 1.375 0 0 0 20.625 4.125h-2.75a1.375 1.375 0 0 0 -1.375 1.375v6.875a1.375 1.375 0 0 0 1.375 1.375Z" stroke-width="2.5"></path>
                     <path d="M27.5 28.875a1.375 1.375 0 0 0 1.375 -1.375v-4.125a1.375 1.375 0 0 0 -1.375 -1.375h-3.9875a1.375 1.375 0 0 1 -1.21 -0.7562500000000001l-0.5775 -1.16875a1.375 1.375 0 0 0 -1.2650000000000001 -0.825H17.875a1.375 1.375 0 0 0 -1.375 1.375v6.875a1.375 1.375 0 0 0 1.375 1.375Z" stroke-width="2.5"></path>
                     <path d="M4.125 6.875a2.75 2.75 0 0 0 2.75 2.75h4.125" stroke-width="2.5"></path>
                     <path d="M4.125 4.125v17.875a2.75 2.75 0 0 0 2.75 2.75h4.125" stroke-width="2.5"></path>
                 </svg>
-            </a>
-            <a href="index.php?controller=user&action=showAccount">
-                <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" id="Smile-Square--Streamline-Solar-Broken">
+            </a> -->
+            <a class="icones-menu" href="index.php?controller=user&action=showAccount">
+                <svg viewBox="-1.5 -1.5 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" id="Smile-Square--Streamline-Solar-Broken">
                     <path d="M16.875 30c1.5944625000000001 1.1818125 3.5336250000000002 1.875 5.625 1.875s4.0305 -0.6931875 5.625 -1.875" stroke-linecap="round" stroke-width="3"></path>
                     <path fill="currentColor" d="M26.25 19.6875a1.875 2.8125 0 1 0 3.75 0 1.875 2.8125 0 1 0 -3.75 0" stroke-width="0"></path>
                     <path fill="currentColor" d="M15 19.6875a1.875 2.8125 0 1 0 3.75 0 1.875 2.8125 0 1 0 -3.75 0" stroke-width="0"></path>
                     <path d="M41.25 22.5c0 8.838750000000001 0 13.2583125 -2.7459374999999997 16.0040625C35.7583125 41.25 31.338749999999997 41.25 22.5 41.25c-8.83884375 0 -13.258256249999999 0 -16.00411875 -2.7459374999999997C3.75 35.7583125 3.75 31.338749999999997 3.75 22.5c0 -8.83884375 0 -13.258256249999999 2.74588125 -16.00411875C9.241743750000001 3.75 13.66115625 3.75 22.5 3.75c8.838750000000001 0 13.2583125 0 16.0040625 2.74588125 1.825875 1.8257625000000002 2.4376875 4.3914 2.642625 8.50411875" stroke-linecap="round" stroke-width="3"></path>
                 </svg>
             </a>
-            <a name="logout" href="index.php?controller=user&action=logout">
-                <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" id="Login-2--Streamline-Solar-Broken">
+            <a class="icones-menu" name="logout" href="index.php?controller=user&action=logout">
+                <svg viewBox="2 -1.5 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" id="Login-2--Streamline-Solar-Broken">
                     <path d="m3.7518375000000006 22.498125 26.250037499999998 0m0 0 -6.5625 -5.6249625m6.5625 5.6249625 -6.5625 5.625" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"></path>
                     <path d="M16.878656250000002 13.125c0.022706249999999997 -4.07818125 0.20355 -6.2867625 1.6442625000000002 -7.727475C20.1705 3.75 22.822125 3.75 28.125375 3.75l1.875 0c5.303249999999999 0 7.9550625 0 9.602437499999999 1.6475250000000001 1.6475625 1.6475250000000001 1.6475625 4.29916875 1.6475625 9.602475l0 15c0 5.303249999999999 0 7.954875 -1.6475625 9.602437499999999 -1.44075 1.44075 -3.6493124999999997 1.6216875 -7.727812500000001 1.644375M16.878656250000002 31.875c0.022706249999999997 4.078125 0.20355 6.2866875 1.6442625000000002 7.7274375 1.20245625 1.2024375 2.9396437499999997 1.527375 5.8520812499999995 1.6151250000000001" stroke-linecap="round" stroke-width="3"></path>
                 </svg>

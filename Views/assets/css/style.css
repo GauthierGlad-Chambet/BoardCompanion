@@ -270,6 +270,7 @@ nav {
   background: var(--primary-color-gradient);
   display: flex;
   justify-content: space-evenly;
+  align-items: center;
   position:fixed;
   bottom: 0;
   width: 100%;
@@ -280,13 +281,26 @@ nav a {
   display: flex;
   align-items: center; /* Centre le texte verticalement */
   justify-content: center; /* Centre le texte horizontalement */
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
   min-height: 48px; /* Hauteur minimale des éléments clicables selon les guidelines Google et Apple */
+  border-radius: 100%;
 }
 
 svg {
   stroke : var(--third-color);
   color: var(--third-color);
   height: 40px;
+}
+
+.menu-active {
+background-color: var(--third-color);
+}
+
+.menu-active svg {
+  stroke : var(--primary-color);
+  color: var(--primary-color);
 }
 
 /* ------------- FOOTER ------------ */
@@ -439,12 +453,12 @@ footer a {
 }
 
 
-.color-green {
+.color-green, .color-green h2 {
   background-color: var(--primary-color);
   color: var(--secondary-color);
 }
 
-.color-grey {
+.color-grey, .color-grey h2 {
   background-color: var(--secondary-color);
   color: var(--third-color);
 }
