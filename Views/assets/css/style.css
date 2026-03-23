@@ -86,6 +86,7 @@ main {
    width: 90dvw;
    margin: 0 auto;
 }
+
 h1 {
   /* font-family: "Julius Sans One", sans-serif; */
   /* color: var(--primary-color); */
@@ -95,13 +96,17 @@ h1 {
   font-size: 56px;
 }
 
-p, li, td {
+h2, p, li, td {
   color: var(--third-color);
 }
 
 strong {
   /* color: var(--forth-color);*/
   font-family: "Bionix"; 
+}
+
+label {
+  cursor: pointer;
 }
 
 .text-primary-color {
@@ -122,7 +127,7 @@ strong {
 .container {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   gap: 10px;
   background-color: var(--secondary-color);
   border-radius: 10px;
@@ -147,6 +152,7 @@ strong {
   color: var(--background-color);
   border-radius: 5px;
   width: 40dvw;
+  max-width: 40dvw;
   margin: 0 auto;
   display: flex;
   align-items: center; /* Centre le texte verticalement */
@@ -164,6 +170,17 @@ form {
   text-align: left;
 }
 
+form div {
+  display: flex;
+  flex-direction: column;
+  max-width: 90%;
+  align-self: center;
+}
+
+form label {
+  margin-bottom: 10px;
+}
+
 form textarea, input:not([type="submit"]) {
   background-color: var(--secondary-color);
   border-color: var(--primary-color);
@@ -178,6 +195,73 @@ form textarea, input:not([type="submit"]) {
 form textarea:focus, input:not([type="submit"]):focus {
   border-color: var(--accent-color);
   outline:none;
+}
+
+/* Personnalisation de la checkbox */
+
+#accepteCGU {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.checkboxLabel {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 25px;
+  width: 25px;
+  background-color: var(--background-color);
+  border: 1px solid var(--primary-color);
+  border-radius: 5px;
+}
+
+/* Quand la souris passe dessus, éclairci le fond */
+.checkboxLabel:hover input ~ .checkmark {
+  background-color: var(--secondary-color);
+}
+
+/* Quand c'est checké, ajoute un fond vert */
+.checkboxLabel input:checked ~ .checkmark {
+  background-color: var(--primary-color);
+}
+
+/* Créé l'indicator de check (caché quand pas checké) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Montre le checkmark quand checké */
+.checkboxLabel input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Stylise le checkmark */
+.checkboxLabel .checkmark:after {
+  left: 9px;
+  top: 5px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
 }
 
 
@@ -220,24 +304,163 @@ footer a {
 
 /* ------------- SignIn- Login ------------ */
 
+.container-signIn {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  max-width: 350px;
+  height: 90dvh;
+  position: relative;
+}
+
 .logo-signIn {
-  width: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 5dvh auto;
+  color: var(--primary-color);
+  font-family: "Just Me Again Down Here", cursive;
+  font-size: 22px;
+}
+
+.logo-signIn img {
+  width: 100px;
 }
 
 .logo-signIn h1 {
   font-size: 38px;
 }
-.container-signIn {
-  /* height: calc(95dvh - 80px); */
+
+.logo p {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
 }
+
+.login-onglets {
+  display: flex;
+  flex-direction: row;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+
+.container-signIn .container {
+  margin: 0;
+}
+
+.container-signIn .container:not(.login-button) {
+   min-height: 500px;
+}
+
+.block-login {
+  position: absolute;
+  top: 69px;
+  width: 100%;
+}
+
+.block-login h2 {
+  text-align: center;
+}
+ 
+.login-button {
+  width: 50%;
+  cursor: pointer;
+  position: absolute;
+  z-index: 100;
+}
+
+.login-button {
+  position: relative;
+  border-radius: 10px 10px 0 0;
+  user-select: none;
+}
+
+#block-inscription {
+  border-radius: 0 10px 10px 10px;
+}
+
+#block-inscription::before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 0;  
+  right: 0;    
+  width: 12px;
+  height: 12px;
+  background-image: radial-gradient(circle at 0%  100%, transparent 13px, var(--primary-color) 12px);
+}
+
+
+#block-connection {
+  display: none;
+  border-radius: 10px 0 10px 10px;
+}
+
+#block-connection::before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 0;  
+  left: 0;    
+  width: 12px;
+  height: 12px;
+  background-image: radial-gradient(circle at 100% 100%, transparent 13px, var(--primary-color) 12px);
+}
+
+#button-inscription {
+  z-index: 2;
+}
+
+#button-inscription::after {
+  content: '';
+  display: block;
+  position: absolute;
+  bottom: 0;  
+  right: -12px;    
+  width: 12px;
+  height: 12px;
+  background-image: radial-gradient(circle at 100%  0%, transparent 13px, var(--secondary-color) 12px);
+}
+
+#button-connection {
+  justify-self: right;
+  z-index: 0;
+}
+
+#button-connection::after {
+  content: '';
+  display: block;
+  position: absolute;
+  bottom: 0px;  
+  left: -12px;    
+  width: 12px;
+  height: 12px;
+  background-image: radial-gradient(circle at 0%  0%, transparent 13px, var(--secondary-color) 12px);
+}
+
+
+.color-green {
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+}
+
+.color-grey {
+  background-color: var(--secondary-color);
+  color: var(--third-color);
+}
+
+
 
 .main-signIn + footer{
   margin: 5dvh 0 0;
 }
+
+
+
+
+
+
+
 
 
 
