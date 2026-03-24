@@ -1,6 +1,6 @@
 <main>
     <h1>Modifier le bilan Final</h1>
-    <form action="index.php" method="get">
+    <form class="form-select" action="index.php" method="get">
 
         <!-- Conserver les paramètres controller et action -->
         <input type="hidden" name="controller" value="statistics">
@@ -12,10 +12,9 @@
                     <?= $proj->getName() ?>, <?= $proj->getStudio() ?>, Épisode n<sup>o</sup> <?= $proj->getEpisode_nb() ?> : "<?= $proj->getEpisode_title() ?>"
                 </option> <?php endforeach; ?>
         </select>
-        <input type="submit" value="Changer de projet">
     </form>
     
-    <form action="" method="POST">
+    <form class="container form-finalReport" action="" method="POST">
 
         <!-- Champ caché pour transmettre l'ID du projet -->
         <input type="hidden" name="project_id" value="<?= $_GET['project_id']; ?>">
@@ -24,42 +23,50 @@
             <legend for=""><h3>Appréciation globale :</h3></legend>
             <?php foreach ($arrAppreciations as $appreciation) : ?>
                 <div>
-                    <input type="radio" id="1" name="appreciation" value="<?= $appreciation->getId() ?>" <?= $finalReport->getFk_appreciation() == $appreciation->getId() ? 'checked' : '' ?> required />
-                    <label for="appreciation_<?= $appreciation->getId() ?>">
-                        <?= htmlspecialchars($appreciation->getLabel()) ?>
+                    <label class="customLabel radioLabel" for="appreciation_<?= $appreciation->getId() ?>">
+                    <?= htmlspecialchars($appreciation->getLabel()) ?>
+                    <input type="radio" id="appreciation_<?= $appreciation->getId() ?>" name="appreciation" value="<?= $appreciation->getId() ?>" <?= $finalReport->getFk_appreciation() == $appreciation->getId() ? 'checked' : '' ?> required />
+                    <span class="checkmark"></span>
                     </label>
                 </div>
             <?php endforeach; ?>
         </fieldset>
+        <div>
+            <label for="duree_totale_projet"><h3>Durée totale du projet (en jours):</h3></label>
+            <input type="number" step="0.1" min="0" id="duree_totale_projet" name="duree_totale_projet" value="<?= $finalReport->getTotal_duration() ?>" required>
+        </div>
+        <div>
+            <label for="total_plans"><h3>Total de plans réalisés :</h3></label>
+            <input type="number" min="0" id="total_plans" name="total_plans" value="<?= $finalReport->getNb_shots() ?>">
+        </div>
+        <div>
+            <?php if ($project->getIs_cleaning() == 1) { ?>
+            <label for="duree_cleaning"><h3>Durée du cleaning (en jours) :</h3></label>
+            <input type="number" step="0.1" min="0" name="duree_cleaning" value="<?= $finalReport->getCleaning_duration() ?>">
+            <?php } ?>
+        </div>
 
-        <label for="duree_totale_projet"><h3>Durée totale du projet (en jours):</h3></label>
-        <input type="number" step="0.1" min="0" name="duree_totale_projet" value="<?= $finalReport->getTotal_duration() ?>" required>
-
-        <label for="total_plans"><h3>Total de plans réalisés :</h3></label>
-        <input type="number" min="0" name="total_plans" value="<?= $finalReport->getNb_shots() ?>">
-
-        <?php if ($project->getIs_cleaning() == 1) { ?>
-        <label for="duree_cleaning"><h3>Durée du cleaning (en jours) :</h3></label>
-        <input type="number" step="0.1" min="0" name="duree_cleaning" value="<?= $finalReport->getCleaning_duration() ?>">
-        <?php } ?>
-        
-        <?php
-        //si des séquences sont assignées au projet, on affiche les durées estimées par séquence
-            if  ($sequences && count($sequences) > 0) {
-        ?>
-        <h3>Durée par séquence (en heures) :</h3>
-        <?php foreach ($sequences as $sequence) { ?>
-            <label for="duree_sequence[<?= $sequence->getId();?>]">
-                Séquence <?= $sequence->getNumber() ?> : <?= $sequence->getTitle() ?> (<?= $sequence->getTypeLabel() ?>)
-            </label>
-            <input type="number" min="0" name="duree_sequence[<?= $sequence->getId();?>]" value="<?= $sequence->getDuration_real() ?>">
-            <br>
-        <?php }} ?>
-        
-        <label for="commentaire"><h3>Commentaire :</h3></label>
-        <textarea name="commentaire" placeholder="Commentaire…"><?php echo $finalReport->getCommentary() ?></textarea>
-
-        <input type="submit" name="submit_final_report" id="submit_final_report" value="Valider">
+        <div class="container-sequences">
+            <?php
+            //si des séquences sont assignées au projet, on affiche les durées estimées par séquence
+                if  ($sequences && count($sequences) > 0) {
+            ?>
+            <h3>Durée par séquence (en heures) :</h3>
+            <div>
+                <?php foreach ($sequences as $sequence) { ?>
+                    <label for="duree_sequence[<?= $sequence->getId();?>]">
+                        Séquence <?= $sequence->getNumber() ?> : <?= $sequence->getTitle() ?> (<?= $sequence->getTypeLabel() ?>)
+                    </label>
+                    <input type="number" min="0" id="duree_sequence[<?= $sequence->getId();?>]" name="duree_sequence[<?= $sequence->getId();?>]" value="<?= $sequence->getDuration_real() ?>">
+                    <br>
+                <?php }} ?>
+            </div>
+        </div>
+        <div>
+            <label for="commentaire"><h3>Commentaire :</h3></label>
+            <textarea name="commentaire" id="commentaire" placeholder="Commentaire…"><?php echo $finalReport->getCommentary() ?></textarea>
+        </div>
+        <input class="button" type="submit" name="submit_final_report" id="submit_final_report" value="Valider">
 
     </form>
 

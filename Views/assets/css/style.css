@@ -116,6 +116,7 @@ label {
 
 hr {
   width: 90%;
+  max-width: 450px;
   border-color: var(--primary-color);
 }
 
@@ -163,7 +164,8 @@ hr {
   border: none;
   border-radius: 5px;
   width: 40dvw;
-  max-width: 40dvw;
+  min-width: fit-content;
+  max-width: 200px;
   margin: 0 auto;
   display: flex;
   align-items: center; /* Centre le texte verticalement */
@@ -209,8 +211,9 @@ form {
 form div {
   display: flex;
   flex-direction: column;
-  max-width: 90%;
-  align-self: center;
+  width: 100%;
+  max-width: 350px;
+  align-self: center;;
 }
 
 form label {
@@ -233,13 +236,27 @@ form textarea:focus, input:not([type="submit"]):focus {
   outline:none;
 }
 
+form textarea {
+height: 150px;
+}
+
+form fieldset {
+  border: 1px solid var(--primary-color);
+  border-radius: 10px;
+}
+
+form fieldset:hover, form fieldset:focus {
+  border: 1px solid var(--accent-color);
+}
+
+
 .note {
   font-size: 12px;
 }
 
-form .block-radio {
-  width: 90%;
-}
+/* form .block-radio {
+  width: 100%;
+} */
 
 .block-radio div {
   display: flex;
@@ -256,14 +273,14 @@ form .block-radio {
 .radioLabel {
   margin-bottom: 0;
 }
-
+/* 
 .block-files {
   width: 90%;
 }
 
 .block-dates {
   width: 90%;
-}
+} */
 
 .block-dates p {
   margin-bottom: 10px;
@@ -458,21 +475,44 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   flex-direction: row;
   justify-content: space-between;
   gap: 20px;
-  max-width: 100%;
+  max-width: 350px;
 }
 
 .container-sequence-radio div {
   align-self: start;
 }
 
+.container-sequence-radio div:last-child {
+  align-items: end;
+}
+
 .container-sequence-radio div p {
   margin-bottom: 16px;
+  white-space: nowrap;
 }
 
 #h2-analyse-detaillee {
   text-align: center;
 }
 
+/* ------------- FORMULAIRE - BILAN FINAL ------------ */
+
+.form-finalReport div {
+  max-width: 100%;
+  width: 100%;
+}
+
+.container-sequences h3 {
+margin-bottom: 10px;
+}
+
+.container-sequences div {
+  max-width: 90%;
+}
+
+.container-sequences label {
+font-size: 14px;
+}
 
 /* ------------- HEADER - NAVBAR ------------ */
 nav {
@@ -489,8 +529,8 @@ nav {
 
 nav a {
   display: flex;
-  align-items: center; /* Centre le texte verticalement */
-  justify-content: center; /* Centre le texte horizontalement */
+  align-items: center;
+  justify-content: center;
   width: 48px;
   height: 48px;
   min-width: 48px;
@@ -526,7 +566,7 @@ footer a {
   margin: 10px auto;
 }
 
-/* ------------- SignIn- Login ------------ */
+/* ------------- PAGE SignIn - Login ------------ */
 
 .container-signIn {
   display: flex;
@@ -675,9 +715,7 @@ footer a {
   margin: 5dvh 0 0;
 }
 
-
-
-/* ------------- DASHBOARD ------------ */
+/* ------------- PAGE DASHBOARD ------------ */
 
 table {
   display: none;
@@ -785,9 +823,9 @@ justify-content: space-between;
 
 .button-modify-account {
   display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    gap : 10px;
+  flex-direction: row;
+  justify-content: space-between;
+  gap : 10px;
 }
 
 #button-modify-account {
