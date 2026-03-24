@@ -132,7 +132,7 @@ class UserController extends MotherController
                 }
 
                 $_SESSION['user'] = $userDatas;
-                header("Location: index.php?controller=main&action=home");
+                header("Location: index.php");
                 exit;
             }
         }

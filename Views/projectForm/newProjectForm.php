@@ -73,8 +73,8 @@
         <div class="block-radio">
                 <p>Je veux une analyse détaillée du script :</p>  
                 <div>
-                        <label class="customLabel radioLabel" for="detailed">Oui
-                                <input type="radio" id="detailed" name="script_detailed" value="1" checked />
+                        <label class="customLabel radioLabel" for="details">Oui
+                                <input type="radio" id="details" name="script_detailed" value="1" checked />
                                 <span class="checkmark"></span>
                         </label>
                         <label class="customLabel radioLabel" for="no_details">Non

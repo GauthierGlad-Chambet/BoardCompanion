@@ -5,6 +5,7 @@
   --third-color : #ffffff;
   --background-color : #000000;
   --accent-color : #FFD800;
+  --accent-color-gradient : linear-gradient(180deg, #FFD800 15%, #a48c04);
 }
 
 @font-face {
@@ -153,7 +154,7 @@ hr {
 
 /* ------------- BOUTONS ------------ */
 .button {
-  background: var(--primary-color-gradient);
+  background: var(--primary-color);
   color: var(--background-color);
   border: none;
   border-radius: 5px;
@@ -164,6 +165,12 @@ hr {
   align-items: center; /* Centre le texte verticalement */
   justify-content: center; /* Centre le texte horizontalement */
   min-height: 48px; /* Hauteur minimale des éléments clicables selon les guidelines Google et Apple */
+  transition: all 0.2s ease-out;
+  box-shadow: 0 -30px 15px -7px rgba(0, 0, 0, 0.5) inset;
+}
+
+.button:hover {
+  background : var(--accent-color);
 }
 
 /* ------------- FORMULAIRES ------------ */
@@ -203,7 +210,7 @@ form textarea:focus, input:not([type="submit"]):focus {
   outline:none;
 }
 
-form .note {
+.note {
   font-size: 12px;
 }
 
@@ -320,6 +327,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 /* Personnalisation des boutons radio */
 
+.radioLabel {
+  height: 36px;
+}
+
 /* Style the checkmark/indicator */
 .radioLabel .checkmark:after {
   top: 50%;
@@ -347,11 +358,65 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 
-/* ------------- ANALYSE DETAILLEE ------------ */
+/* Personnaliser le select */
+.form-select {
+  background-color : unset;
+  margin: 2dvh auto;
+}
+
+/* Personnaiser le champ select */
+.form-select select {
+  background-color: var(--secondary-color);
+  border: 1px solid var(--primary-color);
+  border-radius: 10px;
+  font-size: 18px;
+  color: var(--third-color);
+  height: 34px;
+  margin: 0;
+  padding-left : 10px;
+}
+
+/* personnalise le champ au focus */
+.form-select select:focus, .form-select select:hover {
+  border-color: var(--accent-color);
+  outline:none;
+}
+
+/* personnalise le menu déroulant */
+.form-select select,
+.form-select select::picker(select) {
+	appearance: base-select;
+  background-color: var(--secondary-color);
+  border: 1px solid var(--primary-color);
+  border-radius: 10px;
+  color: var(--third-color);
+  width: 90dvw;
+}
+
+.form-select select::picker(select):hover, .form-select select::picker(select):focus {
+	border-color: var(--accent-color);
+  outline:none;
+}
+
+/* personnalise l'icone */
+.form-select select::picker-icon {
+  content:'❯';
+  rotate: 90deg;
+  transition : all 0.2s ease;
+  margin-right: 5px;
+}
+
+.form-select select:open::picker-icon {
+  rotate: -90deg;
+}
+
+
+/* ------------- FORMULAIRE - ANALYSE DETAILLEE ------------ */
 .containerSequence {
   background-color: var(--background-color);
   border-radius: 10px;
   padding: 20px;
+  margin-top: 15px;
   text-align: center;
 }
 
@@ -361,12 +426,34 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   gap : 0;
 }
 
+.sequence-block {
+  text-align: center;
+}
 
+.container-sequence-radio {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 20px;
+  max-width: 100%;
+}
 
+.container-sequence-radio div {
+  align-self: start;
+}
+
+.container-sequence-radio div p {
+  margin-bottom: 16px;
+}
+
+#h2-analyse-detaillee {
+  text-align: center;
+}
 
 
 /* ------------- HEADER - NAVBAR ------------ */
 nav {
+  z-index: 10;
   background: var(--primary-color-gradient);
   display: flex;
   justify-content: space-evenly;
@@ -567,9 +654,67 @@ footer a {
 
 
 
+/* ------------- DASHBOARD ------------ */
 
+table {
+  display: none;
+  margin: 2dvh auto;
+  border-collapse: collapse;
+  background-color: var(--secondary-color);
+  text-align: center;
+  border-radius: 10px;
+}
 
+table thead {
+  background: var(--primary-color-gradient);
+}
 
+table thead td:not(thead td:first-child, thead td:last-child) {
+  border-left: 1px solid var(--third-color);
+  border-right: 1px solid var(--third-color);
+  border-bottom: 2px solid var(--third-color);
+}
+
+table thead td:first-child {
+  border-bottom: 2px solid var(--third-color);
+  border-radius: 10px 0 0 0;
+}
+
+table thead td:last-child {
+  border-bottom: 2px solid var(--third-color);
+  border-radius: 0 10px 0 0;
+}
+
+table tbody td:not(tr:last-child td, tr td:first-child, tr td:last-child) {
+  border: 1px solid var(--primary-color);
+}
+
+table tbody tr td:first-child:not(tr:last-child td), table tbody tr td:last-child:not(tr:last-child td) {
+  border-bottom: 1px solid var(--primary-color);
+}
+
+table tbody tr:last-child td:not(tr:last-child td:first-child,tr:last-child td:last-child) {
+  border-left: 1px solid var(--primary-color);
+  border-right: 1px solid var(--primary-color);
+}
+
+table td .button {
+  width: 100px;
+}
+
+table td {
+  padding: 10px;
+}
+
+.dashboard-mobile-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 5dvh auto;
+  text-align: center;
+  gap: 15px;
+}
 
 
 

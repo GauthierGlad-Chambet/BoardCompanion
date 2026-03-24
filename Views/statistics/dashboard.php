@@ -1,7 +1,7 @@
 <main>
     <h1>Tableau de bord</h1>
     <table>
-        <th>
+        <thead>
             <td>Nom du projet</td>
             <td>Dates</td>
             <td>Pages attribuées</td>
@@ -9,11 +9,10 @@
             <td>Rythme recommandé</td>
             <td>Appréciation</td>
             <td>Statistiques détaillés</td>
-        </th>
+        </thead>
         <tbody>
             <?php foreach ($projects as $project) : ?>
             <tr>
-                <td></td>
                 <td><?= $project->getName() ?></td>
                 <td>
                     du <?= $project->getDate_beginningFormatted() ?>
@@ -29,8 +28,27 @@
                 <td><?= $project->getRecommended_pages_per_day() ?> pages/jour</td>
                 <td>
                     <?= $project->getAppreciation_label() ?></td>
-                <td><a href="index.php?controller=statistics&action=details&project_id=<?= $project->getId() ?>">Voir les détails</a></td>
+                <td><a class="button" href="index.php?controller=statistics&action=details&project_id=<?= $project->getId() ?>">Voir les détails</a></td>
             </tr> <?php endforeach; ?>
         </tbody>
     </table>
+
+
+    <div class="dashboard-mobile">
+        <?php foreach ($projects as $project) : ?>
+            <div class="container dashboard-mobile-section">
+                <div>
+                    <h2>Projet : <?= $project->getName() ?> 
+                    <p class="note">
+                        (<?= $project->getDate_beginningFormatted() ?> <?= $project->getDate_endFormatted()?>)</p>
+                    </p>
+                </div>
+                <div>
+                    <p><?= $project->getNb_assigned_pages() ?> pages attribuées | <?= $project->getEstimated_total_duration() ?> jours estimés</p>
+                </div>
+                <p>Rythme recommandé : <?= $project->getRecommended_pages_per_day() ?> pages/jour</p>
+                <a class="button" href="index.php?controller=statistics&action=details&project_id=<?= $project->getId() ?>">Détails</a>
+            </div>
+        <?php endforeach; ?>   
+    </div>
 </main>
