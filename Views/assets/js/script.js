@@ -10,7 +10,11 @@ const BLOCK_CONNECTION = document.getElementById("block-connection");
 const BLOCK_INSCRIPTION = document.getElementById("block-inscription");
 const ICONES_MENU = document.querySelectorAll(".icones-menu");
 const FORM_SELECT = document.querySelectorAll('.form-select select');
+const PAGE_CONTAINER = document.querySelector('.page-container');
+const FOOTER = document.getElementsByTagName('footer')[0];
+const HEADER = document.getElementsByTagName('header')[0];
 
+let popupSupprProjetFlag = 0;
 
 // Mise en évidence de l'onglet actif
 document.addEventListener('DOMContentLoaded', () => {
@@ -35,11 +39,21 @@ FORM_SELECT.forEach(select => {
     });
 });
 
+
+
+
 // Ouvre la popup de confirmation de suppression
 BTN_SUPPR.forEach(btn => {
     btn.addEventListener("click", () => {
         POPUP_SUPPR.forEach(btn =>{
+            popupSupprProjetFlag = 1;
             btn.style.display = "flex";
+            PAGE_CONTAINER.setAttribute('inert', '');
+            PAGE_CONTAINER.style.filter = "opacity(0.4)";
+            FOOTER.style.filter = "opacity(0.4)";
+            FOOTER.setAttribute('inert', '');
+            HEADER.style.filter = "opacity(0.4)";
+            HEADER.setAttribute('inert', '');
         });
     });
 });
@@ -49,10 +63,21 @@ BTN_ANNULER_SUPPR.forEach(btn => {
     btn.addEventListener("click", () => {
         POPUP_SUPPR.forEach(btn =>{
             btn.style.display = "none";
-            CONFIRMPWD.value="";
+            if(popupSupprProjetFlag == 0) {
+                CONFIRMPWD.value="";
+            }
+            PAGE_CONTAINER.removeAttribute('inert');
+            PAGE_CONTAINER.style.filter = "none";
+            FOOTER.removeAttribute('inert');
+            FOOTER.style.filter = "none";
+            HEADER.removeAttribute('inert');
+            HEADER.style.filter = "none";
+            popupSupprProjetFlag = 0;
         });
     });
 });
+
+
 
 
 //Switch l'onglet Inscription/Connexion
