@@ -1,6 +1,6 @@
-<main>
+<main id="page-details">
     <h1>Statistiques</h1>
-    <form action="index.php" method="get">
+    <form class="form-select" action="index.php" method="get">
 
         <!-- Conserver les paramètres controller et action -->
         <input type="hidden" name="controller" value="statistics">
@@ -12,17 +12,23 @@
                     <?= $proj->getName() ?>, <?= $proj->getStudio() ?>, Épisode n<sup>o</sup> <?= $proj->getEpisode_nb() ?> : "<?= $proj->getEpisode_title() ?>"
                 </option> <?php endforeach; ?>
         </select>
-        <input type="submit" value="Changer de projet">
     </form>
-    <h3>Pages attribuées :</h3>
-    <p><?= $project->getNb_assigned_pages() ?> pages assignées / <?= $project->getNb_total_pages() ?> pages totales</p>
-    <h3>Durée estimée pour boarder le projet :</h3>
-    <p><?= $project->getEstimated_total_duration() ?> jours</p>
+    <div class="container">
+        <h3>Pages attribuées :</h3>
+        <p><?= $project->getNb_assigned_pages() ?> pages assignées / <?= $project->getNb_total_pages() ?> pages totales</p>
+    </div>
+    <div class="container">
+        <h3>Durée estimée pour boarder le projet :</h3>
+        <p><?= $project->getEstimated_total_duration() ?> jours</p>
+    </div>
+    <div class="container">
     <h3>Temps moyen estimé par page (en fonction des types de séquences) :</h3>
     <p><?= $project->getAvg_duration_estimated_per_pages() ?> jours</p>
     <?php //si le projet est en cleaning, on affiche la durée estimée du cleaning
         if ($project->getIs_cleaning() === true) {
     ?>
+    </div>
+    <div class="container">
     <h3>Durée estimée du cleaning :</h3>
     <p><?=  $project->getEstimated_cleaning_duration() . " jours" ?></p>
     <?php } ?>
@@ -30,62 +36,78 @@
     //si des séquences sont assignées au projet, on affiche les durées estimées par séquence
         if  ($sequences && count($sequences) > 0) {
     ?>
-    <h3>Durées estimées par séquence :</h3>
-    <ul>
-        <?php foreach ($sequences as $sequence) { ?>
-            <li> Séquence <?= $sequence->getNumber() ?> : <?= $sequence->getTitle() ?> (<?= $sequence->getTypeLabel() ?>): <?= $sequence->getDuration_estimated() ?> heures</li>
-        <?php } ?>
-    </ul>
-    <?php }  ?>
-    <h3>Rythme recommandé pour respecter la deadline :</h3>
-    <p><?= $project->getRecommended_pages_per_day() ?> pages / jour</p>
-    <p>Calculs réalisés à partir de votre rythme constaté sur les précédents projets</p>
-    <a href="index.php?controller=form&action=updateProject&project_id=<?= $project->getId() ?>">Modifier les informations</a>
-
-    <?php if(!$finalReport) { ?>
-        <a href="index.php?controller=statistics&action=finalReport&project_id=<?= $project->getId() ?>">Bilan final</a>
-    <?php } else { ?>
-        <a href="index.php?controller=statistics&action=updateFinalReport&project_id=<?= $project->getId() ?>">Modifier le bilan final</a>
-     
-        <hr>
-
-        <!-- BILAN FINAL -->
-        <h2 id="bilanFinal">BILAN FINAL</h2>
+    </div>
+    <div class="container">
+        <h3>Durées estimées par séquence :</h3>
+        <ul>
+            <?php foreach ($sequences as $sequence) { ?>
+                <li> Séquence <?= $sequence->getNumber() ?> : <?= $sequence->getTitle() ?> (<?= $sequence->getTypeLabel() ?>): </br><b><?= $sequence->getDuration_estimated() ?>  heures</b></li>
+            <?php } ?>
+        </ul>
+        <?php }  ?>
+    </div>
+    <div class="container container-rythme-reco">
+        <h3>Rythme recommandé pour respecter la deadline :</h3>
+        <p><?= $project->getRecommended_pages_per_day() ?> pages / jour</p>
+    </div>
+    <p class="note">Calculs réalisés à partir de votre rythme constaté sur les précédents projets</p>
+    <div class="button-details">
+        <a class="button" href="index.php?controller=form&action=updateProject&project_id=<?= $project->getId() ?>">Modifier les informations</a>
+        <?php if(!$finalReport) { ?>
+            <a class="button" href="index.php?controller=statistics&action=finalReport&project_id=<?= $project->getId() ?>">Bilan final</a>
+            </div>
+            <?php } else { ?>
+            <a class="button" href="index.php?controller=statistics&action=updateFinalReport&project_id=<?= $project->getId() ?>">Modifier le bilan final</a>
+    </div>
+    
+    <hr>
+    <!-- BILAN FINAL -->
+    <h2 id="bilanFinal">BILAN FINAL</h2>
+    <div class="container">
         <h3>Appréciation globale : </h3>
         <p><?= $finalReport->getAppreciationLabel() ?></p>
-
+    </div>
+    <div class="container">
         <h3>Durée totale du projet : </h3>
         <p><?= $finalReport->getTotal_duration() ?> jours</p>
-
+    </div>
+    <div class="container">
         <h3>Total de plans réalisés : </h3>
         <p><?= $finalReport->getNb_shots() ?></p>
-        
-        <?php if ($project->getIs_cleaning() == 1) { ?>
+    </div>
+    <?php if ($project->getIs_cleaning() == 1) { ?>
+    <div class="container">
         <h3>Durée du cleaning : </h3>
         <p><?= $finalReport->getCleaning_duration() ?> jours</p>
+    </div>
         <?php } ?>
-
+    <div class="container">
         <h3>Durées réelles par séquence :</h3>
         <ul>
             <?php 
                 foreach ($sequences as $sequence) { 
                     if($sequence->getDuration_real() != 0 || $sequence->getDuration_real() != null) {
             ?>
-            <li> Séquence <?= $sequence->getNumber() ?> : <?= $sequence->getTitle() ?> (<?= $sequence->getTypeLabel() ?>): <?= $sequence->getDuration_real() ?> heures</li>
+            <li> Séquence <?= $sequence->getNumber() ?> : <?= $sequence->getTitle() ?> (<?= $sequence->getTypeLabel() ?>): </br> <b><?= $sequence->getDuration_real() ?> heures</b></li>
             <?php }} ?>
         </ul>
+    </div>
+    <div class="container">
         <h3>Commentaire : </h3>
         <p><?= $finalReport->getCommentary() ?></p>
+    </div>
     <?php } ?> 
 
-    <button class="bouttonSupprimer">Supprimer le projet</button>
-    <div class="popup popupSuppr" id="popupProjet">
+    <button class="bouttonSupprimer button">Supprimer le projet</button>
+    <div class="popup popupSuppr container" id="popupProjet">
         <p>Êtes-vous sûr de vouloir supprimer ce projet ? Cette action est irréversible.</p>
-        <button class="annulerSuppr">Annuler</button>
-        <form method="POST" action="index.php?controller=statistics&action=deleteProject">
-            <input type="hidden" name="project_id" value="<?= $project->getId() ?>">
-            <button type="submit">Supprimer le projet</button>
-        </form>
+        <div>
+            <button class="annulerSuppr button">Annuler</button>
+            <form method="POST" action="index.php?controller=statistics&action=deleteProject">
+                <input type="hidden" name="project_id" value="<?= $project->getId() ?>">
+                <button class="button" type="submit">Supprimer le projet</button>
+            </form>
+        </div>
     </div>
 
 

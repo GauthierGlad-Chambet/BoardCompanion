@@ -97,7 +97,11 @@ h1 {
   font-size: 34px;
 }
 
-h2, p, li, td {
+h2 {
+  text-align: center;
+}
+
+h2, h3, p, li, td {
   color: var(--third-color);
 }
 
@@ -164,6 +168,7 @@ hr {
   display: flex;
   align-items: center; /* Centre le texte verticalement */
   justify-content: center; /* Centre le texte horizontalement */
+  text-align: center;
   min-height: 48px; /* Hauteur minimale des éléments clicables selon les guidelines Google et Apple */
   transition: all 0.2s ease-out;
   box-shadow: 0 -30px 15px -7px rgba(0, 0, 0, 0.5) inset;
@@ -171,6 +176,19 @@ hr {
 
 .button:hover {
   background : var(--accent-color);
+}
+
+/* ------------- POPUPS ------------ */
+
+.popup {
+  display : none;
+}
+
+.popupSuppr div{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap : 10px;
 }
 
 /* ------------- FORMULAIRES ------------ */
@@ -717,14 +735,43 @@ table td {
 }
 
 
+/* ------------- PAGE DETAILS ------------ */
 
-
-
-
-
-.popup {
-  display : none;
+#page-details .container {
+text-align: center;
 }
+
+#page-details .container ul {
+text-align: left;
+}
+
+.container-rythme-reco {
+  border: 3px solid var(--primary-color);
+}
+
+.container-rythme-reco ~ .note {
+  border-top: 1px solid var(--third-color);
+}
+
+.button-details {
+  margin: 2dvh auto;
+  display: flex;
+  flex-direction: row;
+}
+
+#bilanFinal {
+  margin-top: 5dvh;
+}
+ 
+
+
+
+
+
+
+
+
+
 
 .champObligatoire {
   color :red;

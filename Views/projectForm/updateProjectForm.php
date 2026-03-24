@@ -79,7 +79,7 @@
                                 <span class="checkmark"></span>
                         </label>
                         <label class="customLabel radioLabel" for="no_details">Non
-                                <input type="radio" id="not_alone" name="script_detailed" value="0" <?php if ($project->getIs_detailed() == false) echo"checked"; ?>/>
+                                <input type="radio" id="no_details" name="script_detailed" value="0" <?php if ($project->getIs_detailed() == false) echo"checked"; ?>/>
                                 <span class="checkmark"></span>
                         </label>
                 </div>
