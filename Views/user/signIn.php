@@ -18,7 +18,7 @@
     <div class="logo-signIn">
         <img src="/BoardCompanion/Views/assets/img/logo.png" alt="Logo de Board Companion">
         <h1>Board Companion</h1>
-        <p>Ton assistant boarder personnel</p>
+        <p class="text-primary-color"">Ton assistant boarder personnel</p>
     </div>
 
     <div class="container-signIn">
@@ -32,45 +32,45 @@
         </div>
 
         <div class="container block-login" id="block-connection">
-                <form action="" method="POST">
-                    <div>
-                        <label for="email2">Email :</label>
-                        <input type="text" name="email" id="email2" autocomplete="on" required>
-                    </div>
-                    <div>
-                        <label for="password2">Mot de passe :</label>
-                        <input type="password" name="password" id="password2" required>
-                    </div>
-                        <input class="button" type="submit" name="submit_signIn" id="submit_signIn" value="Se connecter">
-                </form>
+            <form action="" method="POST">
+                <div>
+                    <label for="email2">Email :</label>
+                    <input type="text" name="email" id="email2" autocomplete="on" required>
+                </div>
+                <div>
+                    <label for="password2">Mot de passe :</label>
+                    <input type="password" name="password" id="password2" required>
+                </div>
+                    <input class="button" type="submit" name="submit_signIn" id="submit_signIn" value="Se connecter">
+            </form>
         </div>
 
         <div class="container block-login" id="block-inscription">
-                <form action="" method="POST">
-                    <div>
-                        <label for="email">Email :</label>
-                        <input type="text" name="email" id="email" autocomplete="on" required>
-                    </div>
-                    <div>
-                        <label for="pseudo">Prénom ou Pseudo :</label>
-                        <input type="text" name="pseudo" id="pseudo" required>
-                    </div>
-                    <div>
-                        <label for="password">Mot de passe :</label>
-                        <input type="password" name="password" id="password" required>
-                    </div>
-                    <div>
-                        <label for="passwordConfirmation">Confirmez le mot de passe :</label>
-                        <input type="password" name="passwordConfirmation" id="passwordConfirmation" required>
-                    </div>
-                    <div>
-                        <label class="customLabel" id="checkboxLabel" for="accepteCGU">J'accepte les termes et conditions d'utilisation
-                            <input type="checkbox" id="accepteCGU" name="accepteCGU" required>
-                            <span class="checkmark"></span>
-                        </label>
-                    </div>
-                    <input class="button" type="submit" name="submit_signUp" id="submit_signUp" value="S'inscrire">
-                    </form>
+            <form action="" method="POST">
+                <div>
+                    <label for="email">Email :</label>
+                    <input type="text" name="email" id="email" autocomplete="on" required>
                 </div>
-        </div>                
+                <div>
+                    <label for="pseudo">Prénom ou Pseudo :</label>
+                    <input type="text" name="pseudo" id="pseudo" required>
+                </div>
+                <div>
+                    <label for="password">Mot de passe :</label>
+                    <input type="password" name="password" id="password" required>
+                </div>
+                <div>
+                    <label for="passwordConfirmation">Confirmez le mot de passe :</label>
+                    <input type="password" name="passwordConfirmation" id="passwordConfirmation" required>
+                </div>
+                <div>
+                    <label class="customLabel" id="checkboxLabel" for="accepteCGU">J'accepte les termes et conditions d'utilisation
+                        <input type="checkbox" id="accepteCGU" name="accepteCGU" required>
+                        <span class="checkmark"></span>
+                    </label>
+                </div>
+                <input class="button" type="submit" name="submit_signUp" id="submit_signUp" value="S'inscrire">
+            </form>
+        </div>
+    </div>                
 </main>
