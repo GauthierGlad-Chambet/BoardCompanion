@@ -155,6 +155,14 @@ hr {
   list-style-type: disc;
 }
 
+.open {
+  display: block !important;
+}
+
+.rotate {
+  transform: rotate(180deg) !important;
+}
+
 /* ------------- BOUTONS ------------ */
 .button {
   font-family: 'Inter';
@@ -189,6 +197,10 @@ hr {
   top: 50dvh;
   left: 50dvw;
   transform: translate(-50%, calc((-50%) - (30px)));
+}
+
+.popup form {
+  text-align: center;
 }
 
 .popupSuppr div{
@@ -452,11 +464,16 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 
 /* ------------- FORMULAIRE - ANALYSE DETAILLEE ------------ */
+.all-sequences-container {
+  max-height: 80dvh;
+  overflow-y: scroll;
+}
+
 .containerSequence {
   background-color: var(--background-color);
   border-radius: 10px;
   padding: 20px;
-  margin-top: 15px;
+  margin: 15px 0;
   text-align: center;
 }
 
@@ -781,11 +798,26 @@ table td {
 /* ------------- PAGE DETAILS ------------ */
 
 #page-details .container {
-text-align: center;
+  text-align: center;
 }
 
 #page-details .container ul {
-text-align: left;
+  text-align: left;
+}
+
+.details-sequences-container {
+  position: relative;
+}
+
+.details-sequences-container svg {
+  position: absolute;
+  top: 12px;
+  right: 20px;
+  transition: all 0.2s ease;
+}
+
+#list-sequences {
+  display: none;
 }
 
 .container-rythme-reco {
@@ -812,9 +844,9 @@ text-align: left;
   text-align: center;
 }
 .block-vitesse div {
-display: flex;
-flex-direction: row;
-justify-content: space-between;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 .block-vitesse h3 {
@@ -838,9 +870,7 @@ justify-content: space-between;
   stroke : var(--third-color);
 }
 
-.popup form {
-      text-align: center;
-}
+
 
 
 
