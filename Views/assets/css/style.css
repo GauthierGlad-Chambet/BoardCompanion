@@ -119,6 +119,7 @@ hr {
   width: 90%;
   max-width: 450px;
   border-color: var(--primary-color);
+  margin: 2dvh auto 5dvh;
 }
 
 
@@ -268,6 +269,7 @@ form {
   background-color: var(--secondary-color);
   text-align: left;
   max-width: 550px;
+  margin: 0 auto;
 }
 
 form div {
@@ -510,12 +512,21 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 /* ------------- FORMULAIRE - ANALYSE DETAILLEE ------------ */
+
+#container-detailed-analysis {
+    max-width: 550px;
+}
+
+#container-detailed-analysis h3, #container-detailed-analysis p {
+    text-align: center;
+}
+
 .all-sequences-container {
-  max-height: 80dvh;
+  max-height: calc(100dvh - (220px + 19dvh));
   overflow-y: scroll;
 }
 
-.containerSequence {
+.container-sequence {
   background-color: var(--background-color);
   border-radius: 10px;
   padding: 20px;
@@ -523,15 +534,15 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   text-align: center;
 }
 
-.containerSequence ul {
+.container-sequence ul {
   list-style: none;
   padding: 0;
   gap : 0;
 }
 
-.sequence-block {
+/* .sequence-block {
   text-align: center;
-}
+} */
 
 .container-sequence-radio {
   display: flex;
@@ -926,7 +937,7 @@ height: calc(100dvh - 60px);
     padding: 40px 60px;
     justify-content: start;
     align-items: start;
-    /* flex-wrap: wrap; */
+    max-width: unset;
   }
 
 
@@ -969,7 +980,7 @@ height: calc(100dvh - 60px);
     transform: translateX(50px);
   }
 
-/* ------------- FORMULAIRES ------------ */
+  /* ------------- FORMULAIRES ------------ */
 
   form {
     max-width: unset;
@@ -979,6 +990,7 @@ height: calc(100dvh - 60px);
     align-self : start;
   }
 
+  /* ------------- FORMULAIRE - NOUVEAU PROJET ------------ */
   #newProject-form {
     display: flex;
     flex-direction: row;
@@ -995,6 +1007,68 @@ height: calc(100dvh - 60px);
   margin: 0;
   }
 
+  /* ------------- FORMULAIRE - ANALYSE DETAILLEE ------------ */
+  #container-detailed-analysis {
+      max-width: unset;
+  }
+
+  #container-detailed-analysis form {
+      width: 100%;
+  }
+
+  #container-detailed-analysis h3, #container-detailed-analysis p {
+    text-align: left;
+}
+
+  form .all-sequences-container {
+    max-width: unset;
+    max-height: 800px;
+  }
+
+  .all-sequences-container > div {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    max-width: unset;
+  }
+
+  .all-sequences-container .container-sequence, .container-sequence-radio > div {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .all-sequences-container .container-sequence {
+    min-width: 50%;
+    align-self: center;
+  }
+
+  .container-sequence {
+    min-width: 100%;
+  }
+
+  .all-sequences-container .container-sequence-radio {
+    min-width: 40%;
+    margin: 15px 0 15px 40px;
+    flex-wrap: wrap;
+  }
+
+  .container-sequence-radio div {
+    width: unset;
+  } 
+
+  .container-sequence-radio div:last-child {
+    align-items: start;
+  } 
+
+  .container-sequence-radio .container-occupe {
+    align-self: start;
+  }
+
+  #container-detailed-analysis hr {
+      margin-bottom: 80px;
+  }
+
+  
 
   /* ------------- PAGE ACCUEIL ------------ */
   #container-home {
