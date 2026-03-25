@@ -267,6 +267,7 @@ form {
   color: var(--third-color);
   background-color: var(--secondary-color);
   text-align: left;
+  max-width: 550px;
 }
 
 form div {
@@ -274,7 +275,7 @@ form div {
   flex-direction: column;
   width: 100%;
   max-width: 350px;
-  align-self: center;;
+  align-self: center;
 }
 
 form label {
@@ -315,10 +316,6 @@ form fieldset:hover, form fieldset:focus {
   font-size: 12px;
 }
 
-/* form .block-radio {
-  width: 100%;
-} */
-
 .block-radio div {
   display: flex;
   flex-direction: row;
@@ -334,14 +331,6 @@ form fieldset:hover, form fieldset:focus {
 .radioLabel {
   margin-bottom: 0;
 }
-/* 
-.block-files {
-  width: 90%;
-}
-
-.block-dates {
-  width: 90%;
-} */
 
 .block-dates p {
   margin-bottom: 10px;
@@ -491,7 +480,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   border: 1px solid var(--primary-color);
   border-radius: 10px;
   color: var(--third-color);
-  width: 90dvw;
+  max-width: 90dvw;
 }
 
 .form-select select::picker(select):hover, .form-select select::picker(select):focus {
@@ -511,6 +500,14 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   rotate: -90deg;
 }
 
+/* ------------- FORMULAIRE - NOUVEAU PROJET ------------ */
+#newProject-form {
+  gap: 0;
+}
+
+#newProject-form div {
+  gap: 10px;
+}
 
 /* ------------- FORMULAIRE - ANALYSE DETAILLEE ------------ */
 .all-sequences-container {
@@ -909,8 +906,8 @@ height: calc(100dvh - 60px);
   /* ------------- GENERAL ------------ */
   main {
    width: 60dvw;
-   min-height: calc(90dvh - (41px + 5dvh));
-   margin-top: 10dvh;
+   min-height: calc(95dvh - (41px + 5dvh));
+   margin-top: 5dvh;
    transform: translateX(50px);
   }
 
@@ -925,8 +922,11 @@ height: calc(100dvh - 60px);
   /* ------------- CONTENEURS ------------ */
 
   .container:not(.container-sinIn, .login-onglet, .login-button, .block-login) {
-    margin: 10dvh auto;
+    margin: 5dvh auto;
     padding: 40px 60px;
+    justify-content: start;
+    align-items: start;
+    /* flex-wrap: wrap; */
   }
 
 
@@ -934,13 +934,14 @@ height: calc(100dvh - 60px);
 
   .logo {
     position: absolute;
-    right: 10dvw;
-    top: 10dvh;
+    right: 5dvw;
+    top: 5dvh;
     display: flex;
     flex-direction: column;
     align-items: center;
     margin: 0;
     width: 120px;
+    transform: translateY(-8px);
   }
 
   nav {
@@ -968,8 +969,35 @@ height: calc(100dvh - 60px);
     transform: translateX(50px);
   }
 
+/* ------------- FORMULAIRES ------------ */
+
+  form {
+    max-width: unset;
+  }
+
+  form div {
+    align-self : start;
+  }
+
+  #newProject-form {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+  }
+
+  #newProject-form > div {
+    display: flex;
+    justify-content: space-between;
+    max-width: 46%;
+  }
+
+  #newProject-form .button {
+  margin: 0;
+  }
+
+
   /* ------------- PAGE ACCUEIL ------------ */
-  .container-home {
+  #container-home {
     margin-bottom: 2dvh;
   }
 
@@ -977,7 +1005,7 @@ height: calc(100dvh - 60px);
   .main-signIn {
     display: flex;
     flex-direction: row-reverse;
-    min-height: calc(90dvh - (41px + 5dvh));
+    min-height: calc(95dvh - (41px + 5dvh));
     transform: translateX(0);
     justify-content: center;
     align-items: center;

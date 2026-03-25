@@ -13,77 +13,81 @@
                 </option> <?php endforeach; ?>
         </select>
     </form>
-    <form class="container" action="" method="POST">
+    <form class="container" id="newProject-form" action="" method="POST">
         <div>
-                <label for="name">Nom du Projet :</label>
-                <input type="text" name="name" id="name" required value="<?= $project->getName() ?>">
-        </div>
-        <div>
-                <label for="studio">Nom du Studio :</label>
-                <input type="text" name="studio" id="studio" value="<?= $project->getStudio() ?>" required>
-        </div>
-        <div>
-                <label for="episode_nb">Numéro d'épisode :</label>
-                <input type="text" name="episode_nb" id="episode_nb" pattern="[0-9]+" inputmode="numeric" minlength="3" value="<?= $project->getEpisode_nb() ?>" required>
-                <p class="note">(format : NumSaisonNumEpisode)</p>
-        </div>
-        <div>
-                <label for="episode_title">Titre de l'épisode :</label>
-                <input type="text" name="episode_title" id="episode_title" value="<?= $project->getEpisode_title() ?>" required>
-        </div>
-        <div>
-                <label for="nb_predec">Nombre de parties de prédecs :</label>
-                <input type="number" name="nb_predec" id="nb_predec" min="1" value="<?= $project->getNb_predec() ?>" required>
-        </div>
-        <div class="block-radio">
-                <p>Je m'occupe seul du script :</p>
                 <div>
-                        <label class="customLabel radioLabel" for="alone">Oui
-                                <input type="radio" id="alone" name="is_alone" value="1" <?php if ($project->getIs_alone() == true) echo"checked"; ?> />
-                                <span class="checkmark"></span>
-                        </label>
-                        <label class="customLabel radioLabel" for="not_alone">Non
-                                <input type="radio" id="not_alone" name="is_alone" value="0" <?php if ($project->getIs_alone() == false) echo"checked"; ?> />
-                                <span class="checkmark"></span>
-                        </label>
+                        <label for="name">Nom du Projet :</label>
+                        <input type="text" name="name" id="name" required value="<?= $project->getName() ?>">
+                </div>
+                <div>
+                        <label for="studio">Nom du Studio :</label>
+                        <input type="text" name="studio" id="studio" value="<?= $project->getStudio() ?>" required>
+                </div>
+                <div>
+                        <label for="episode_nb">Numéro d'épisode :</label>
+                        <input type="text" name="episode_nb" id="episode_nb" pattern="[0-9]+" inputmode="numeric" minlength="3" value="<?= $project->getEpisode_nb() ?>" required>
+                        <p class="note">(format : NumSaisonNumEpisode)</p>
+                </div>
+                <div>
+                        <label for="episode_title">Titre de l'épisode :</label>
+                        <input type="text" name="episode_title" id="episode_title" value="<?= $project->getEpisode_title() ?>" required>
+                </div>
+                <div>
+                        <label for="nb_predec">Nombre de parties de prédecs :</label>
+                        <input type="number" name="nb_predec" id="nb_predec" min="1" value="<?= $project->getNb_predec() ?>" required>
                 </div>
         </div>
-        <div class="block-radio">
-                <p>Je m'occupe du cleaning :</p>
-                <div>
-                        <label class="customLabel radioLabel" for="cleaning">Oui
-                                <input type="radio" id="cleaning" name="is_cleaning" value="1" <?php if ($project->getIs_cleaning() == true) echo"checked"; ?> />
-                                <span class="checkmark"></span>
+        <div>
+                <div class="block-radio">
+                        <p>Je m'occupe seul du script :</p>
+                        <div>
+                                <label class="customLabel radioLabel" for="alone">Oui
+                                        <input type="radio" id="alone" name="is_alone" value="1" <?php if ($project->getIs_alone() == true) echo"checked"; ?> />
+                                        <span class="checkmark"></span>
+                                </label>
+                                <label class="customLabel radioLabel" for="not_alone">Non
+                                        <input type="radio" id="not_alone" name="is_alone" value="0" <?php if ($project->getIs_alone() == false) echo"checked"; ?> />
+                                        <span class="checkmark"></span>
+                                </label>
+                        </div>
+                </div>
+                <div class="block-radio">
+                        <p>Je m'occupe du cleaning :</p>
+                        <div>
+                                <label class="customLabel radioLabel" for="cleaning">Oui
+                                        <input type="radio" id="cleaning" name="is_cleaning" value="1" <?php if ($project->getIs_cleaning() == true) echo"checked"; ?> />
+                                        <span class="checkmark"></span>
+                                </label>
+                                <label class="customLabel radioLabel" for="no_cleaning">Non
+                                        <input type="radio" id="no_cleaning" name="is_cleaning" value="0" <?php if ($project->getIs_cleaning() == false) echo"checked"; ?> />
+                                        <span class="checkmark"></span>
+                                </label>
+                        </div>
+        
+                </div>
+                <div class="block-dates">
+                        <p>Période de contrat :</p>
+                        <label for="date_begin">Début
+                                <input type="date" name="date_begin" id="date_begin" value="<?= $project->getDate_beginning() ?>" required>
                         </label>
-                        <label class="customLabel radioLabel" for="no_cleaning">Non
-                                <input type="radio" id="no_cleaning" name="is_cleaning" value="0" <?php if ($project->getIs_cleaning() == false) echo"checked"; ?> />
-                                <span class="checkmark"></span>
+                        <label for="date_end">Fin
+                                <input type="date" name="date_end" id="date_end" value="<?= $project->getDate_end() ?>" required>
                         </label>
                 </div>
-
-        </div>
-        <div class="block-dates">
-                <p>Période de contrat :</p>
-                <label for="date_begin">Début
-                        <input type="date" name="date_begin" id="date_begin" value="<?= $project->getDate_beginning() ?>" required>
-                </label>
-                <label for="date_end">Fin
-                        <input type="date" name="date_end" id="date_end" value="<?= $project->getDate_end() ?>" required>
-                </label>
-        </div>
-        <div class="block-radio">
-                <p>Je veux modifier l'analyse détaillée du script :</p>
-                <div>
-                        <label class="customLabel radioLabel" for="details">Oui
-                                <input type="radio" id="details" name="script_detailed" value="1" <?php if ($project->getIs_detailed() == true) echo"checked"; ?> />
-                                <span class="checkmark"></span>
-                        </label>
-                        <label class="customLabel radioLabel" for="no_details">Non
-                                <input type="radio" id="no_details" name="script_detailed" value="0" <?php if ($project->getIs_detailed() == false) echo"checked"; ?>/>
-                                <span class="checkmark"></span>
-                        </label>
+                <div class="block-radio">
+                        <p>Je veux modifier l'analyse détaillée du script :</p>
+                        <div>
+                                <label class="customLabel radioLabel" for="details">Oui
+                                        <input type="radio" id="details" name="script_detailed" value="1" <?php if ($project->getIs_detailed() == true) echo"checked"; ?> />
+                                        <span class="checkmark"></span>
+                                </label>
+                                <label class="customLabel radioLabel" for="no_details">Non
+                                        <input type="radio" id="no_details" name="script_detailed" value="0" <?php if ($project->getIs_detailed() == false) echo"checked"; ?>/>
+                                        <span class="checkmark"></span>
+                                </label>
+                        </div>
                 </div>
+                <input class="button" type="submit" name="submit_new_project" id="submit_new_project" value="Valider">
         </div>
-        <input class="button" type="submit" name="submit_new_project" id="submit_new_project" value="Valider">
     </form>
 </main>
