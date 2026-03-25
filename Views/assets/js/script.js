@@ -13,8 +13,9 @@ const FORM_SELECT = document.querySelectorAll('.form-select select');
 const PAGE_CONTAINER = document.querySelector('.page-container');
 const FOOTER = document.getElementsByTagName('footer')[0];
 const HEADER = document.getElementsByTagName('header')[0];
-const ARROW_OPEN = document.getElementById('arrow-open');
-const LIST_SEQUENCES = document.getElementById('list-sequences');
+const OPEN = document.querySelectorAll('.open');
+const ARROW_OPEN = document.querySelectorAll('.arrow-open');
+const LIST_SEQUENCES = document.querySelectorAll('.list-sequences');
 
 let popupSupprProjetFlag = 0;
 
@@ -117,8 +118,11 @@ try {
 
 
 // Ouvre les sections affichant toutes les séquences
-ARROW_OPEN.addEventListener("click", () => {
-    LIST_SEQUENCES.classList.toggle("open");
-    // ARROW_OPEN.style.transform = "rotate(180deg)";
-    ARROW_OPEN.classList.toggle("rotate");
-})
+OPEN.forEach(btn =>{
+    btn.addEventListener("click", () => {
+        const LIST = btn.nextElementSibling;
+        const ARROW = btn.querySelector('svg');
+        LIST.classList.toggle("open");
+        ARROW.classList.toggle("rotate");
+    });
+});

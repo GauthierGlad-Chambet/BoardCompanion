@@ -19,4 +19,17 @@ class MainController extends MotherController
         
         $this->_display("home");
     }
+
+    public function legals()
+    {
+        
+        //Check si l'utilisateur est connecté pour afficher le header ou non
+        if (empty($_SESSION)) {
+            $this->_display("legals", false);
+            exit;
+        }
+
+        $this->_display("legals");
+        
+    }
 }

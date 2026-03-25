@@ -22,7 +22,7 @@ class ErrorsController extends MotherController
         // Variable technique
         $this->_arrData['strPage']        = "error_404";
 
-        $this->_display("errors/error_404");
+        $this->_display("errors/error_404", false);
     }
 
     /**
@@ -40,6 +40,8 @@ class ErrorsController extends MotherController
         // Variable technique
         $this->_arrData['strPage']        = "error_403";
 
-        $this->_display("errors/error_403");
+        
+        $this->_display("errors/error_403", false);
+        
     }
 }

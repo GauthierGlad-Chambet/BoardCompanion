@@ -52,7 +52,7 @@
                 if  ($sequences && count($sequences) > 0) {
             ?>
             <h3>Durée par séquence (en heures) :</h3>
-            <div>
+            <div class="all-sequences-finalReport">
                 <?php foreach ($sequences as $sequence) { ?>
                     <label for="duree_sequence[<?= $sequence->getId();?>]">
                         Séquence <?= $sequence->getNumber() ?> : <?= $sequence->getTitle() ?> (<?= $sequence->getTypeLabel() ?>)

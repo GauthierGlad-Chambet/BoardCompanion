@@ -14,7 +14,7 @@ class UserController extends MotherController
 
     function __construct() {
     
-        //Appelle ce qui est dans le constructeur de la class parente (siil y en a un)
+        //Appelle ce qui est dans le constructeur de la class parente (s'il y en a un)
         // parent::__construct();
 
         //instantiation du validateur

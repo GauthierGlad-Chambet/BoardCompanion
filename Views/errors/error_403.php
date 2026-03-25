@@ -1,1 +1,6 @@
-<p>Merci de <a href="account.php">créer un compte</a> ou vous <a href="account.php">connecter</a></p>
+<main class="page-erreur">
+    <div class="logo-erreur">
+        <img src="/BoardCompanion/Views/assets/img/logo.png" alt="Logo de Board Companion">
+        <p class="text-primary-color">Merci de <a href="index.php">créer un compte</a> ou te <a href="index.php">connecter</a></p>
+    </div>
+</main>

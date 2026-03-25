@@ -39,12 +39,14 @@
         ?>
         </div>
         <div class="container details-sequences-container">
-            <svg id="arrow-open" viewBox="-1.5 -1.5 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" id="Square-Alt-Arrow-Down--Streamline-Solar-Broken">
-                <path d="m28.125 19.6875 -5.625 5.625 -5.625 -5.625" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"></path>
-                <path d="M41.25 22.5c0 8.838750000000001 0 13.2583125 -2.7459374999999997 16.0040625C35.7583125 41.25 31.338749999999997 41.25 22.5 41.25c-8.83884375 0 -13.258256249999999 0 -16.00411875 -2.7459374999999997C3.75 35.7583125 3.75 31.338749999999997 3.75 22.5c0 -8.83884375 0 -13.258256249999999 2.74588125 -16.00411875C9.241743750000001 3.75 13.66115625 3.75 22.5 3.75c8.838750000000001 0 13.2583125 0 16.0040625 2.74588125 1.825875 1.8257625000000002 2.4376875 4.3914 2.642625 8.50411875" stroke-linecap="round" stroke-width="3"></path>
-            </svg>  
-            <h3>Durées estimées par séquence :</h3>
-            <ul id="list-sequences">
+            <div class="open">
+                <h3>Durées estimées par séquence :</h3>
+                <svg viewBox="-1.5 -1.5 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" id="Square-Alt-Arrow-Down--Streamline-Solar-Broken">
+                    <path d="m28.125 19.6875 -5.625 5.625 -5.625 -5.625" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"></path>
+                    <path d="M41.25 22.5c0 8.838750000000001 0 13.2583125 -2.7459374999999997 16.0040625C35.7583125 41.25 31.338749999999997 41.25 22.5 41.25c-8.83884375 0 -13.258256249999999 0 -16.00411875 -2.7459374999999997C3.75 35.7583125 3.75 31.338749999999997 3.75 22.5c0 -8.83884375 0 -13.258256249999999 2.74588125 -16.00411875C9.241743750000001 3.75 13.66115625 3.75 22.5 3.75c8.838750000000001 0 13.2583125 0 16.0040625 2.74588125 1.825875 1.8257625000000002 2.4376875 4.3914 2.642625 8.50411875" stroke-linecap="round" stroke-width="3"></path>
+                </svg>  
+            </div>
+            <ul>
                 <?php foreach ($sequences as $sequence) { ?>
                     <li> Séquence <?= $sequence->getNumber() ?> : <?= $sequence->getTitle() ?> (<?= $sequence->getTypeLabel() ?>): </br><b><?= $sequence->getDuration_estimated() ?>  heures</b></li>
                 <?php } ?>
@@ -86,8 +88,14 @@
             <p><?= $finalReport->getCleaning_duration() ?> jours</p>
         </div>
             <?php } ?>
-        <div class="container">
-            <h3>Durées réelles par séquence :</h3>
+        <div class="container details-sequences-container">
+            <div class="open">
+                <h3>Durées réelles par séquence :</h3>
+                <svg viewBox="-1.5 -1.5 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" id="Square-Alt-Arrow-Down--Streamline-Solar-Broken">
+                    <path d="m28.125 19.6875 -5.625 5.625 -5.625 -5.625" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"></path>
+                    <path d="M41.25 22.5c0 8.838750000000001 0 13.2583125 -2.7459374999999997 16.0040625C35.7583125 41.25 31.338749999999997 41.25 22.5 41.25c-8.83884375 0 -13.258256249999999 0 -16.00411875 -2.7459374999999997C3.75 35.7583125 3.75 31.338749999999997 3.75 22.5c0 -8.83884375 0 -13.258256249999999 2.74588125 -16.00411875C9.241743750000001 3.75 13.66115625 3.75 22.5 3.75c8.838750000000001 0 13.2583125 0 16.0040625 2.74588125 1.825875 1.8257625000000002 2.4376875 4.3914 2.642625 8.50411875" stroke-linecap="round" stroke-width="3"></path>
+                </svg> 
+            </div>
             <ul>
                 <?php 
                     foreach ($sequences as $sequence) { 
