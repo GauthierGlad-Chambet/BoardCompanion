@@ -85,6 +85,7 @@ body {
 
 main {
    width: 90dvw;
+   min-height: calc(100dvh - (280px + 15dvh));
    margin: 0 auto;
 }
 
@@ -120,19 +121,8 @@ hr {
   border-color: var(--primary-color);
 }
 
-.text-primary-color {
-  color: var(--primary-color);
-  font-family: "Just Me Again Down Here", cursive;
-  font-size: 22px;
-}
 
-.logo {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 5dvh auto;
-  width: 120px;
-}
+/* ------------- CONTENEURS ------------ */
 
 .container {
   display: flex;
@@ -152,14 +142,6 @@ hr {
   justify-content: space-between;
   gap: 10px;
   list-style-type: disc;
-}
-
-.open {
-  display: flex !important;
-}
-
-.rotate {
-  transform: rotate(180deg) !important;
 }
 
 /* ------------- BOUTONS ------------ */
@@ -207,6 +189,74 @@ hr {
   flex-direction: row;
   justify-content: space-between;
   gap : 10px;
+}
+
+/* ------------- HEADER - NAVBAR ------------ */
+
+
+.logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 5dvh auto;
+  width: 120px;
+}
+
+.text-primary-color {
+  color: var(--primary-color);
+  font-family: "Just Me Again Down Here", cursive;
+  font-size: 22px;
+}
+
+nav {
+  z-index: 10;
+  background: var(--primary-color-gradient);
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  position:fixed;
+  bottom: 0;
+  width: 100%;
+  height: 60px;
+}
+
+nav a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  min-height: 48px; /* Hauteur minimale des éléments clicables selon les guidelines Google et Apple */
+  border-radius: 100%;
+}
+
+svg {
+  stroke : var(--third-color);
+  color: var(--third-color);
+  height: 40px;
+}
+
+.menu-active {
+background-color: var(--third-color);
+}
+
+.menu-active svg {
+  stroke : var(--primary-color);
+  color: var(--primary-color);
+}
+
+/* ------------- FOOTER ------------ */
+
+footer {
+  display: flex;
+  justify-content: center;
+  border-top: solid 1px var(--secondary-color);
+  margin: 5dvh 0 60px;
+}
+
+footer a {
+  margin: 10px auto;
 }
 
 /* ------------- FORMULAIRES ------------ */
@@ -502,6 +552,16 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   align-items: end;
 }
 
+.container-sequence-radio .container-occupe {
+  display: flex;
+  align-self: end;
+  width: fit-content;
+}
+
+.container-sequence-radio .container-occupe label {
+  align-self: start;
+}
+
 .container-sequence-radio div p {
   margin-bottom: 16px;
   white-space: nowrap;
@@ -533,58 +593,6 @@ margin-bottom: 10px;
 
 .container-sequences label {
 font-size: 14px;
-}
-
-/* ------------- HEADER - NAVBAR ------------ */
-nav {
-  z-index: 10;
-  background: var(--primary-color-gradient);
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-  position:fixed;
-  bottom: 0;
-  width: 100%;
-  height: 60px;
-}
-
-nav a {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  min-width: 48px;
-  min-height: 48px; /* Hauteur minimale des éléments clicables selon les guidelines Google et Apple */
-  border-radius: 100%;
-}
-
-svg {
-  stroke : var(--third-color);
-  color: var(--third-color);
-  height: 40px;
-}
-
-.menu-active {
-background-color: var(--third-color);
-}
-
-.menu-active svg {
-  stroke : var(--primary-color);
-  color: var(--primary-color);
-}
-
-/* ------------- FOOTER ------------ */
-
-footer {
-  display: flex;
-  justify-content: center;
-  border-top: solid 1px var(--secondary-color);
-  margin: 5dvh 0 60px;
-}
-
-footer a {
-  margin: 10px auto;
 }
 
 /* ------------- PAGE SignIn - Login ------------ */
@@ -888,6 +896,91 @@ align-items: center;
 height: calc(100dvh - 60px);
 }
 
+/* Tablettes */
+@media screen and (min-width: 768px) and (max-width: 991px) {
+
+}
+
+/* Ecrans d'ordinateur */
+@media screen and (min-width: 992px) {
+
+  /* ------------- GENERAL ------------ */
+  main {
+   width: 60dvw;
+   min-height: calc(90dvh - (41px + 5dvh));
+   margin-top: 10dvh;
+   transform: translateX(50px);
+  }
+
+  h1 {
+    font-size: 98px;
+  }
+
+  p,li {
+    font-size: 18px;
+  }
+
+  /* ------------- CONTENEURS ------------ */
+
+  .container {
+    margin: 10dvh auto;
+    padding: 40px 60px;
+  }
+
+
+  /* ------------- HEADER - NAVBAR ------------ */
+
+  .logo {
+    position: absolute;
+    right: 10dvw;
+    top: 10dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+    width: 120px;
+  }
+
+  nav {
+    flex-direction: column;
+    justify-content: space-between;
+    left: 0;
+    width: 100px;
+    height: 100dvh;
+    padding: 10dvh 0;
+  }
+
+  nav a {
+    width: 78px;
+    height: 78px;
+  }
+
+  svg {
+    height: 70px;
+  }
+
+  /* ------------- FOOTER ------------ */
+  footer {
+    margin: 5dvh 0 0 0;
+    width: 100dvw;
+    transform: translateX(50px);
+  }
+
+  /* ------------- PAGE ACCUEIL ------------ */
+  .container-home {
+    margin-bottom: 2dvh;
+  }
+}
+
+/* Très grands écrans */
+@media screen and (min-width: 1201px) {
+  
+}
+
+
+
+
+
 
 
 
@@ -902,4 +995,14 @@ height: calc(100dvh - 60px);
 
 .messageSuccess {
   color: var(--primary-color);
+}
+
+
+/* --------- Classes JS (en bas du css pour priorité la plus élevée) ---------*/
+.open {
+  display: flex !important;
+}
+
+.rotate {
+  transform: rotate(180deg) !important;
 }

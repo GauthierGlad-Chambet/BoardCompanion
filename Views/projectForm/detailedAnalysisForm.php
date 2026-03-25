@@ -51,7 +51,7 @@
                     </div>
                     <div>
                         <p>Je m'en occupe :</p>
-                        
+                        <div class="container-occupe">
                             <label class="customLabel radioLabel" for="assigned_<?= $index ?>">Oui
                                 <input type="radio" id="assigned_<?= $index ?>" name="is_assigned_<?= $index ?>" value="1" checked />
                                 <span class="checkmark"></span>
@@ -60,6 +60,7 @@
                                 <input type="radio" id="not_assigned_<?= $index ?>" name="is_assigned_<?= $index ?>" value="0" />
                                 <span class="checkmark"></span>
                             </label>
+                        </div>
                         
                     </div>
                 </div>

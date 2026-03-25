@@ -1,6 +1,6 @@
 <main>
     <h1>Accueil</h1>
-    <div class="container">
+    <div class="container container-home">
         <p>Bienvenue dans Board Companion !
         <br>
         Ton espace pour mieux organiser, planifier et suivre tes projets de storyboard.</p>
