@@ -1,13 +1,13 @@
 <main>
     <div class="page-container">
-        <h1>Compte</h1>
-        <div>
+        <h1>Mon compte</h1>
+        <div class="account-page">
             <form class="container" method="POST" action="index.php?controller=user&action=updateAccount">
                 <h2 class="h2-account">Modifier le compte</h2>
                 <h3>Modifier le pseudo :</h3>
                 <div>
                     <label for="pseudo">Pseudo<span class="champObligatoire"> *</span> :</label>
-                    <input id="pseudo" type="text"  name="pseudo" value="<?= $user->getPseudo() ?>">
+                    <input id="pseudo" type="text" name="pseudo" value="<?= $user->getPseudo() ?>">
                 </div>
                 <div>
                     <label for="oldPassword">Mot de passe<span class="champObligatoire"> *</span> :</label>
@@ -41,65 +41,70 @@
                         Supprimer le compte</button>
                 </div>
             </form>
-    
-    
-            
-    
-        <?php if (!empty($_SESSION['error'])){ 
-            foreach($_SESSION['error'] as $message) {
-        ?>
-            <p class="messageError"><?= $message ?></p>
-        <?php }
-            unset($_SESSION['error']);
-        } ?>
-    
-        <?php if (!empty($_SESSION['success'])) { ?>
-            <p class="messageSuccess"><?= $_SESSION['success']['CompteMAJ'] ?></p>
-            <?php unset($_SESSION['success']['CompteMAJ']); ?>
-        <?php }; ?>
-    
-        </div>
-        <div class="container" id="account-container">
-            <h2 class="h2-account">Statistiques du compte</h2>
-            <div>
-                <h3>Satisfaction globale :</h3>
-                <img src="Views/assets/img/<?= $user->getAppreciation_label() ?>" alt="Smiley symbolisant l'appréciation">
-            </div>
-            <div class="block-vitesse">
-                <h3>Vitesses :</h3>
+
+
+
+
+            <?php if (!empty($_SESSION['error'])) {
+                foreach ($_SESSION['error'] as $message) {
+            ?>
+                    <p class="messageError"><?= $message ?></p>
+            <?php }
+                unset($_SESSION['error']);
+            } ?>
+
+            <?php if (!empty($_SESSION['success'])) { ?>
+                <p class="messageSuccess"><?= $_SESSION['success']['CompteMAJ'] ?></p>
+                <?php unset($_SESSION['success']['CompteMAJ']); ?>
+            <?php }; ?>
+
+
+            <div class="container" id="account-container">
+                <h2 class="h2-account">Statistiques du compte</h2>
                 <div>
-                    <h4>Vitesse moyenne :</h4> <p><?= $user->getAvg_pages_per_day() ?> pages / jours</p>
+                    <h3>Satisfaction globale :</h3>
+                    <img src="Views/assets/img/<?= $user->getAppreciation_label() ?>" alt="Smiley symbolisant l'appréciation">
+                </div>
+                <div class="block-vitesse">
+                    <h3>Vitesses :</h3>
+                    <div>
+                        <h4>Vitesse moyenne :</h4>
+                        <p><?= $user->getAvg_pages_per_day() ?> pages / jours</p>
+                    </div>
+                    <div>
+                        <h4>Action :</h4>
+                        <p><?= $statAction ?> pages / jours</p>
+                    </div>
+                    <div>
+                        <h4>Comédie :</h4>
+                        <p><?= $statComedie ?> pages / jours</p>
+                    </div>
+                    <div>
+                        <h4>Mixte :</h4>
+                        <p><?= $statMixte ?> pages / jours</p>
+                    </div>
                 </div>
                 <div>
-                    <h4>Action :</h4> <p><?=  $statAction ?> pages / jours</p>
+                    <h3>Moyenne de plans par page :</h3>
+                    <p><?= $user->getAvg_shots_per_page() ?> plans</p>
                 </div>
                 <div>
-                    <h4>Comédie :</h4> <p><?=  $statComedie ?> pages / jours</p>
+                    <h3>Moyenne de cleaning par projet :</h3>
+                    <p><?= $user->getAvg_cleaning_duration() ?> jours</p>
                 </div>
-                <div>
-                    <h4>Mixte :</h4> <p><?=  $statMixte ?> pages / jours</p>
-                </div>
-            </div>
-            <div>
-                <h3>Moyenne de plans par page :</h3>
-                <p><?= $user->getAvg_shots_per_page() ?> plans</p>
-            </div>
-            <div>
-                <h3>Moyenne de cleaning par projet :</h3>
-                <p><?= $user->getAvg_cleaning_duration() ?> jours</p>
             </div>
         </div>
     </div>
     <div class="popup popupSuppr container" id="popupCompte">
-                <form method="POST" action="index.php?controller=user&action=deleteAccount">
-                    <p>Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.</p>
-                    <label for="confirmPassword">Veuillez entrer votre mot de passe pour confirmer la suppression :</label>
-                    <input id="confirmPassword" type="password" name="confirmPassword" placeholder="**********" required/>
-                <div>
-                    <button class="annulerSuppr button">Annuler</button>
-                    <button  class="button"type="submit">Supprimer le compte</button>
+        <form method="POST" action="index.php?controller=user&action=deleteAccount">
+            <p>Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.</p>
+            <label for="confirmPassword">Veuillez entrer votre mot de passe pour confirmer la suppression :</label>
+            <input id="confirmPassword" type="password" name="confirmPassword" placeholder="**********" required />
+            <div>
+                <button class="annulerSuppr button">Annuler</button>
+                <button class="button" type="submit">Supprimer le compte</button>
 
-                </div>
-                </form>
             </div>
+        </form>
+    </div>
 </main>

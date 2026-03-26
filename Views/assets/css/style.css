@@ -953,13 +953,30 @@ table img {
  
 /* ------------- PAGE COMPTE ------------ */
 
-#account-container {
-  text-align: center;
-  max-width: 550px;
+.account-page {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin: 2dvh auto;
+  }
+
+#account-container, .account-page form {
+  width: 500px;
+  margin: 0 auto;
 }
 
 .h2-account {
   font-family: 'Bionix';
+}
+
+.h2-account ~ h3:first-of-type {
+    margin: 0 auto;
+}
+
+.h2-account ~ h3:last-of-type {
+    max-width: 350px;
+    margin: 3dvh auto 0;
 }
 
 .block-vitesse {
@@ -983,22 +1000,37 @@ table img {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: space-between;
-  gap : 10px;
+  justify-content: center;
+  gap : 20px;
+  max-width: unset;
+  margin-top: 3dvh;
 }
 
 #button-modify-account {
   display: flex;
   flex-direction: row;
+  min-width: 218px;
+  margin: unset;
+}
+
+#button-modify-account ~.button {
+  min-width: 218px;
+  margin: unset;
 }
 
 #button-modify-account svg {
   stroke : var(--third-color);
 }
 
+#account-container {
+  justify-content: space-between;
+  text-align: center;
+  max-width: 550px;
+  padding-bottom: 108px;
+}
+
 #account-container img {
   margin: 1dvh auto 0;
-  width: 5dvw;
   min-width: 40px;
   max-width: 100px;
 }
@@ -1025,7 +1057,9 @@ height: calc(100dvh - 60px);
 }
 
 /* SmartPhone moyens */
-@media screen and (min-width: 400px) and (max-width: 991px) {
+@media screen and (min-width: 400px) {
+
+  /* ------------- PAGE COMPTE ------------ */
 
   .block-vitesse div {
     flex-direction: row;
@@ -1060,7 +1094,7 @@ height: calc(100dvh - 60px);
 
   /* ------------- CONTENEURS ------------ */
 
-  .container:not(.container-sinIn, .login-onglet, .login-button, .block-login, .dashboard-mobile-section, .container-legals, .container-details .container) {
+  .container:not(.container-sinIn, .login-onglet, .login-button, .block-login, .dashboard-mobile-section, .container-legals, .container-details .container, .account-page form, #account-container) {
     margin: 5dvh auto;
     padding: 40px 60px;
     justify-content: start;
@@ -1097,7 +1131,7 @@ height: calc(100dvh - 60px);
     height: 78px;
   }
 
-  svg {
+  svg:not(.account-page form svg) {
     height: 70px;
   }
 
@@ -1110,11 +1144,11 @@ height: calc(100dvh - 60px);
 
   /* ------------- FORMULAIRES ------------ */
 
-  form {
+  form:not(.account-page form) {
     max-width: unset;
   }
 
-  form div {
+  form div:not(.account-page form div) {
     align-self : start;
   }
 
@@ -1242,11 +1276,13 @@ height: calc(100dvh - 60px);
   transform: translateX(0px);
   }
 
-  /* ------------- PAGE COMPTE ------------ */
+  
 
-  #account-container {
-    max-width: unset;
-  }
+/*   
+  #account-container > div:not(.block-vitesse) {
+    display: flex;
+    flex-direction: row;
+  } */
 
 
 }
@@ -1261,6 +1297,7 @@ height: calc(100dvh - 60px);
    .dashboard-mobile {
     display: none;
    }
+
 }
 
 
