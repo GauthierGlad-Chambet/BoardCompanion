@@ -24,9 +24,8 @@
             <?php foreach ($arrAppreciations as $appreciation) : ?>
                 <div>
                     <label class="customLabel radioLabel" for="appreciation_<?= $appreciation->getId() ?>">
-                        <?= htmlspecialchars($appreciation->getLabel()) ?>
                         <input type="radio" id="appreciation_<?= $appreciation->getId() ?>" name="appreciation" value="<?= $appreciation->getId() ?>" required />
-                        <span class="checkmark"></span>
+                        <img class="checkmark-appreciation" src="Views/assets/img/<?= htmlspecialchars($appreciation->getLabel()) ?>" alt="Smiley symbolisant l'appréciation">
                     </label>
                 </div>
             <?php endforeach; ?>
@@ -42,7 +41,7 @@
         <div>
             <?php if ($project->getIs_cleaning() == 1) { ?>
             <label for="duree_cleaning"><h3>Durée du cleaning (en jours) :</h3></label>
-            <input type="number" step="0.1" min="0" id="duree_cleaning" name="duree_cleaning">
+            <input type="number" id="duree_cleaning" step="0.1" min="0" id="duree_cleaning" name="duree_cleaning">
             <?php } ?>
         </div>
         

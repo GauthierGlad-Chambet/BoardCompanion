@@ -1,5 +1,5 @@
 <main id="page-details">
-    <div class="page-container">
+    <div class="page-container container-details">
         <h1>Statistiques</h1>
         <form class="form-select" action="index.php" method="get">
     
@@ -40,6 +40,7 @@
         </div>
         <div class="container details-sequences-container">
             <div class="open">
+                <div></div>
                 <h3>Durées estimées par séquence :</h3>
                 <svg viewBox="-1.5 -1.5 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" id="Square-Alt-Arrow-Down--Streamline-Solar-Broken">
                     <path d="m28.125 19.6875 -5.625 5.625 -5.625 -5.625" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"></path>
@@ -72,7 +73,7 @@
         <h2 id="bilanFinal">BILAN FINAL</h2>
         <div class="container">
             <h3>Appréciation globale : </h3>
-            <p><?= $finalReport->getAppreciationLabel() ?></p>
+            <img src="Views/assets/img/<?= $finalReport->getAppreciationLabel() ?>" alt="Smiley symbolisant l'appréciation">
         </div>
         <div class="container">
             <h3>Durée totale du projet : </h3>
@@ -90,6 +91,7 @@
             <?php } ?>
         <div class="container details-sequences-container">
             <div class="open">
+                <div></div>
                 <h3>Durées réelles par séquence :</h3>
                 <svg viewBox="-1.5 -1.5 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" id="Square-Alt-Arrow-Down--Streamline-Solar-Broken">
                     <path d="m28.125 19.6875 -5.625 5.625 -5.625 -5.625" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"></path>

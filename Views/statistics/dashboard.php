@@ -27,7 +27,12 @@
                 <td><?= $project->getEstimated_total_duration() ?> jours</td>
                 <td><?= $project->getRecommended_pages_per_day() ?> pages/jour</td>
                 <td>
-                    <?= $project->getAppreciation_label() ?></td>
+                    <?php if($project->getAppreciation_label() == "Non renseigné") { ?>
+                        <p>Non renseigné</p>
+                    <?php } else { ?>
+                        <img src="Views/assets/img/<?= $project->getAppreciation_label() ?>" alt="Smiley symbolisant l'appréciation">
+                    <?php } ?>
+                </td>
                 <td><a class="button" href="index.php?controller=statistics&action=details&project_id=<?= $project->getId() ?>">Voir les détails</a></td>
             </tr> <?php endforeach; ?>
         </tbody>

@@ -71,7 +71,7 @@
                         <hr>
                         <?php endforeach; ?>
                     </div>
-            <input class="button" type="submit" name="submit_sequences" id="submit_sequences" value="Valider les séquences">
+                <input class="button" type="submit" name="submit_sequences" id="submit_sequences" value="Valider les séquences">
             </form>
         <?php else: ?>
             <p>Aucune scène trouvée.</p>

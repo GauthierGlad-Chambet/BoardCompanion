@@ -2,8 +2,8 @@
     <div class="page-container">
         <h1>Compte</h1>
         <div>
-            <h2>Modifier le compte</h2>
             <form class="container" method="POST" action="index.php?controller=user&action=updateAccount">
+                <h2 class="h2-account">Modifier le compte</h2>
                 <h3>Modifier le pseudo :</h3>
                 <div>
                     <label for="pseudo">Pseudo<span class="champObligatoire"> *</span> :</label>
@@ -60,9 +60,10 @@
     
         </div>
         <div class="container" id="account-container">
-            <h2>Statistiques du compte</h2>
+            <h2 class="h2-account">Statistiques du compte</h2>
             <div>
-                <h3>Satisfaction globale :</h3> <p> <?= $user->getAppreciation_label() ?></p>
+                <h3>Satisfaction globale :</h3>
+                <img src="Views/assets/img/<?= $user->getAppreciation_label() ?>" alt="Smiley symbolisant l'appréciation">
             </div>
             <div class="block-vitesse">
                 <h3>Vitesses :</h3>

@@ -1,7 +1,7 @@
 <main>
+    <h1 class="h1-legals">Mentions legales</h1>
     <a class="button" href="index.php">Retour au site</a>
-    <div class="container">
-        <h1>Mentions legales</h1>
+    <div class="container container-legals">
  
         <!-- ================================================ -->
         <h2>1. Informations légales</h2>

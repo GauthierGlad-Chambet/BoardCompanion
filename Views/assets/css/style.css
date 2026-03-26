@@ -85,6 +85,7 @@ body {
 
 main {
    width: 90dvw;
+   max-width: 1200px;
    min-height: calc(100dvh - (280px + 15dvh));
    margin: 0 auto;
 }
@@ -157,6 +158,8 @@ hr {
   min-width: fit-content;
   max-width: 200px;
   margin: 0 auto;
+  padding-left: 10px;
+  padding-right: 10px;
   display: flex;
   align-items: center; /* Centre le texte verticalement */
   justify-content: center; /* Centre le texte horizontalement */
@@ -192,8 +195,15 @@ hr {
   gap : 10px;
 }
 
-/* ------------- HEADER - NAVBAR ------------ */
 
+/* ------------- BARRE DE DEFILEMENT ------------ */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-color) transparent;
+}
+
+
+/* ------------- HEADER - NAVBAR ------------ */
 
 .logo {
   display: flex;
@@ -502,6 +512,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   rotate: -90deg;
 }
 
+
+
+
+
+
 /* ------------- FORMULAIRE - NOUVEAU PROJET ------------ */
 #newProject-form {
   gap: 0;
@@ -539,10 +554,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   padding: 0;
   gap : 0;
 }
-
-/* .sequence-block {
-  text-align: center;
-} */
 
 .container-sequence-radio {
   display: flex;
@@ -586,13 +597,51 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   width: 100%;
 }
 
+.form-finalReport fieldset {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 15px;
+}
+
+.form-finalReport fieldset div {
+  width: fit-content;
+  align-self: center;
+}
+
+.form-finalReport fieldset div label {
+  height: unset;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: unset;
+}
+
+.form-finalReport fieldset div img {
+  width: 5dvw;
+  min-width: 34px;
+  max-width: 100px;
+}
+
+.form-finalReport .customLabel input:checked ~ .checkmark-appreciation {
+  background-color: var(--primary-color);
+  border-radius: 50%;
+  transform: scale(1.3);
+  /* width: calc(6dvw + 20px); */
+  max-width: 110px;
+}
+
 .all-sequences-finalReport {
-   max-height: 60dvh;
+  max-height: 60dvh;
   overflow-y: scroll;
 }
 
 .container-sequences h3 {
-margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 .container-sequences div {
@@ -600,7 +649,7 @@ margin-bottom: 10px;
 }
 
 .container-sequences label {
-font-size: 14px;
+  font-size: 14px;
 }
 
 /* ------------- PAGE SignIn - Login ------------ */
@@ -651,6 +700,15 @@ font-size: 14px;
 .container-signIn .container {
   margin: 0;
 }
+
+.container-signIn form {
+  width: 100%;
+}
+
+.container-signIn form .button {
+  width: 200px;
+}
+
 
 .container-signIn .container:not(.login-button) {
    min-height: 500px;
@@ -759,6 +817,7 @@ font-size: 14px;
 
 table {
   display: none;
+  width: 100%;
   margin: 2dvh auto;
   border-collapse: collapse;
   background-color: var(--secondary-color);
@@ -807,12 +866,17 @@ table td {
   padding: 10px;
 }
 
+table img {
+  max-width: 40px;
+  margin: 0 auto;
+}
+
 .dashboard-mobile-section {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin: 5dvh auto;
+  margin: 10px auto;
   text-align: center;
   gap: 15px;
 }
@@ -833,10 +897,20 @@ table td {
 }
 
 .details-sequences-container svg {
-  position: absolute;
   top: 12px;
   right: 20px;
   transition: all 0.2s ease;
+  min-width: 40px;
+  min-height: 40px;
+  max-width: 40px;
+  max-height: 40px;
+}
+
+.details-sequences-container div div {
+  min-width: 40px;
+  min-height: 40px;
+  max-width: 40px;
+  max-height: 40px;
 }
 
 .details-sequences-container ul {
@@ -852,24 +926,53 @@ table td {
 }
 
 .button-details {
-  margin: 2dvh auto;
+  margin: 2dvh auto 5dvh;
   display: flex;
   flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.button-details a {
+  margin: 2dvh 20px 0 20px;
 }
 
 #bilanFinal {
   margin-top: 5dvh;
+  font-family: 'Bionix';
+  font-size: 34px;
+}
+
+#bilanFinal ~ .container img {
+  margin: 0 auto;
+  width: 5dvw;
+  min-width: 40px;
+  max-width: 100px;
 }
  
 /* ------------- PAGE COMPTE ------------ */
 
 #account-container {
   text-align: center;
+  max-width: 550px;
 }
+
+.h2-account {
+  font-family: 'Bionix';
+}
+
+.block-vitesse {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
 .block-vitesse div {
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  flex-direction: column;
+  justify-content: center;
+  margin-bottom: 1dvh;
 }
 
 .block-vitesse h3 {
@@ -879,6 +982,7 @@ table td {
 .button-modify-account {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   justify-content: space-between;
   gap : 10px;
 }
@@ -886,14 +990,28 @@ table td {
 #button-modify-account {
   display: flex;
   flex-direction: row;
-  color: var(--third-color);
 }
 
 #button-modify-account svg {
   stroke : var(--third-color);
 }
 
+#account-container img {
+  margin: 1dvh auto 0;
+  width: 5dvw;
+  min-width: 40px;
+  max-width: 100px;
+}
+
+
+/* ------------- PAGE MENTIONS LEGALES ------------ */
+.h1-legals {
+  margin-bottom: 2dvh;
+}
+
+
 /* ------------- PAGE 404 - 403 ------------ */
+
 .page-erreur + footer {
   margin: 0;
 }
@@ -906,8 +1024,18 @@ align-items: center;
 height: calc(100dvh - 60px);
 }
 
-/* Tablettes */
-@media screen and (min-width: 768px) and (max-width: 991px) {
+/* SmartPhone moyens */
+@media screen and (min-width: 400px) and (max-width: 991px) {
+
+  .block-vitesse div {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .block-vitesse div h4 {
+    width: 150px;
+    text-align: right;
+  }
 
 }
 
@@ -932,7 +1060,7 @@ height: calc(100dvh - 60px);
 
   /* ------------- CONTENEURS ------------ */
 
-  .container:not(.container-sinIn, .login-onglet, .login-button, .block-login) {
+  .container:not(.container-sinIn, .login-onglet, .login-button, .block-login, .dashboard-mobile-section, .container-legals, .container-details .container) {
     margin: 5dvh auto;
     padding: 40px 60px;
     justify-content: start;
@@ -1068,11 +1196,21 @@ height: calc(100dvh - 60px);
       margin-bottom: 80px;
   }
 
+
+
+  .form-finalReport .customLabel input:checked ~ .checkmark-appreciation {
+    transform: scale(1.15);
+  }
+
   
 
   /* ------------- PAGE ACCUEIL ------------ */
   #container-home {
     margin-bottom: 2dvh;
+  }
+
+  #container-home h2 {
+    text-align: left;
   }
 
   /* ------------- PAGE SignIn - Login ------------ */
@@ -1100,16 +1238,29 @@ height: calc(100dvh - 60px);
     width: 70%;
   }
 
-   .main-signIn + footer {
-    transform: translateX(0px);
-   }
+  .main-signIn + footer {
+  transform: translateX(0px);
+  }
+
+  /* ------------- PAGE COMPTE ------------ */
+
+  #account-container {
+    max-width: unset;
+  }
 
 
 }
 
 /* Très grands écrans */
-@media screen and (min-width: 1201px) {
-  
+@media screen and (min-width: 1553px) {
+   /* ------------- PAGE DASHBOARD ------------ */
+   table {
+    display: table;
+   }
+
+   .dashboard-mobile {
+    display: none;
+   }
 }
 
 
@@ -1136,6 +1287,7 @@ height: calc(100dvh - 60px);
 /* --------- Classes JS (en bas du css pour priorité la plus élevée) ---------*/
 .open {
   display: flex !important;
+  justify-content: space-between;
 }
 
 .rotate {
