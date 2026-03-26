@@ -63,7 +63,7 @@ require_once("Views/partials/head.php");
             </a>
         </nav>
         <div class="logo">
-            <img src="/BoardCompanion/Views/assets/img/logo.png" alt="Logo de Board Companion">
+            <img src="Views/assets/icons/Boardy/boardy.png" alt="Logo de Board Companion">
             <?php if($_SESSION) { ?>
            <p class="text-primary-color">Bonjour <?php echo($_SESSION['user']['pseudo']); ?></p>
             <?php } ?>

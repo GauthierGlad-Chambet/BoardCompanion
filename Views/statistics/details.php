@@ -59,7 +59,7 @@
             <p><?= $project->getRecommended_pages_per_day() ?> pages / jour</p>
         </div>
         <p class="note">Calculs réalisés à partir de votre rythme constaté sur les précédents projets</p>
-        <div class="button-details">
+        <div class="button-lot">
             <a class="button" href="index.php?controller=form&action=updateProject&project_id=<?= $project->getId() ?>">Modifier les informations</a>
             <?php if(!$finalReport) { ?>
                 <a class="button" href="index.php?controller=statistics&action=finalReport&project_id=<?= $project->getId() ?>">Bilan final</a>

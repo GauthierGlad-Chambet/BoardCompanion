@@ -91,12 +91,11 @@ main {
 }
 
 h1 {
-  /* font-family: "Julius Sans One", sans-serif; */
-  /* color: var(--primary-color); */
   font-family: "Bionix";
   color: var(--third-color);
   text-align: center;
   font-size: 34px;
+  margin-bottom: 2dvh;
 }
 
 h2 {
@@ -210,7 +209,8 @@ hr {
   flex-direction: column;
   align-items: center;
   margin: 5dvh auto;
-  width: 120px;
+  width: 300px;
+  z-index: 100;
 }
 
 .text-primary-color {
@@ -298,7 +298,6 @@ form textarea, input:not([type="submit"], [type="file"], [type="radio"]) {
   background-color: var(--secondary-color);
   border-color: var(--primary-color);
   border-radius: 15px;
-  font-size: 24px;
   color: var(--third-color);
   height: 34px;
   margin: 0;
@@ -519,11 +518,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 /* ------------- FORMULAIRE - NOUVEAU PROJET ------------ */
 #newProject-form {
-  gap: 0;
+  gap: 20px;
 }
 
-#newProject-form div {
-  gap: 10px;
+#newProject-form > div {
+  gap: 20px;
 }
 
 /* ------------- FORMULAIRE - ANALYSE DETAILLEE ------------ */
@@ -818,7 +817,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 table {
   display: none;
   width: 100%;
-  margin: 2dvh auto;
+  margin: 5dvh auto;
   border-collapse: collapse;
   background-color: var(--secondary-color);
   text-align: center;
@@ -876,7 +875,7 @@ table img {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin: 10px auto;
+  margin: 2dvh auto;
   text-align: center;
   gap: 15px;
 }
@@ -925,17 +924,10 @@ table img {
   border-top: 1px solid var(--third-color);
 }
 
-.button-details {
-  margin: 2dvh auto 5dvh;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.button-details a {
-  margin: 2dvh 20px 0 20px;
+.button-lot a {
+  /* margin: 2dvh 20px 0 20px; */
+  margin: 0;
+  min-width: 206px;
 }
 
 #bilanFinal {
@@ -996,7 +988,7 @@ table img {
   margin-bottom: 10px;
 }
 
-.button-modify-account {
+.button-lot {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -1056,6 +1048,8 @@ align-items: center;
 height: calc(100dvh - 60px);
 }
 
+
+
 /* SmartPhone moyens */
 @media screen and (min-width: 400px) {
 
@@ -1086,6 +1080,7 @@ height: calc(100dvh - 60px);
 
   h1 {
     font-size: 98px;
+     margin-bottom: 5dvh;
   }
 
   p,li {
@@ -1095,7 +1090,7 @@ height: calc(100dvh - 60px);
   /* ------------- CONTENEURS ------------ */
 
   .container:not(.container-sinIn, .login-onglet, .login-button, .block-login, .dashboard-mobile-section, .container-legals, .container-details .container, .account-page form, #account-container) {
-    margin: 5dvh auto;
+    margin: 0 auto 5dvh;
     padding: 40px 60px;
     justify-content: start;
     align-items: start;
@@ -1107,14 +1102,12 @@ height: calc(100dvh - 60px);
 
   .logo {
     position: absolute;
+    flex-direction: column-reverse;
     right: 5dvw;
+    /* top: calc(5dvh + 20px); */
     top: 5dvh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     margin: 0;
-    width: 120px;
-    transform: translateY(-8px);
+    /* transform: translateY(-8px); */
   }
 
   nav {
@@ -1153,16 +1146,24 @@ height: calc(100dvh - 60px);
   }
 
   /* ------------- FORMULAIRE - NOUVEAU PROJET ------------ */
-  #newProject-form {
+  #new-project-page #newProject-form {
     display: flex;
     flex-direction: row;
-    justify-content: space-evenly;
+    justify-content: center;
   }
 
   #newProject-form > div {
     display: flex;
     justify-content: space-between;
+    align-self: start;
+    align-items: center;
     max-width: 46%;
+  }
+
+  #newProject-form div {
+    
+    align-self: unset;
+  
   }
 
   #newProject-form .button {

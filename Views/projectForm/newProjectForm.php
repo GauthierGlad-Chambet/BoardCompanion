@@ -1,4 +1,4 @@
-<main>
+<main id="new-project-page">
     <h1>Nouveau Projet</h1>
     <form class="container" id="newProject-form" action="" method="POST" enctype="multipart/form-data">
        <div>
@@ -86,7 +86,9 @@
                                </label>
                        </div>
                </div>
-               <input class="button" type="submit" name="submit_new_project" id="submit_new_project" value="Valider">
+               <div>
+                       <input class="button" type="submit" name="submit_new_project" id="submit_new_project" value="Valider">
+               </div>
        </div>
     </form>
 </main>

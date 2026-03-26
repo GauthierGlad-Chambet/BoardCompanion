@@ -1,4 +1,4 @@
-<main>
+<main id="new-project-page">
     <h1>Modifier le Projet</h1>
     <form class="form-select" action="index.php" method="get">
 
@@ -87,7 +87,9 @@
                                 </label>
                         </div>
                 </div>
-                <input class="button" type="submit" name="submit_new_project" id="submit_new_project" value="Valider">
+                <div>
+                        <input class="button" type="submit" name="submit_new_project" id="submit_new_project" value="Valider">
+                </div>
         </div>
     </form>
 </main>

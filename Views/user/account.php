@@ -22,7 +22,7 @@
                     <label for="newPasswordConfirmation">Confirmez le nouveau mot de passe<span class="champObligatoire"> *</span> :</label>
                     <input id="newPasswordConfirmation" type="password" name="newPasswordConfirmation">
                 </div>
-                <div class="button-modify-account">
+                <div class="button-lot">
                     <button class="button" id="button-modify-account" type="submit" name="modifier">
                         <svg viewBox="-1.5 -1.5 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" id="Pen-2--Streamline-Solar-Broken">
                             <path d="M7.5 41.25h7.5m22.5 0h-15" stroke-linecap="round" stroke-width="3"></path>

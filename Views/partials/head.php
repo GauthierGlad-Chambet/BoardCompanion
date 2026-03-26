@@ -13,7 +13,7 @@
       content="width=device-width, initial-scale=1.0, viewport-fit=cover"
     />
     <!-- ajout de viewport-fit=cover pour permettre les safeareas, permet au contenu de s'étendre dans la zone de sécurité-->
-    <meta name="”theme-color”" content="#########insérer_hexa##########" />
+    <meta name="”theme-color”" content="#7CEE00" />
     <!-- Indique le thème de couleur du site, qui apparait sur les navigateurs compatibles-->
     <title>
       BoardCompanion
@@ -42,7 +42,7 @@
     <link
       rel="icon"
       type="image/png"
-      href="#########insérer_chemin_favicon##########"
+      href="Views/assets/icons/favicon-board-companion.png"
     />
 
     <!-- Appel de la police Julius Sans One -->
