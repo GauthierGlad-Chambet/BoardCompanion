@@ -2,7 +2,7 @@
 require_once("Views/partials/head.php");
 ?>
 
-<body>
+<body class="<?= $pageClass ?? '' ?>">
     <header>
         <nav>
             <a class="icones-menu" href="index.php">
@@ -63,7 +63,11 @@ require_once("Views/partials/head.php");
             </a>
         </nav>
         <div class="logo">
-            <img src="Views/assets/icons/Boardy/boardy.png" alt="Logo de Board Companion">
+            <!-- <img src="Views/assets/icons/Boardy/boardy.png" alt="Logo de Board Companion"> -->
+            <div class="boardy">
+                <img id="boardy-pen" src="Views/assets/icons/Boardy/boardy-pen.png" alt="Logo de Board Companion">
+                <img id="boardy" src="Views/assets/icons/Boardy/boardy.png" alt="Logo de Board Companion">
+            </div>
             <?php if($_SESSION) { ?>
            <p class="text-primary-color">Bonjour <?php echo($_SESSION['user']['pseudo']); ?></p>
             <?php } ?>

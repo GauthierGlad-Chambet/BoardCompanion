@@ -94,7 +94,7 @@ h1 {
   font-family: "Bionix";
   color: var(--third-color);
   text-align: center;
-  font-size: 34px;
+  font-size: 40px;
   margin-bottom: 2dvh;
 }
 
@@ -208,15 +208,37 @@ hr {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 5dvh auto;
-  width: 300px;
-  z-index: 100;
+  margin: 5dvh auto 0;
+  /* width: 300px; */
+  pointer-events: none;
+}
+
+.logo p {
+  display: flex;
+  justify-content: center;
+  /* width: 100px; */
 }
 
 .text-primary-color {
   color: var(--primary-color);
   font-family: "Just Me Again Down Here", cursive;
   font-size: 22px;
+}
+
+.boardy {
+  position: relative;
+  width: 100px;
+  height: 76px;
+}
+
+#boardy {
+  position: absolute;
+  z-index: -100;
+}
+
+#boardy-pen {
+  position: absolute;
+    z-index: 100;
 }
 
 nav {
@@ -655,6 +677,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .main-signIn {
   min-height: calc(100dvh - (41px + 10dvh))
 }
+
 .container-signIn {
   display: flex;
   flex-direction: column;
@@ -677,15 +700,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .logo-signIn img {
-  width: 100px;
+  width: 400px;
 }
 
 .logo-signIn h1 {
   font-size: 38px;
-}
-
-.logo p {
-  display: flex;
 }
 
 .login-onglets {
@@ -1036,6 +1055,22 @@ table img {
 
 /* ------------- PAGE 404 - 403 ------------ */
 
+.page-erreur p {
+  font-size: 18px;
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.page-erreur div p a {
+  color: var(--primary-color);
+  text-decoration: underline;
+  
+}
+
+.page-erreur div p a:hover, .page-erreur div p a:focus {
+  color: var(--third-color);
+}
+
 .page-erreur + footer {
   margin: 0;
 }
@@ -1063,6 +1098,11 @@ height: calc(100dvh - 60px);
   .block-vitesse div h4 {
     width: 150px;
     text-align: right;
+  }
+
+  /* ------------- PAGEs ERREUR ------------ */
+  .page-erreur p {
+  font-size: 28px;
   }
 
 }
@@ -1101,13 +1141,34 @@ height: calc(100dvh - 60px);
   /* ------------- HEADER - NAVBAR ------------ */
 
   .logo {
+    margin: 5dvh auto;
+    width: 300px;
+  }
+
+  .logo p {
+    justify-content: flex-end;
+  }
+  .boardy {
+    position: relative;
+    width: 300px;
+    height: 228px;
+  }
+
+
+  body:not(.page-title-nowrap) .logo {
     position: absolute;
     flex-direction: column-reverse;
-    right: 5dvw;
-    /* top: calc(5dvh + 20px); */
-    top: 5dvh;
+    right: max(3dvw, calc(50% - 820px));
+    top: calc(10dvh + 75px);
     margin: 0;
-    /* transform: translateY(-8px); */
+  }
+
+  .page-title-nowrap .logo {
+    position: absolute;
+    flex-direction: column-reverse;
+    right: max(3dvw, calc(50% - 820px));
+    top: calc(10dvh - 45px);
+    margin: 0;
   }
 
   nav {
@@ -1256,6 +1317,7 @@ height: calc(100dvh - 60px);
     transform: translateX(0);
     justify-content: center;
     align-items: center;
+    gap: 20px;
   }
 
   .container-signIn {
@@ -1270,20 +1332,22 @@ height: calc(100dvh - 60px);
 
   .logo-signIn img {
     margin: 0 0 40px 0;
-    width: 70%;
+    width: 100%;
   }
 
   .main-signIn + footer {
   transform: translateX(0px);
   }
 
-  
+  /* ------------- PAGE ERREUR 404 - 403 ------------ */
 
-/*   
-  #account-container > div:not(.block-vitesse) {
-    display: flex;
-    flex-direction: row;
-  } */
+  .page-erreur {
+    margin-top: 0;
+  }
+
+  .page-erreur p {
+    font-size: 48px;
+  }
 
 
 }
@@ -1291,6 +1355,12 @@ height: calc(100dvh - 60px);
 /* Très grands écrans */
 @media screen and (min-width: 1553px) {
    /* ------------- PAGE DASHBOARD ------------ */
+
+   body:not(.page-title-nowrap) .logo {
+    right: max(3dvw, calc(50% - 820px));
+    top: calc(10dvh - 45px);
+  }
+
    table {
     display: table;
    }
@@ -1298,6 +1368,10 @@ height: calc(100dvh - 60px);
    .dashboard-mobile {
     display: none;
    }
+
+
+  
+
 
 }
 

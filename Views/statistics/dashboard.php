@@ -45,7 +45,7 @@
                 <div>
                     <h2>Projet : <?= $project->getName() ?> 
                     <p class="note">
-                        (<?= $project->getDate_beginningFormatted() ?> <?= $project->getDate_endFormatted()?>)</p>
+                        (du <?= $project->getDate_beginningFormatted() ?> au <?= $project->getDate_endFormatted()?>)</p>
                     </p>
                 </div>
                 <div>

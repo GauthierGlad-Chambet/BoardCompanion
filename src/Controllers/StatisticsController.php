@@ -122,6 +122,7 @@ class StatisticsController extends MotherController
         $this->_arrData['projects'] = $projectsToDisplay;
         $this->_arrData['sequences'] = $sequencesToDisplay;
         $this->_arrData['finalReport'] = $finalReport;
+        $this->_arrData['pageClass'] = 'page-title-nowrap';
         
         $this->_display("statistics/details");
     }

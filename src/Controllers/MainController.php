@@ -16,7 +16,7 @@ class MainController extends MotherController
             exit;
         }
 
-        
+        $this->_arrData['pageClass'] = 'page-title-nowrap';
         $this->_display("home");
     }
 

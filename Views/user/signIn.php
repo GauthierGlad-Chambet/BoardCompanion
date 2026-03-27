@@ -16,7 +16,7 @@
                             <?php unset($_SESSION['success']['utilisateurAjoute']); ?>
                         <?php }; ?>
     <div class="logo-signIn">
-        <img src="/BoardCompanion/Views/assets/img/logo.png" alt="Logo de Board Companion">
+        <img src="/BoardCompanion/Views/assets/icons/Boardy/boardy.png" alt="Logo de Board Companion">
         <h1>Board Companion</h1>
         <p class="text-primary-color"">Ton assistant boarder personnel</p>
     </div>
