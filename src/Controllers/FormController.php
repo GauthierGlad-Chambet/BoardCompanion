@@ -188,6 +188,12 @@ class FormController extends MotherController {
         $projectModel = new ProjectModel();
         $projectData = $projectModel->getProjectById($projectId);
 
+        // Vérifier que le projet appartient bien à l'utilisateur connecté
+        if (!$projectData || $projectData['fk_user'] != $_SESSION['user']['id']) {
+            header("Location: /Boardcompanion/403");
+            exit;
+        }
+
         $project = new Project();
         $project->hydrate($projectData);
 
@@ -321,9 +327,15 @@ class FormController extends MotherController {
         $projectModel = new ProjectModel();
         $projectData = $projectModel->getProjectById($projectId);
 
+        // Vérifier que le projet appartient bien à l'utilisateur connecté
+        if (!$projectData || $projectData['fk_user'] != $_SESSION['user']['id']) {
+            header("Location: /Boardcompanion/403");
+            exit;
+        }
+
 
         if (!$projectData) {
-            echo "Projet non trouvé.";
+            header("Location: /Boardcompanion/404");
             exit;
         }
 
@@ -429,9 +441,15 @@ class FormController extends MotherController {
         $projectModel = new ProjectModel();
         $projectData = $projectModel->getProjectById($projectId);
 
+        // Vérifier que le projet appartient bien à l'utilisateur connecté
+        if (!$projectData || $projectData['fk_user'] != $_SESSION['user']['id']) {
+            header("Location: /Boardcompanion/403");
+            exit;
+        }
+
 
         if (!$projectData) {
-            echo "Projet non trouvé.";
+            header("Location: /Boardcompanion/404");
             exit;
         }
 

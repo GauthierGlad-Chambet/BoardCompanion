@@ -53,6 +53,6 @@ if (class_exists($strCtrlName)) {
 
 // si un des éléments non trouvé => redirection vers page 404
 if ($bool404) {
-    header("Location:index.php?controller=errors&action=error_404");
+    header("Location:/BoardCompanion/404");
     exit();
 }

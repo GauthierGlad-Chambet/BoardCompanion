@@ -96,7 +96,7 @@
         </div>
     </div>
     <div class="popup popupSuppr container" id="popupCompte">
-        <form method="POST" action="/BoardCompanion/compte">
+        <form method="POST" action="/BoardCompanion/supprimer-compte">
             <p>Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.</p>
             <label for="confirmPassword">Veuillez entrer votre mot de passe pour confirmer la suppression :</label>
             <input id="confirmPassword" type="password" name="confirmPassword" placeholder="**********" required />

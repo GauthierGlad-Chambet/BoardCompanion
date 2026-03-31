@@ -63,7 +63,13 @@ class StatisticsController extends MotherController
         $projectData = $projectModel->getProjectById($projectId);
 
         if (!$projectData) {
-            echo "Projet non trouvé.";
+            header("Location: /Boardcompanion/404");
+            exit;
+        }
+
+        // Vérifier que le projet appartient bien à l'utilisateur connecté
+        if (!$projectData || $projectData['fk_user'] != $_SESSION['user']['id']) {
+            header("Location: /Boardcompanion/403");
             exit;
         }
 
@@ -144,7 +150,13 @@ class StatisticsController extends MotherController
         $projectData = $projectModel->getProjectById($projectId);
 
         if (!$projectData) {
-            echo "Projet non trouvé.";
+            header("Location: /Boardcompanion/404");
+            exit;
+        }
+
+        // Vérifier que le projet appartient bien à l'utilisateur connecté
+        if (!$projectData || $projectData['fk_user'] != $_SESSION['user']['id']) {
+            header("Location: /Boardcompanion/403");
             exit;
         }
 
@@ -309,7 +321,13 @@ class StatisticsController extends MotherController
         $projectData = $projectModel->getProjectById($projectId);
 
         if (!$projectData) {
-            echo "Projet non trouvé.";
+            header("Location: /Boardcompanion/404");
+            exit;
+        }
+
+        // Vérifier que le projet appartient bien à l'utilisateur connecté
+        if (!$projectData || $projectData['fk_user'] != $_SESSION['user']['id']) {
+            header("Location: /Boardcompanion/403");
             exit;
         }
 
@@ -374,7 +392,7 @@ class StatisticsController extends MotherController
         $finalReportData = $finalreportModel->getFinalReportByProjectId($projectId);
 
         if (!$finalReportData) {
-            echo "Bilan non trouvé.";
+            header("Location: /Boardcompanion/404");
             exit;
         }
 
