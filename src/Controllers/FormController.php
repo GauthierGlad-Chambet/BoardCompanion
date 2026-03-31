@@ -17,7 +17,7 @@ class FormController extends MotherController {
 
         //Check si l'utilisateur est connecté, sinon renvoie à la page login
         if (empty($_SESSION)) {
-            header("Location: index.php?controller=user&action=login");
+            header("Location: /BoardCompanion/connexion");
             exit;
         }
 
@@ -149,10 +149,10 @@ class FormController extends MotherController {
 
                 echo "Projet ajouté avec succès.";
                 if($script_detailed === '1'){
-                    header("Location: index.php?controller=form&action=detailedAnalysis&project_id=". $idProject );
+                    header("Location: /BoardCompanion/analyse-detaillee?project_id=". $idProject );
                     exit;
                 } else {
-                    header("Location: index.php?controller=statistics&action=dashboard");
+                    header("Location: /BoardCompanion/tableau-de-bord");
                     exit;
                 }
             } catch (\Exception $e) {
@@ -172,7 +172,7 @@ class FormController extends MotherController {
 
         //Check si l'utilisateur est connecté, sinon renvoie à la page login
         if (empty($_SESSION)) {
-            header("Location: index.php?controller=user&action=login");
+            header("Location: /BoardCompanion/connexion");
             exit;
         }
 
@@ -276,7 +276,7 @@ class FormController extends MotherController {
                 $projectModel->updateIsDetailed($project);
 
 
-                header("Location: index.php?controller=statistics&action=details&project_id=" . $project->getId());
+                header("Location: /BoardCompanion/projet?project_id=" . $project->getId());
                 exit;
         } else {
             // Utilisation de smalot/pdfparser pour extraire le texte du PDF
@@ -312,7 +312,7 @@ class FormController extends MotherController {
     public function updateProject() {
         //Check si l'utilisateur est connecté, sinon renvoie à la page login
         if (empty($_SESSION)) {
-            header("Location: index.php?controller=user&action=login");
+            header("Location: /BoardCompanion/connexion");
             exit;
         }
 
@@ -391,14 +391,14 @@ class FormController extends MotherController {
                 if($script_detailed === '1'){
                     // Si il n'y a pas encore d'analyse détaillée pour ce projet
                     if($projectOld->getIs_detailed() == 0) {
-                        header("Location: index.php?controller=form&action=detailedAnalysis&project_id=". $projectOld->getId());
+                        header("Location: /BoardCompanion/analyse-detaillee?project_id=". $projectOld->getId());
                         exit;
                     } else {
-                        header("Location: index.php?controller=form&action=updateDetailedAnalysis&project_id=" . $projectOld->getId());
+                        header("Location: /BoardCompanion/modifier-analyse-detaillee?project_id=" . $projectOld->getId());
                         exit;
                     }
                 } else {
-                    header("Location: index.php?controller=statistics&action=dashboard");
+                    header("Location: /BoardCompanion/tableau-de-bord");
                     exit;
                 }
             } catch (\Exception $e) {
@@ -418,7 +418,7 @@ class FormController extends MotherController {
         
         //Check si l'utilisateur est connecté, sinon renvoie à la page login
         if (empty($_SESSION)) {
-            header("Location: index.php?controller=user&action=login");
+            header("Location: /BoardCompanion/connexion");
             exit;
         }
 
@@ -533,7 +533,7 @@ class FormController extends MotherController {
             $projectModel->updateRecommendedPagesPerDayProject($project);
             $projectModel->updateIsDetailed($project);
 
-            header("Location: index.php?controller=statistics&action=details&project_id=" . $projectId);
+            header("Location: /BoardCompanion/projet?project_id=" . $projectId);
             exit;
         }
 

@@ -1,9 +1,9 @@
 <main>
     <h1 id="analyse-detaillee">Analyse detaillee</h1>
-    <h2 id="h2-analyse-detaillee">
-    <?php echo "{$project->getName()}, {$project->getStudio()}, Épisode n<sup>o</sup> {$project->getEpisode_nb()} : {$project->getEpisode_title()}"?>
-    </h2>
     <div class="container" id="container-detailed-analysis">
+        <h2 id="h2-analyse-detaillee">
+        <?php echo "{$project->getName()}, {$project->getStudio()}, Épisode n<sup>o</sup> {$project->getEpisode_nb()} : {$project->getEpisode_title()}"?>
+        </h2>
         <?php if (!empty($sequenceHeaders)): ?>
             <form action="" method="POST">
                 <div class="all-sequences-container">

@@ -7,14 +7,14 @@
 
         <p>Voici un aperçu rapide de ce que je peux faire pour toi :</p>
         <ul>
-            <a href="index.php?controller=form&action=newProject"><li><strong>Nouveau projet</strong> : dis-moi tout sur ton projet — script, séquences, infos de production — et je m'occupe d'organiser tout ça pour toi.</li></a>
-            <a href="index.php?controller=statistics&action=dashboard"><li><strong>Tableau de bord</strong> : je te prépare une vue d'ensemble de tous tes projets avec leurs statistiques et mes estimations de temps.</li></a>
-            <a href="index.php?controller=calendar&action=index"><li><strong>Calendrier</strong> : je génère un planning sur-mesure en fonction de tes deadlines, exportable directement vers ton agenda mobile.</li></a>
-            <a href="index.php?controller=tree&action=index"><li><strong>Arborescence</strong> : en un clic, je te crée une structure de dossiers prête à l'emploi et personnalisable selon tes habitudes.</li></a>
-            <a href="index.php?controller=user&action=showAccount"><li><strong>Compte</strong> : retrouve tes statistiques globales et gère tes informations personnelles.</li></a>
+            <a href="/BoardCompanion/nouveau-projet"><li><strong>Nouveau projet</strong> : dis-moi tout sur ton projet — script, séquences, infos de production — et je m'occupe d'organiser tout ça pour toi.</li></a>
+            <a href="/BoardCompanion/tableau-de-bord"><li><strong>Tableau de bord</strong> : je te prépare une vue d'ensemble de tous tes projets avec leurs statistiques et mes estimations de temps.</li></a>
+            <a href="/BoardCompanion/calendar"><li><strong>Calendrier</strong> : je génère un planning sur-mesure en fonction de tes deadlines, exportable directement vers ton agenda mobile.</li></a>
+            <a href="/BoardCompanion/tree"><li><strong>Arborescence</strong> : en un clic, je te crée une structure de dossiers prête à l'emploi et personnalisable selon tes habitudes.</li></a>
+            <a href="/BoardCompanion/compte"><li><strong>Compte</strong> : retrouve tes statistiques globales et gère tes informations personnelles.</li></a>
         </ul>
 
         <p>Et… voilà ! Tu es au bon endroit.<br>Installe-toi, explore, et laisse-moi t'accompagner dans ton workflow. Par où on commence ?</p>
     </div>
-    <a class="button" href="index.php?controller=form&action=newProject">Commencer un projet</a>
+    <a class="button" href="/BoardCompanion/nouveau-projet">Commencer un projet</a>
 </main>

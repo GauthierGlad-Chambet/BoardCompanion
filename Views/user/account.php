@@ -2,7 +2,7 @@
     <div class="page-container">
         <h1>Mon compte</h1>
         <div class="account-page">
-            <form class="container" method="POST" action="index.php?controller=user&action=updateAccount">
+            <form class="container" method="POST" action="/BoardCompanion/compte">
                 <h2 class="h2-account">Modifier le compte</h2>
                 <h3>Modifier le pseudo :</h3>
                 <div>
@@ -96,7 +96,7 @@
         </div>
     </div>
     <div class="popup popupSuppr container" id="popupCompte">
-        <form method="POST" action="index.php?controller=user&action=deleteAccount">
+        <form method="POST" action="/BoardCompanion/compte">
             <p>Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.</p>
             <label for="confirmPassword">Veuillez entrer votre mot de passe pour confirmer la suppression :</label>
             <input id="confirmPassword" type="password" name="confirmPassword" placeholder="**********" required />

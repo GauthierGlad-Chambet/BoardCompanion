@@ -8,12 +8,18 @@ $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
 // Détermine le controleur à appeler et son action en fonction de l'url
+
 if(empty($_SESSION)){
     $controller = $_GET["controller"] ?? "user";
     $action = $_GET["action"] ?? "login";
 } else {
+    // Si l'URL n'est pas déjà /BoardCompanion/home, on redirige
+    if (!isset($_GET["controller"]) && !isset($_GET["action"]) && ($_SERVER['REQUEST_URI'] === '/BoardCompanion/' || $_SERVER['REQUEST_URI'] === '/BoardCompanion/index.php')) {
+        header('Location: /BoardCompanion/home');
+        exit();
+    }
     $controller = $_GET["controller"] ?? "main";
-$action = $_GET["action"] ?? "home";
+    $action = $_GET["action"] ?? "home";
 }
 
 

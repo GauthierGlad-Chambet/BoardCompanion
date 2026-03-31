@@ -33,7 +33,7 @@
                         <img src="Views/assets/img/<?= $project->getAppreciation_label() ?>" alt="Smiley symbolisant l'appréciation">
                     <?php } ?>
                 </td>
-                <td><a class="button" href="index.php?controller=statistics&action=details&project_id=<?= $project->getId() ?>">Voir les détails</a></td>
+                <td><a class="button" href="/BoardCompanion/projet?project_id=<?= $project->getId() ?>">Voir les détails</a></td>
             </tr> <?php endforeach; ?>
         </tbody>
     </table>
@@ -52,7 +52,7 @@
                     <p><?= $project->getNb_assigned_pages() ?> pages attribuées | <?= $project->getEstimated_total_duration() ?> jours estimés</p>
                 </div>
                 <p>Rythme recommandé : <?= $project->getRecommended_pages_per_day() ?> pages/jour</p>
-                <a class="button" href="index.php?controller=statistics&action=details&project_id=<?= $project->getId() ?>">Détails</a>
+                <a class="button" href="/BoardCompanion/projet?project_id=<?= $project->getId() ?>">Détails</a>
             </div>
         <?php endforeach; ?>   
     </div>

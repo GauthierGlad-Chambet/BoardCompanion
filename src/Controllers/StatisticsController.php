@@ -17,12 +17,11 @@ use GauthierGladchambet\BoardCompanion\Models\UserStatByTypeModel;
 class StatisticsController extends MotherController
 {
 
-    public function dashboard()
-    {
+    public function dashboard() {
     
         //Check si l'utilisateur est connecté, sinon renvoie à la page login
         if (empty($_SESSION)) {
-            header("Location: index.php?controller=user&action=login");
+            header("Location: /BoardCompanion/connexion");
             exit;
         }
 
@@ -48,7 +47,7 @@ class StatisticsController extends MotherController
         
         //Check si l'utilisateur est connecté, sinon renvoie à la page login
         if (empty($_SESSION)) {
-            header("Location: index.php?controller=user&action=login");
+            header("Location: /BoardCompanion/connexion");
             exit;
         }
 
@@ -130,7 +129,7 @@ class StatisticsController extends MotherController
     public function finalReport() {
         //Check si l'utilisateur est connecté, sinon renvoie à la page login
         if (empty($_SESSION)) {
-            header("Location: index.php?controller=user&action=login");
+            header("Location: /BoardCompanion/connexion");
             exit;
         }
 
@@ -283,7 +282,7 @@ class StatisticsController extends MotherController
             $this->updateUserAvgShotsPerPage($_SESSION['user']['id']);
             $this->updateUserStatsByType($_SESSION['user']['id']);
 
-            header("Location: index.php?controller=statistics&action=details&project_id=" . $project->getId() . "#bilanFinal");
+            header("Location: /BoardCompanion/projet?project_id=" . $project->getId() . "#bilanFinal");
             exit;
 
         }
@@ -295,7 +294,7 @@ class StatisticsController extends MotherController
     public function updateFinalReport() {
          //Check si l'utilisateur est connecté, sinon renvoie à la page login
         if (empty($_SESSION)) {
-            header("Location: index.php?controller=user&action=login");
+            header("Location: /BoardCompanion/connexion");
             exit;
         }
 
@@ -451,7 +450,7 @@ class StatisticsController extends MotherController
             $this->updateUserAvgShotsPerPage($_SESSION['user']['id']);
             $this->updateUserStatsByType($_SESSION['user']['id']);
     
-            header("Location: index.php?controller=statistics&action=dashboard");
+            header("Location: /BoardCompanion/tableau-de-bord");
             exit;
 
         }
@@ -473,7 +472,7 @@ class StatisticsController extends MotherController
         $this->updateUserAvgShotsPerPage($_SESSION['user']['id']);
         $this->updateUserStatsByType($_SESSION['user']['id']);
 
-        header("Location: index.php?controller=statistics&action=dashboard");
+        header("Location: /BoardCompanion/tableau-de-bord");
         exit;
 
     }
@@ -566,41 +565,41 @@ class StatisticsController extends MotherController
     }
 
     public function updateUserStatsByType(int $userId) {
-    $sequenceModel = new SequenceModel();
-    $userStatByTypeModel = new UserStatByTypeModel();
+        $sequenceModel = new SequenceModel();
+        $userStatByTypeModel = new UserStatByTypeModel();
 
-    foreach ([1, 2, 3] as $typeId) {
-        $datas = $sequenceModel->findSequenceStatsByUserAndType($userId, $typeId);
+        foreach ([1, 2, 3] as $typeId) {
+            $datas = $sequenceModel->findSequenceStatsByUserAndType($userId, $typeId);
 
-        if (empty($datas)) {
-            continue;
-        }
-
-        $total = 0;
-        $count = 0;
-
-        foreach ($datas as $data) {
-    
-            if (!isset($data['lines_count'], $data['duration_real']) || $data['duration_real'] <= 0 || $data['lines_count'] <= 0) {
+            if (empty($datas)) {
                 continue;
             }
-            $pages = $data['lines_count'] / 33;
-            $durationDays = $data['duration_real'] / 8;
-            $total += $pages / $durationDays;
-            $count++;
+
+            $total = 0;
+            $count = 0;
+
+            foreach ($datas as $data) {
+        
+                if (!isset($data['lines_count'], $data['duration_real']) || $data['duration_real'] <= 0 || $data['lines_count'] <= 0) {
+                    continue;
+                }
+                $pages = $data['lines_count'] / 33;
+                $durationDays = $data['duration_real'] / 8;
+                $total += $pages / $durationDays;
+                $count++;
+            }
+
+            if ($count === 0) {
+                continue;
+            }
+
+            $avg = round($total / $count, 2);
+
+            // Sécurité pour éviter les erreurs de division par 0 on n'envoie jamais 0 en bdd, si c'est le cas, on reset avec la valeur par défaut
+            $avg = $avg > 0 ? $avg : 1;
+
+            $userStatByTypeModel->updateUserStatByType($userId, $typeId, $avg);
         }
-
-        if ($count === 0) {
-            continue;
-        }
-
-        $avg = round($total / $count, 2);
-
-        // Sécurité pour éviter les erreurs de division par 0 on n'envoie jamais 0 en bdd, si c'est le cas, on reset avec la valeur par défaut
-        $avg = $avg > 0 ? $avg : 1;
-
-        $userStatByTypeModel->updateUserStatByType($userId, $typeId, $avg);
     }
-}
 
 }

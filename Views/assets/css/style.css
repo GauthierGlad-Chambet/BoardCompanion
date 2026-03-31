@@ -178,8 +178,8 @@ hr {
   display : none;
   border: 1px solid var(--primary-color);
   position: fixed;
-  top: 50dvh;
-  left: 50dvw;
+  top: 50%;
+  left: 50%;
   transform: translate(-50%, calc((-50%) - (30px)));
 }
 
@@ -609,6 +609,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 #h2-analyse-detaillee {
   text-align: center;
+  margin: 0 auto;
+  font-size: 30px;
+
 }
 
 /* ------------- FORMULAIRE - BILAN FINAL ------------ */
@@ -1015,6 +1018,7 @@ table img {
   gap : 20px;
   max-width: unset;
   margin-top: 3dvh;
+  margin-bottom: 3dvh;
 }
 
 #button-modify-account {
@@ -1202,7 +1206,7 @@ height: calc(100dvh - 60px);
     max-width: unset;
   }
 
-  form div:not(.account-page form div) {
+  form div:not(.account-page form div, .popup div) {
     align-self : start;
   }
 

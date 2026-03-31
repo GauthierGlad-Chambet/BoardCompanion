@@ -60,12 +60,12 @@
         </div>
         <p class="note">Calculs réalisés à partir de votre rythme constaté sur les précédents projets</p>
         <div class="button-lot">
-            <a class="button" href="index.php?controller=form&action=updateProject&project_id=<?= $project->getId() ?>">Modifier les informations</a>
+            <a class="button" href="/BoardCompanion/modifier-projet?project_id=<?= $project->getId() ?>">Modifier les informations</a>
             <?php if(!$finalReport) { ?>
-                <a class="button" href="index.php?controller=statistics&action=finalReport&project_id=<?= $project->getId() ?>">Bilan final</a>
+                <a class="button" href="/BoardCompanion/bilan-final?project_id=<?= $project->getId() ?>">Bilan final</a>
                 </div>
                 <?php } else { ?>
-                <a class="button" href="index.php?controller=statistics&action=updateFinalReport&project_id=<?= $project->getId() ?>">Modifier le bilan final</a>
+                <a class="button" href="/BoardCompanion/modifier-bilan-final?project_id=<?= $project->getId() ?>">Modifier le bilan final</a>
         </div>
         
         <hr>
@@ -119,7 +119,7 @@
         <p>Êtes-vous sûr de vouloir supprimer ce projet ? Cette action est irréversible.</p>
         <div>
             <button class="annulerSuppr button">Annuler</button>
-            <form method="POST" action="index.php?controller=statistics&action=deleteProject">
+            <form method="POST" action="/BoardCompanion/tableau-de-bord">
                 <input type="hidden" name="project_id" value="<?= $project->getId() ?>">
                 <button class="button" type="submit">Supprimer le projet</button>
             </form>

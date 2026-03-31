@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : jeu. 19 mars 2026 à 08:06
+-- Généré le : mar. 31 mars 2026 à 07:10
 -- Version du serveur : 9.1.0
 -- Version de PHP : 8.1.31
 
@@ -20,8 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Base de données : `board_companion`
 --
-CREATE DATABASE IF NOT EXISTS `board_companion` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
-USE `board_companion`;
 
 -- --------------------------------------------------------
 
@@ -32,19 +30,9 @@ USE `board_companion`;
 DROP TABLE IF EXISTS `appreciation`;
 CREATE TABLE IF NOT EXISTS `appreciation` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `label` enum('very bad','bad','good','very good') NOT NULL,
+  `label` enum('smiley-sad.svg','smiley-unhappy.svg','smiley-smile.svg','smiley-happy.svg') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Déchargement des données de la table `appreciation`
---
-
-INSERT INTO `appreciation` (`id`, `label`) VALUES
-(1, 'very good'),
-(2, 'good'),
-(3, 'bad'),
-(4, 'very bad');
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -65,7 +53,7 @@ CREATE TABLE IF NOT EXISTS `final_report` (
   UNIQUE KEY `fk_project` (`fk_project`),
   KEY `fk_final_appreciation` (`fk_appreciation`),
   KEY `fk_final_project` (`fk_project`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -97,7 +85,7 @@ CREATE TABLE IF NOT EXISTS `project` (
   `fk_user` int NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_user` (`fk_user`)
-) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -120,7 +108,7 @@ CREATE TABLE IF NOT EXISTS `sequence` (
   PRIMARY KEY (`id`),
   KEY `fk_appreciation_type` (`fk_type`),
   KEY `fk_appreciation_project` (`fk_project`)
-) ENGINE=InnoDB AUTO_INCREMENT=976 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -133,16 +121,7 @@ CREATE TABLE IF NOT EXISTS `type` (
   `id` int NOT NULL AUTO_INCREMENT,
   `label` enum('comédie','action','mixte') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Déchargement des données de la table `type`
---
-
-INSERT INTO `type` (`id`, `label`) VALUES
-(1, 'action'),
-(2, 'comédie'),
-(3, 'mixte');
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -161,16 +140,9 @@ CREATE TABLE IF NOT EXISTS `user` (
   `avg_shots_per_page` int NOT NULL,
   `fk_appreciation` int NOT NULL DEFAULT '2',
   PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`),
   KEY `fk_user__appreciation` (`fk_appreciation`)
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Déchargement des données de la table `user`
---
-
-INSERT INTO `user` (`id`, `pseudo`, `email`, `pwd`, `avg_pages_per_day`, `avg_cleaning_duration`, `avg_shots_per_page`, `fk_appreciation`) VALUES
-(24, 'Gauthier', 'gauthier.glad-chambet@outlook.fr', '$2y$10$t/e7XlG2OZZMk288bAAMs.xCFD0To1uu9.ql/0aTkzHlVFdcMVt9C', 1, 0.2, 0, 2),
-(28, 't', 't', '$2y$10$BydGqHsoUuJg3LmSBmx1ZeOQRZpoaWid.cqVvwJaBEqH4Ts1zvOJu', 1, 0.2, 0, 2);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -187,19 +159,7 @@ CREATE TABLE IF NOT EXISTS `user_type_statistics` (
   PRIMARY KEY (`id`),
   KEY `fk_user_statistics` (`fk_user`),
   KEY `fk_type_statistics` (`fk_type`)
-) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Déchargement des données de la table `user_type_statistics`
---
-
-INSERT INTO `user_type_statistics` (`id`, `avg_pages_per_day`, `fk_user`, `fk_type`) VALUES
-(13, 1.23, 24, 1),
-(14, 1.96, 24, 2),
-(15, 0.65, 24, 3),
-(29, 1, 28, 1),
-(30, 1, 28, 2),
-(31, 1, 28, 3);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Contraintes pour les tables déchargées

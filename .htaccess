@@ -1,0 +1,34 @@
+RewriteEngine on
+
+RewriteBase /BoardCompanion/
+
+
+
+# Redirige les url vers les controllers associés
+
+RewriteRule ^home$ index.php?controller=main&action=home [L,QSA]
+RewriteRule ^mentions-legales$ index.php?controller=main&action=legals [L,QSA]
+
+RewriteRule ^nouveau-projet$ index.php?controller=form&action=newProject [L,QSA]
+RewriteRule ^modifier-projet$ index.php?controller=form&action=updateProject [L,QSA]
+
+RewriteRule ^analyse-detaillee$ index.php?controller=form&action=detailedAnalysis [L,QSA]
+RewriteRule ^modifier-analyse-detaillee$ index.php?controller=form&action=updateDetailedAnalysis [L,QSA]
+
+RewriteRule ^tableau-de-bord$ index.php?controller=statistics&action=dashboard [L,QSA]
+RewriteRule ^projet$ index.php?controller=statistics&action=details [L,QSA]
+RewriteRule ^supprimer-projet$ index.php?controller=statistics&action=deleteProject [L,QSA]
+RewriteRule ^bilan-final$ index.php?controller=statistics&action=finalReport [L,QSA]
+RewriteRule ^modifier-bilan-final$ index.php?controller=statistics&action=updateFinalReport [L,QSA]
+
+RewriteRule ^connexion$ index.php?controller=user&action=login [L,QSA]
+RewriteRule ^deconnexion$ index.php?controller=user&action=logout [L,QSA]
+RewriteRule ^compte$ index.php?controller=user&action=showAccount [L,QSA]
+RewriteRule ^supprimer-compte$ index.php?controller=user&action=deleteAccount [L,QSA]
+
+
+RewriteRule ^arborescence$ index.php?controller=tree&action=main [L,QSA]
+RewriteRule ^planning$ index.php?controller=calendar&action=showCalendar [L,QSA]
+
+ErrorDocument 403 /index.php?controller=errors&action=error_403
+ErrorDocument 404 /index.php?controller=errors&action=error_404

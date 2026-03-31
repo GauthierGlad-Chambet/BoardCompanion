@@ -51,7 +51,7 @@ class UserController extends MotherController
                 // S'il y a des erreurs, on les met en session et on redirige
                 if (!empty($errors)) {
                     $_SESSION['error'] = $errors;
-                    header("Location: index.php?controller=user&action=login");
+                    header("Location: /BoardCompanion/connexion");
                     exit;
                 }
 
@@ -76,7 +76,7 @@ class UserController extends MotherController
                     }
 
                     $_SESSION['success']['utilisateurAjoute'] = "Utilisateur ajouté avec succès !";
-                    header("Location: index.php?controller=user&action=login");
+                    header("Location: /BoardCompanion/connexion");
                     exit;
 
                 
@@ -102,7 +102,7 @@ class UserController extends MotherController
                 $emailError = $this->validator->validerEmail($email);
                 if ($emailError) {
                     $_SESSION['error'] = ['email' => $emailError];
-                    header("Location: index.php?controller=user&action=login");
+                    header("Location: /BoardCompanion/connexion");
                     exit;
                 }
 
@@ -110,7 +110,7 @@ class UserController extends MotherController
                 $userDatas = $userModel->findByMail($email);
                 if (!$userDatas) {
                     $_SESSION['error'] = ['verifIdentifiants' => "Identifiants incorrects."];
-                    header("Location: index.php?controller=user&action=login");
+                    header("Location: /BoardCompanion/connexion");
                     exit;
                 }
 
@@ -127,12 +127,12 @@ class UserController extends MotherController
                 // S'il y a des erreurs, on les met en session et on redirige
                 if (!empty($errors)) {
                     $_SESSION['error'] = $errors;
-                    header("Location: index.php?controller=user&action=login");
+                    header("Location: /BoardCompanion/connexion");
                     exit;
                 }
 
                 $_SESSION['user'] = $userDatas;
-                header("Location: index.php");
+                header("Location: /BoardCompanion/home");
                 exit;
             }
         }
@@ -143,12 +143,12 @@ class UserController extends MotherController
     public function logout() {
         //Check si l'utilisateur est connecté, sinon renvoie à la page login
         if (empty($_SESSION)) {
-            header("Location: index.php?controller=user&action=login");
+            header("Location: /BoardCompanion/connexion");
             exit;
         }
         // Détruit la session utilisateur
         session_destroy();
-        header("Location: index.php?controller=user&action=login");
+        header("Location: /BoardCompanion/connexion");
         exit;
     }
 
@@ -186,72 +186,68 @@ class UserController extends MotherController
         $userModel = new UserModel();
         $passwordHash = $userModel->getPasswordHash($_SESSION['user']['email']);
 
-    // var_dump($newPassword);die;
+        // COndition pour savoir si on modifie juste le pseudo ou tout le compte
+        if(!$newPassword) {
+            // Array_filter permet de collecter uniquement les erreurs non nulles
+            // Validateurs des différents champs
+                $errors = array_filter([
+                    'pseudo'            => $this->validator->validerPseudo($pseudo),
+                    'incorrectPassword' => $this->validator->verifierMdp($oldPassword, $passwordHash)
+                ]);
 
-    // COndition pour savoir si on modifie juste le pseudo ou tout le compte
-    if(!$newPassword) {
-        // Array_filter permet de collecter uniquement les erreurs non nulles
-        // Validateurs des différents champs
-            $errors = array_filter([
-                'pseudo'            => $this->validator->validerPseudo($pseudo),
-                'incorrectPassword' => $this->validator->verifierMdp($oldPassword, $passwordHash)
-            ]);
+                // S'il y a des erreurs, on les met en session et on redirige
+                if (!empty($errors)) {
+                    $_SESSION['error'] = $errors;
+                    header("Location: /BoardCompanion/compte");
+                    exit;
+                }
 
-            // S'il y a des erreurs, on les met en session et on redirige
-            if (!empty($errors)) {
-                $_SESSION['error'] = $errors;
-                header("Location: index.php?controller=user&action=showAccount");
+                $user = new User();
+                $user->setId($_SESSION['user']['id']);
+                $user->setPseudo($pseudo);
+
+                $userModel->updateAccount($user);
+
+                $_SESSION['success']['CompteMAJ'] = "Compte mis à jour avec succès !";
+                header("Location: /BoardCompanion/compte");
+                exit;
+
+
+            } else {
+                $errors = array_filter([
+                    'pseudo'            => $this->validator->validerPseudo($pseudo),
+                    'incorrectPassword' => $this->validator->verifierMdp($oldPassword, $passwordHash),
+                    'differenceMdp'     => $this->validator->differenceMdp($oldPassword, $newPassword),
+                    'regex'             => $this->validator->regexMdp($newPassword),
+                    'matching'          => $this->validator->matcherMdp($newPassword, $newPasswordConfirmation),
+                ]);
+
+                // S'il y a des erreurs, on les met en session et on redirige
+                if (!empty($errors)) {
+                    $_SESSION['error'] = $errors;
+                    header("Location: /BoardCompanion/compte");
+                    exit;
+                }
+        
+                $user = new User();
+                $user->setId($_SESSION['user']['id']);
+                $user->setPseudo($pseudo);
+                $hashedPassword = password_hash($newPassword, PASSWORD_BCRYPT);
+                $user->setPwd($hashedPassword);
+        
+                $userModel->updateAccount($user);
+        
+                $_SESSION['success']['CompteMAJ'] = "Compte mis à jour avec succès !";
+                header("Location: /BoardCompanion/compte");
                 exit;
             }
-
-            $user = new User();
-            $user->setId($_SESSION['user']['id']);
-            $user->setPseudo($pseudo);
-
-            $userModel->updateAccount($user);
-
-            $_SESSION['success']['CompteMAJ'] = "Compte mis à jour avec succès !";
-            header("Location: index.php?controller=user&action=showAccount");
-            exit;
-
-
-        } else {
-            $errors = array_filter([
-                'pseudo'            => $this->validator->validerPseudo($pseudo),
-                'incorrectPassword' => $this->validator->verifierMdp($oldPassword, $passwordHash),
-                'differenceMdp'     => $this->validator->differenceMdp($oldPassword, $newPassword),
-                'regex'             => $this->validator->regexMdp($newPassword),
-                'matching'          => $this->validator->matcherMdp($newPassword, $newPasswordConfirmation),
-            ]);
-
-            // S'il y a des erreurs, on les met en session et on redirige
-            if (!empty($errors)) {
-                $_SESSION['error'] = $errors;
-                header("Location: index.php?controller=user&action=showAccount");
-                exit;
-            }
-    
-            $user = new User();
-            $user->setId($_SESSION['user']['id']);
-            $user->setPseudo($pseudo);
-            $hashedPassword = password_hash($newPassword, PASSWORD_BCRYPT);
-            $user->setPwd($hashedPassword);
-    
-            $userModel->updateAccount($user);
-    
-            $_SESSION['success']['CompteMAJ'] = "Compte mis à jour avec succès !";
-            header("Location: index.php?controller=user&action=showAccount");
-            exit;
-        }
-
-
     }
 
     public function deleteAccount() {
 
         //Check si l'utilisateur est connecté, sinon renvoie à la page login
         if (empty($_SESSION)) {
-            header("Location: index.php?controller=user&action=login");
+            header("Location: /BoardCompanion/connexion");
             exit;
         }
 
@@ -266,7 +262,7 @@ class UserController extends MotherController
 
         if (!empty($errors)) {
             $_SESSION['error'] = $errors;
-            header("Location: index.php?controller=user&action=showAccount");
+            header("Location: /BoardCompanion/compte");
             exit;
         }
 
@@ -276,7 +272,7 @@ class UserController extends MotherController
         
         session_destroy();
         $_SESSION['success']['CompteSupprime'] = "Compte supprimé avec succès !";
-        header("Location: index.php?controller=user&action=login");
+        header("Location: /BoardCompanion/connexion");
         exit;
     }
 }

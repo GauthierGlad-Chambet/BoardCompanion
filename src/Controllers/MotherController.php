@@ -36,7 +36,7 @@ abstract class MotherController
 
     protected function _notFound()
     {
-        header("Location:index.php?controller=errors&action=error_404");
+        header("Location: /BoardCompanion/erreur-404");
         exit();
     }
 }

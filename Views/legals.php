@@ -1,6 +1,6 @@
 <main>
     <h1 class="h1-legals">Mentions legales</h1>
-    <a class="button" href="index.php">Retour au site</a>
+    <a class="button" href="/BoardCompanion/home">Retour au site</a>
     <div class="container container-legals">
  
         <!-- ================================================ -->
@@ -102,5 +102,5 @@
             <em>Dernière mise à jour : <?= date('d/m/Y') ?></em>
         </p>
     </div>
-    <a class="button" href="index.php">Retour au site</a>
+    <a class="button" href="/BoardCompanion/home">Retour au site</a>
 </main>

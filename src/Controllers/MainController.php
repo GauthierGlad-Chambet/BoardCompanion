@@ -12,10 +12,11 @@ class MainController extends MotherController
         
         //Check si l'utilisateur est connecté, sinon renvoie à la page login
         if (empty($_SESSION)) {
-            header("Location: index.php?controller=user&action=login");
+            header("Location: /BoardCompanion/connexion");
             exit;
         }
 
+        // Ajoute une classe css pour gérer les pages qui ont un titre court
         $this->_arrData['pageClass'] = 'page-title-nowrap';
         $this->_display("home");
     }
