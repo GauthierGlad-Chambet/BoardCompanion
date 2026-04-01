@@ -24,6 +24,7 @@ RewriteRule ^modifier-bilan-final$ index.php?controller=statistics&action=update
 RewriteRule ^connexion$ index.php?controller=user&action=login [L]
 RewriteRule ^deconnexion$ index.php?controller=user&action=logout [L]
 RewriteRule ^compte$ index.php?controller=user&action=showAccount [L]
+RewriteRule ^modifier-compte$ index.php?controller=user&action=updateAccount [L]
 RewriteRule ^supprimer-compte$ index.php?controller=user&action=deleteAccount [L]
 
 

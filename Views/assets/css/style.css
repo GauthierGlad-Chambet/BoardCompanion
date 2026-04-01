@@ -404,8 +404,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .checkmark {
   position: absolute;
-  top: 0;
+  top: 50%;
   left: 0;
+  transform: translateY(-50%);
   height: 26px;
   width: 26px;
   background-color: var(--background-color);
@@ -532,11 +533,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .form-select select:open::picker-icon {
   rotate: -90deg;
 }
-
-
-
-
-
 
 /* ------------- FORMULAIRE - NOUVEAU PROJET ------------ */
 #newProject-form {
@@ -676,6 +672,68 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   font-size: 14px;
 }
 
+
+ /* ------------- MESSAGES DE SUCCES ET D'ERREUR ------------ */
+
+.champObligatoire {
+  color :red;
+}
+
+.messageError {
+  color: red;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.inputError {
+  border-color: red !important;
+  color: red;
+}
+
+.messageSuccess {
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+  border-radius: 10px;
+  background-color: var(--secondary-color);
+  padding: 20px;
+  text-align: center;
+  width: 500px;
+  max-width: 90dvw;
+  margin: 0 auto;
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: success-box-slide 2s ease-out forwards ;
+  pointer-events: none;
+}
+
+@keyframes success-box-slide {
+	0% {
+    top: -200px;
+	}
+
+	10% {
+		opacity: 1;
+		top: 5dvh;
+	}
+
+  80% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    top: 5dvh;
+    display: none;
+  }
+}
+
+#checkboxLabel ~ .messageError {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
 /* ------------- PAGE SignIn - Login ------------ */
 .main-signIn {
   min-height: calc(100dvh - (41px + 10dvh))
@@ -708,6 +766,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .logo-signIn h1 {
   font-size: 38px;
+  margin-bottom: 0;
 }
 
 .login-onglets {
@@ -818,6 +877,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   width: 12px;
   height: 12px;
   background-image: radial-gradient(circle at 0%  0%, transparent 13px, var(--secondary-color) 12px);
+}
+
+#submit_signIn {
+  margin-top: 50px;
 }
 
 .color-green, .color-green h2 {
@@ -1059,6 +1122,10 @@ table img {
 
 /* ------------- PAGE 404 - 403 ------------ */
 
+.page-erreur, .page-erreur + footer {
+  transform: unset;
+}
+
 .page-erreur p {
   font-size: 18px;
   text-align: center;
@@ -1087,6 +1154,11 @@ align-items: center;
 height: calc(100dvh - 60px);
 }
 
+.logo-erreur img {
+  width: 50dvh; 
+  height: auto;
+  aspect-ratio: 1/1;
+}
 
 
 /* SmartPhone moyens */
@@ -1354,6 +1426,14 @@ height: calc(100dvh - 60px);
   }
 
 
+  /* ------------- MESSAGES DE SUCCES ET D'ERREUR ------------ */
+
+  .messageSuccess {
+  width: 50%;
+  
+}
+
+
 }
 
 /* Très grands écrans */
@@ -1387,17 +1467,7 @@ height: calc(100dvh - 60px);
 
 
 
-.champObligatoire {
-  color :red;
-}
 
-.messageError {
-  color: red;
-}
-
-.messageSuccess {
-  color: var(--primary-color);
-}
 
 
 /* --------- Classes JS (en bas du css pour priorité la plus élevée) ---------*/

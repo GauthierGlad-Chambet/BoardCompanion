@@ -11,16 +11,23 @@ class UserValidator {
             if (empty($email)) {
                 return "Le champ 'Email' est obligatoire.";
             } else if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                return "Adresse mail invalide";
+                return "Adresse mail invalide.";
             }
             return null;
         }
 
     // Vérifie si l'email existe déjà en bdd
     public function emailExists($email) {
-        $userModel = new UserModel();
-        if ($userModel->findByMail($email)) {
-            return "Ce compte existe déjà.";
+        if (empty($email)) {
+            return "Le champ 'Email' est obligatoire.";
+        } else if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return "Adresse mail invalide.";
+        } else {
+            $userModel = new UserModel();
+            if ($userModel->findByMail($email)) {
+                // var_dump($userModel->findByMail($email));die;
+                return "Ce compte existe déjà.";
+            }
         }
         return null;
     }

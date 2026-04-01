@@ -23,6 +23,8 @@ class UserController extends MotherController
 
     // Show signUp/signIn page
     public function login() {
+        $data = ['pseudo' => '',
+                 'email' => ''];
         //Si le $_POST n'est pas vide
         if(count($_POST) > 0){
 
@@ -30,7 +32,7 @@ class UserController extends MotherController
             if(isset($_POST['submit_signUp'])) {
 
                 // Récupération des données du formulaire
-                $pseudo                 = trim(filter_input(INPUT_POST,"pseudo", FILTER_SANITIZE_SPECIAL_CHARS)??'');//trim remove invisibles characters like spaces, before and after the text
+                $pseudo                 = trim(filter_input(INPUT_POST,"pseudo", FILTER_SANITIZE_SPECIAL_CHARS)??''); //trim supprime les caractères invisibles comme les espaces avant et après le texte
                 $email                  = trim(filter_input(INPUT_POST,"email", FILTER_SANITIZE_EMAIL)??'');
                 $password               = $_POST['password']??'';
                 $passwordConfirmation   = $_POST['passwordConfirmation']??'';
@@ -40,7 +42,6 @@ class UserController extends MotherController
                 // Array_filter permet de collecter uniquement les erreurs non nulles
                 $errors = array_filter([
                     'pseudo'            => $this->validator->validerPseudo($pseudo),
-                    'email'             => $this->validator->validerEmail($email),
                     'emailExists'       => $this->validator->emailExists($email),
                     'incorrectPassword' => $this->validator->validerMdp($password),
                     'matching'          => $this->validator->matcherMdp($password, $passwordConfirmation),
@@ -51,39 +52,45 @@ class UserController extends MotherController
                 // S'il y a des erreurs, on les met en session et on redirige
                 if (!empty($errors)) {
                     $_SESSION['error'] = $errors;
-                    header("Location: /BoardCompanion/connexion");
-                    exit;
-                }
-
-                // Création de l'objet User et assignation des valeurs
-                $user = new User();
-                $user->setEmail($email);    
-                $user->setPseudo($pseudo);
-                
-                // Hash the password before storing it
-                $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
-                $user->setPwd($hashedPassword);
-            
-
-                // Enregistrement de l'utilisateur dans la base de données
-                try {
-                    $userModel = new UserModel();
-                    $userModel->addUser($user);
-
-                    $userStatByTypeModel = new UserStatByTypeModel();
-                    for ($i = 1; $i <= 3; $i++) {
-                        $userStatByTypeModel->addUserStatByType($userModel->findByMail($user->getEmail())['id'], $i, 1);
+                    $data['pseudo'] = $_POST['pseudo'];
+                    if (!isset($_SESSION['error']['emailExists'])) {
+                        $data['email'] = $_POST['email'];
                     }
+                    // header("Location: /BoardCompanion/connexion");
+                    // exit;
+                } else {
 
-                    $_SESSION['success']['utilisateurAjoute'] = "Utilisateur ajouté avec succès !";
-                    header("Location: /BoardCompanion/connexion");
-                    exit;
-
+                    // Création de l'objet User et assignation des valeurs
+                    $user = new User();
+                    $user->setEmail($email);    
+                    $user->setPseudo($pseudo);
+                    
+                    // Hash the password before storing it
+                    $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+                    $user->setPwd($hashedPassword);
                 
-                } catch (\Exception $e) {
-                    echo "Erreur lors de l'ajout de l'utilisateur : " . htmlspecialchars($e->getMessage());
-                    exit;
+    
+                    // Enregistrement de l'utilisateur dans la base de données
+                    try {
+                        $userModel = new UserModel();
+                        $userModel->addUser($user);
+    
+                        $userStatByTypeModel = new UserStatByTypeModel();
+                        for ($i = 1; $i <= 3; $i++) {
+                            $userStatByTypeModel->addUserStatByType($userModel->findByMail($user->getEmail())['id'], $i, 1);
+                        }
+    
+                        $_SESSION['success']['utilisateurAjoute'] = "Utilisateur ajouté avec succès !";
+                        header("Location: /BoardCompanion/connexion");
+                        exit;
+    
+                    
+                    } catch (\Exception $e) {
+                        echo "Erreur lors de l'ajout de l'utilisateur : " . htmlspecialchars($e->getMessage());
+                        exit;
+                    }
                 }
+
 
                     
 
@@ -101,7 +108,7 @@ class UserController extends MotherController
                 // Vérifier d'abord que l'email est valide
                 $emailError = $this->validator->validerEmail($email);
                 if ($emailError) {
-                    $_SESSION['error'] = ['email' => $emailError];
+                    $_SESSION['error'] = ['sigin-email' => $emailError];
                     header("Location: /BoardCompanion/connexion");
                     exit;
                 }
@@ -121,6 +128,7 @@ class UserController extends MotherController
 
 
                 $errors = array_filter([
+                    'sigin-incorrectPassword' => $this->validator->validerMdp($password),
                     'verifIdentifiants' => $this->validator->verifIdentifiants($user, $email, $password, $passwordHash)
                 ]);
 
@@ -136,8 +144,8 @@ class UserController extends MotherController
                 exit;
             }
         }
-
-        $this->_display("user/signIn", false);
+        
+        $this->_display("user/signIn", false, $data);
     }
 
     public function logout() {
@@ -186,7 +194,7 @@ class UserController extends MotherController
         $userModel = new UserModel();
         $passwordHash = $userModel->getPasswordHash($_SESSION['user']['email']);
 
-        // COndition pour savoir si on modifie juste le pseudo ou tout le compte
+        // Condition pour savoir si on modifie juste le pseudo ou tout le compte
         if(!$newPassword) {
             // Array_filter permet de collecter uniquement les erreurs non nulles
             // Validateurs des différents champs
@@ -221,6 +229,7 @@ class UserController extends MotherController
                     'regex'             => $this->validator->regexMdp($newPassword),
                     'matching'          => $this->validator->matcherMdp($newPassword, $newPasswordConfirmation),
                 ]);
+
 
                 // S'il y a des erreurs, on les met en session et on redirige
                 if (!empty($errors)) {

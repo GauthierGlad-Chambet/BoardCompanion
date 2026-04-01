@@ -417,8 +417,6 @@ class FormController extends MotherController {
                 echo "Erreur lors de l'ajout du projet : " . htmlspecialchars($e->getMessage());
                 exit;
             }
-
-            
         }
 
         $this->_display("projectForm/updateProjectForm");

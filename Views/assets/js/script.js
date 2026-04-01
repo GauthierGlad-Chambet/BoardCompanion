@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// Permet d'envoyer les formulaire de select directement sans bouton
+// Permet d'envoyer les formulaires de select directement sans bouton
 FORM_SELECT.forEach(select => {
     select.addEventListener('change', function() {
         this.closest('form').submit();
@@ -115,7 +115,6 @@ try {
 } catch (warn) {
   console.warn("Une erreur s'est produite dans login :", warn);
 }
-
 
 // Ouvre les sections affichant toutes les séquences
 OPEN.forEach(btn =>{
