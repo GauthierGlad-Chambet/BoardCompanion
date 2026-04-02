@@ -589,34 +589,37 @@ class StatisticsController extends MotherController
         foreach ([1, 2, 3] as $typeId) {
             $datas = $sequenceModel->findSequenceStatsByUserAndType($userId, $typeId);
 
+            // Si il n'y a plus de séquence en bdd, on réinitialise avec la valeur par défaut.
             if (empty($datas)) {
-                continue;
-            }
-
-            $total = 0;
-            $count = 0;
-
-            foreach ($datas as $data) {
-        
-                if (!isset($data['lines_count'], $data['duration_real']) || $data['duration_real'] <= 0 || $data['lines_count'] <= 0) {
+                $avg = 1;
+                $userStatByTypeModel->updateUserStatByType($userId, $typeId, $avg);
+            } else {
+                $total = 0;
+                $count = 0;
+    
+                foreach ($datas as $data) {
+            
+                    if (!isset($data['lines_count'], $data['duration_real']) || $data['duration_real'] <= 0 || $data['lines_count'] <= 0) {
+                        continue;
+                    }
+                    $pages = $data['lines_count'] / 33;
+                    $durationDays = $data['duration_real'] / 8;
+                    $total += $pages / $durationDays;
+                    $count++;
+                }
+    
+                if ($count === 0) {
                     continue;
                 }
-                $pages = $data['lines_count'] / 33;
-                $durationDays = $data['duration_real'] / 8;
-                $total += $pages / $durationDays;
-                $count++;
+    
+                $avg = round($total / $count, 2);
+    
+                // Sécurité pour éviter les erreurs de division par 0 on n'envoie jamais 0 en bdd, si c'est le cas, on reset avec la valeur par défaut
+                $avg = $avg > 0 ? $avg : 1;
+    
+                $userStatByTypeModel->updateUserStatByType($userId, $typeId, $avg);
             }
 
-            if ($count === 0) {
-                continue;
-            }
-
-            $avg = round($total / $count, 2);
-
-            // Sécurité pour éviter les erreurs de division par 0 on n'envoie jamais 0 en bdd, si c'est le cas, on reset avec la valeur par défaut
-            $avg = $avg > 0 ? $avg : 1;
-
-            $userStatByTypeModel->updateUserStatByType($userId, $typeId, $avg);
         }
     }
 

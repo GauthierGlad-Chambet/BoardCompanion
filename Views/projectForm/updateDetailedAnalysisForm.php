@@ -17,6 +17,7 @@
         <!-- <input class="button" type="submit" value="Changer de projet"> -->
     </form>
     <div class="container" id="container-detailed-analysis">
+        <p class="explication"><b>Vous pouvez analyser chaque séquence ci-dessous. Rien n'est obligatoire : complétez uniquement celles que vous souhaitez.</b></p>
         <?php if (!empty($sequences)): ?>
             <form action="" method="POST">
                 <div class="all-sequences-container">
@@ -52,6 +53,13 @@
                                         <input type="radio" id="SequenceMixte_<?= $index ?>" name="typeSequence_<?= $index ?>" value="Mixte" <?= $sequence->getFk_type() == 3 ? 'checked' : '' ?> />
                                         <span class="checkmark"></span>
                                     </label>
+                                    <label class="hidden" for="SequenceNA_<?= $index ?>">Inderterminé
+                                        <input type="radio" id="SequenceNA_<?= $index ?>" name="typeSequence_<?= $index ?>" value="Indetermine" <?= $sequence->getFk_type() == 4 ? 'checked' : '' ?> />
+                                        <span class="checkmark"></span>
+                                    </label>
+                                    <?php if (!empty($_SESSION['error']['type'. $index])) { ?>
+                                        <p class="messageError"><?= $_SESSION['error']['type'. $index] ?></p>
+                                    <?php } unset($_SESSION['error']['type'. $index]); ?>
                                 </div>
                                 <div>
                                     <p>Je m'en occupe :</p>
@@ -64,6 +72,9 @@
                                             <input type="radio" id="not_assigned_<?= $index ?>" name="is_assigned_<?= $index ?>" value="0" <?= !$sequence->getIs_assigned() ? 'checked' : '' ?> />
                                             <span class="checkmark"></span>
                                         </label>
+                                        <?php if (!empty($_SESSION['error']['is_assigned'. $index])) { ?>
+                                            <p class="messageError"><?= $_SESSION['error']['is_assigned'. $index] ?></p>
+                                        <?php } unset($_SESSION['error']['is_assigned'. $index]); ?>
                                     </div>
                                 </div>
                             </div>

@@ -35,9 +35,17 @@ class FormsValidator {
         return null;
     }
 
-    //Vérifier si un des boutons radio est coché
+    //Vérifier si un des boutons radio d'un choix binaire est coché
     public function verifierRadio($radio) {
         if ($radio !== '0' && $radio !== '1') {
+            return "Veuillez cocher une case.";
+        }
+        return null;
+    }
+
+     //Vérifier si un des boutons radio du formulaire d'analyse détaillée est coché
+    public function verifierRadioDetailed($radio) {
+        if ($radio !== 'Action' && $radio !== 'Comedie' && $radio !== 'Mixte' && $radio !== 'Indetermine') {
             return "Veuillez cocher une case.";
         }
         return null;
@@ -109,6 +117,5 @@ class FormsValidator {
         return null;
     }
 
-    
     
 }

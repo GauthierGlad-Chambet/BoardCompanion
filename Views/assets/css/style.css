@@ -122,6 +122,9 @@ hr {
   margin: 2dvh auto 5dvh;
 }
 
+.hidden {
+  display: none;
+}
 
 /* ------------- CONTENEURS ------------ */
 
@@ -550,10 +553,15 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 #container-detailed-analysis {
     max-width: 550px;
+    gap: 0;
 }
 
 #container-detailed-analysis h3, #container-detailed-analysis p {
     text-align: center;
+}
+
+#container-detailed-analysis .explication {
+    margin-bottom: 20px;
 }
 
 .all-sequences-container {
@@ -601,7 +609,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   align-self: start;
 }
 
-.container-sequence-radio div p {
+.container-sequence-radio div p:not(.messageError) {
   margin-bottom: 16px;
   white-space: nowrap;
 }
@@ -1314,6 +1322,12 @@ height: calc(100dvh - 60px);
   #container-detailed-analysis {
       max-width: unset;
   }
+
+  #container-detailed-analysis .explication {
+    margin-bottom: 40px;
+    margin-top: 40px;
+    text-align: center;
+}
 
   #container-detailed-analysis form {
       width: 100%;

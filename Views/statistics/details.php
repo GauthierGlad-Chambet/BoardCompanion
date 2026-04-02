@@ -48,9 +48,10 @@
                 </svg>  
             </div>
             <ul>
-                <?php foreach ($sequences as $sequence) { ?>
+                <?php foreach ($sequences as $sequence) {
+                    if ($sequence->getTypeLabel() !== "indéterminé") {?>
                     <li> Séquence <?= $sequence->getNumber() ?> : <?= $sequence->getTitle() ?> (<?= $sequence->getTypeLabel() ?>): </br><b><?= $sequence->getDuration_estimated() ?>  heures</b></li>
-                <?php } ?>
+                <?php }} ?>
             </ul>
             <?php }  ?>
         </div>

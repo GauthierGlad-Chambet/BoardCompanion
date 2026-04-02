@@ -238,84 +238,105 @@ class FormController extends MotherController {
         $scriptPath = $projectModel->findScriptPathByProjectId($projectId);
 
         if (!$scriptPath || !file_exists($scriptPath)) {
-            echo "Fichier PDF introuvable.";
+            header("Location: /Boardcompanion/404");
             exit;
         }
 
         if (isset($_POST['submit_sequences'])) {
 
             $sequenceModel = new SequenceModel();
-            
+
             // Traiter les données du formulaire ici
             foreach ($_POST as $key => $value) {
                 // Identifier les champs de type de séquence en utilisant le préfixe "typeSequence_"
                 if (strpos($key, 'typeSequence_') === 0) {
                     // Extraire l'index de la séquence à partir du nom du champ
                     $index = str_replace('typeSequence_', '', $key);
-                    
-                    // Si le type de séquence est "action" insérer 1
-                    if ($value === 'Action') {
-                        $typeSequence = 1;
-                    } elseif ($value === 'Comedie') {
-                        $typeSequence = 2;
+
+                    // Validateurs des différents champs
+                    // Array_filter permet de collecter uniquement les erreurs non nulles
+                    $errors = array_filter([
+                        'type'. $index            => $this->validator->verifierRadioDetailed(($_POST['typeSequence_' . $index])??''),
+                        'is_assigned'. $index     => $this->validator->verifierRadio($_POST['is_assigned_' . $index])
+                        ]);
+
+                    // S'il y a des erreurs, on les met en session et on redirige
+                    if (!empty($errors)) {
+                        $_SESSION['error'] = $errors;
+                        $data = [
+                            'sequenceHeaders' => $_SESSION['sequences']['sequenceHeaders'],
+                            'projectId' => $_SESSION['sequences']['projectId']
+                        ];
+                        $this->_display("projectForm/detailedAnalysisForm", true, $data);
+                        
                     } else {
-                        $typeSequence = 3;
+
+                        // Si le type de séquence est "action" insérer 1
+                        if ($value === 'Action') {
+                            $typeSequence = 1;
+                        } else if ($value === 'Comedie') {
+                            $typeSequence = 2;
+                        } else if ($value === 'Mixte') {
+                            $typeSequence = 3;
+                        } else {
+                            $typeSequence = 4;
+                        }
+    
+                        $isAssigned = (int) ($_POST['is_assigned_' . $index] ?? 0);
+    
+                        //récupérer le titre de la séquence
+                        $sequenceHeader = $_POST['sequence_header_' . $index] ?? 'Séquence sans titre';
+    
+                        // Récupérer le contenu de la séquence
+                        $sequenceContent = $_POST['sequence_content_' . $index] ?? '[]';
+                        $sequenceContent = json_decode($sequenceContent, true);
+    
+                        // Convertir le contenu en JSON pour le stockage
+                        $sequenceContentJson = json_encode($sequenceContent);
+    
+                        // Enregistrer ces informations dans la base de données
+                        $sequence = new Sequence();
+                        $sequence->setNumber($index + 1);
+                        $sequence->setTitle($sequenceHeader);
+                        $sequence->setFk_type($typeSequence);
+                        $sequence->setIs_assigned($isAssigned);
+                        $sequence->setScript($sequenceContentJson); // Stocker en tant que JSON
+                        $sequence->setLines_count(count($sequenceContent)); // Stocker le nombre de lignes de la séquence
+                        $sequence->setDuration_estimated($this->estimateDurationBySequence($sequence)); // Estimer la durée de boarding de la séquence
+                        $sequence->setFk_project($projectId);
+    
+                        $sequenceModel->addSequence($sequence);
                     }
-
-                    $isAssigned = (int) ($_POST['is_assigned_' . $index] ?? 0);
-
-                    //récupérer le titre de la séquence
-                    $sequenceHeader = $_POST['sequence_header_' . $index] ?? 'Séquence sans titre';
-
-                    // Récupérer le contenu de la séquence
-                    $sequenceContent = $_POST['sequence_content_' . $index] ?? '[]';
-                    $sequenceContent = json_decode($sequenceContent, true);
-
-                    // Convertir le contenu en JSON pour le stockage
-                    $sequenceContentJson = json_encode($sequenceContent);
-
-                    // Enregistrer ces informations dans la base de données
-                    $sequence = new Sequence();
-                    $sequence->setNumber($index + 1);
-                    $sequence->setTitle($sequenceHeader);
-                    $sequence->setFk_type($typeSequence);
-                    $sequence->setIs_assigned($isAssigned);
-                    $sequence->setScript($sequenceContentJson); // Stocker en tant que JSON
-                    $sequence->setLines_count(count($sequenceContent)); // Stocker le nombre de lignes de la séquence
-                    $sequence->setDuration_estimated($this->estimateDurationBySequence($sequence)); // Estimer la durée de boarding de la séquence
-                    $sequence->setFk_project($projectId);
-
-                    $sequenceModel->addSequence($sequence);
                 }
             }
 
-                $project = new Project();
-                $project->setId($projectId);
+            $project = new Project();
+            $project->setId($projectId);
 
-                
-                $projectData = $projectModel->getProjectById($projectId);
-                $project->setIs_cleaning($projectData['is_cleaning']);
-                $project->setNb_total_pages($projectData['nb_total_pages']);
-                $project->setDate_beginning($projectData['date_beginning']);
-                $project->setDate_end($projectData['date_end']);
+            
+            $projectData = $projectModel->getProjectById($projectId);
+            $project->setIs_cleaning($projectData['is_cleaning']);
+            $project->setNb_total_pages($projectData['nb_total_pages']);
+            $project->setDate_beginning($projectData['date_beginning']);
+            $project->setDate_end($projectData['date_end']);
 
-                $project->setNb_assigned_pages($this->countAssignedPages($projectId));
-                $project->setEstimated_cleaning_duration($this->estimateCleaningDuration($project));
-                $project->setEstimated_total_duration($this->estimateTotalDuration($project, $flagNbPages));
-                $project->setAvg_duration_estimated_per_pages($this->avgDurationEstimatedPerPage($project));
-                $project->setRecommended_pages_per_day($this->estimateRecommendedPagesPerDay($project, $flagNbPages));
-                $project->setIs_detailed(1);
-                
-                $projectModel->updateNbPagesAssignedProject($project);
-                $projectModel->updateAvgCleaningProject($project);
-                $projectModel->updateTotalDurationProject($project);
-                $projectModel->updateAvgDurationEstimatedPerPage($project);
-                $projectModel->updateRecommendedPagesPerDayProject($project);
-                $projectModel->updateIsDetailed($project);
+            $project->setNb_assigned_pages($this->countAssignedPages($projectId));
+            $project->setEstimated_cleaning_duration($this->estimateCleaningDuration($project));
+            $project->setEstimated_total_duration($this->estimateTotalDuration($project, $flagNbPages));
+            $project->setAvg_duration_estimated_per_pages($this->avgDurationEstimatedPerPage($project));
+            $project->setRecommended_pages_per_day($this->estimateRecommendedPagesPerDay($project, $flagNbPages));
+            $project->setIs_detailed(1);
+            
+            $projectModel->updateNbPagesAssignedProject($project);
+            $projectModel->updateAvgCleaningProject($project);
+            $projectModel->updateTotalDurationProject($project);
+            $projectModel->updateAvgDurationEstimatedPerPage($project);
+            $projectModel->updateRecommendedPagesPerDayProject($project);
+            $projectModel->updateIsDetailed($project);
 
-                $_SESSION['success']['projetAjoute'] = "Projet ajouté avec succès !";
-                header("Location: /BoardCompanion/projet?project_id=" . $project->getId());
-                exit;
+            $_SESSION['success']['projetAjoute'] = "Projet ajouté avec succès !";
+            header("Location: /BoardCompanion/projet?project_id=" . $project->getId());
+            exit;
         } else {
             // Utilisation de smalot/pdfparser pour extraire le texte du PDF
         try {
@@ -329,16 +350,15 @@ class FormController extends MotherController {
             // Extraction des séquences
             $sequences = $this->extractSequences($text);
 
-            // Récupérer l'ID du dernier projet ajouté
-            $projectModel = new ProjectModel();
-            $projectId = $projectModel->findLastProjectId();
-
             // Passer à la vue
             $data = [
-                'extractedText' => $text,
                 'sequenceHeaders' => $sequences,
                 'projectId' => $projectId
             ];
+
+            $_SESSION['sequences']['sequenceHeaders'] = $sequences;
+            $_SESSION['sequences']['projectId'] = $projectId;
+
             $this->_display("projectForm/detailedAnalysisForm", true, $data);
         } catch (\Exception $e) {
             echo "Erreur : " . $e->getMessage();
@@ -573,32 +593,50 @@ class FormController extends MotherController {
             $sequenceModel = new SequenceModel();
 
             foreach ($_POST as $key => $value) {
+
                 // Identifier les champs de type de séquence en utilisant le préfixe "typeSequence_"
-                if (strpos($key, 'typeSequence_') === 0) {
+                if (str_starts_with($key, 'typeSequence_')) {
                     // Extraire l'index de la séquence à partir du nom du champ
                     $index = str_replace('typeSequence_', '', $key);
 
-                    if ($value === 'Action') {
-                        $typeSequence = 1;
-                    } elseif ($value === 'Comedie') {
-                        $typeSequence = 2;
+                    // Validateurs des différents champs
+                    // Array_filter permet de collecter uniquement les erreurs non nulles
+                    $errors = array_filter([
+                        'type'. $index            => $this->validator->verifierRadioDetailed(($_POST['typeSequence_' . $index])??''),
+                        'is_assigned'. $index     => $this->validator->verifierRadio($_POST['is_assigned_' . $index])
+                        ]);
+
+                    // S'il y a des erreurs, on les met en session et on redirige
+                    if (!empty($errors)) {
+                        $_SESSION['error'] = $errors;
+                        $this->_display("projectForm/updateDetailedAnalysisForm");
+                        exit;
                     } else {
-                        $typeSequence = 3;
+
+                        if ($value === 'Action') {
+                            $typeSequence = 1;
+                        } else if ($value === 'Comedie') {
+                            $typeSequence = 2;
+                        } else if ($value === 'Mixte') {
+                            $typeSequence = 3;
+                        } else {
+                            $typeSequence = 4;
+                        }
+    
+                        $isAssigned = (int) ($_POST['is_assigned_' . $index] ?? 0);
+                        $sequenceId  = (int) ($_POST['sequence_id_' . $index] ?? 0);
+    
+                        $sequence = new Sequence();
+                        $sequence->setId($sequenceId);
+                        $sequence->setFk_type($typeSequence);
+                        $sequence->setIs_assigned($isAssigned);
+    
+                        $sequenceModel->updateSequence($sequence);
                     }
-
-                    $isAssigned = (int) ($_POST['is_assigned_' . $index] ?? 0);
-                    $sequenceId  = (int) ($_POST['sequence_id_' . $index] ?? 0);
-
-                    $sequence = new Sequence();
-                    $sequence->setId($sequenceId);
-                    $sequence->setFk_type($typeSequence);
-                    $sequence->setIs_assigned($isAssigned);
-
-                    $sequenceModel->updateSequence($sequence);
                 }
             }
 
-             $project = new Project();
+            $project = new Project();
             $project->setId($projectId);
             
             $projectData = $projectModel->getProjectById($projectId);
@@ -865,22 +903,26 @@ class FormController extends MotherController {
 
     // Fonction d'estimation du temps de boarding d'une séquence en fonction de son type et de son nombre de lignes
     public function estimateDurationBySequence(Sequence $sequence) {
-        // Récupérer les informations de l'utilisateur à partir de la base de données en fonction de son ID en session
-        $userStatByTypeModel = new UserStatByTypeModel();
-        $userStatByTypeData = $userStatByTypeModel->findByUserIdAndType($_SESSION['user']['id'], $sequence->getFk_type());
-        
-        $nb_lines = $sequence->getLines_count();
-
-        $nbPagesPerSequence = ceil($nb_lines / 33); // En moyenne 33 lignes par page
-        // Evite bug de division par 0
-        // if($userStatByTypeData['avg_pages_per_day'] > 0) {
-            $durationInDays = $nbPagesPerSequence / $userStatByTypeData['avg_pages_per_day'];
-        // } else {
-        //    $durationInDays = $nbPagesPerSequence / 1; 
-        // }
-        $durationInHours = $durationInDays * 8; // Convertir en heures, en supposant 8 heures de travail par jour
-        
-        return round($durationInHours, 2); // Arrondir à 2 décimales pour plus de lisibilité
+        if ($sequence->getFk_type() !== 4) {
+            // Récupérer les informations de l'utilisateur à partir de la base de données en fonction de son ID en session
+            $userStatByTypeModel = new UserStatByTypeModel();
+            $userStatByTypeData = $userStatByTypeModel->findByUserIdAndType($_SESSION['user']['id'], $sequence->getFk_type());
+            
+            $nb_lines = $sequence->getLines_count();
+    
+            $nbPagesPerSequence = ceil($nb_lines / 33); // En moyenne 33 lignes par page
+            // Evite bug de division par 0
+            // if($userStatByTypeData['avg_pages_per_day'] > 0) {
+                $durationInDays = $nbPagesPerSequence / $userStatByTypeData['avg_pages_per_day'];
+            // } else {
+            //    $durationInDays = $nbPagesPerSequence / 1; 
+            // }
+            $durationInHours = $durationInDays * 8; // Convertir en heures, en supposant 8 heures de travail par jour
+            
+            return round($durationInHours, 2); // Arrondir à 2 décimales pour plus de lisibilité
+        } else {
+            return 0;
+        }
     }
 
     public function avgDurationEstimatedPerPage(Project $project) {

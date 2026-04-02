@@ -2,8 +2,9 @@
     <h1 id="analyse-detaillee">Analyse detaillee</h1>
     <div class="container" id="container-detailed-analysis">
         <h2 id="h2-analyse-detaillee">
-        <?php echo "{$project->getName()}, {$project->getStudio()}, Épisode n<sup>o</sup> {$project->getEpisode_nb()} : {$project->getEpisode_title()}"?>
+        <?= "{$project->getName()}, {$project->getStudio()}, Épisode n<sup>o</sup> {$project->getEpisode_nb()} : {$project->getEpisode_title()}"?>
         </h2>
+        <p class="explication"><b>Vous pouvez analyser chaque séquence ci-dessous. Rien n'est obligatoire : complétez uniquement celles que vous souhaitez.</b></p>
         <?php if (!empty($sequenceHeaders)): ?>
             <form action="" method="POST">
                 <div class="all-sequences-container">
@@ -31,7 +32,7 @@
                             <div>
                                 <p>Type de séquence :</p>
                                 <label class="customLabel radioLabel" for="SequenceAction_<?= $index ?>">Action
-                                    <input type="radio" id="SequenceAction_<?= $index ?>" name="typeSequence_<?= $index ?>" value="Action" checked />
+                                    <input type="radio" id="SequenceAction_<?= $index ?>" name="typeSequence_<?= $index ?>" value="Action" />
                                     <span class="checkmark"></span>     
                                 </label>
                                 <label class="customLabel radioLabel" for="SequenceComedie_<?= $index ?>">Comédie
@@ -42,6 +43,13 @@
                                     <input type="radio" id="SequenceMixte_<?= $index ?>" name="typeSequence_<?= $index ?>" value="Mixte" />
                                     <span class="checkmark"></span>
                                 </label>
+                                <label class="hidden" for="SequenceNA_<?= $index ?>">Inderterminé
+                                    <input type="radio" id="SequenceNA_<?= $index ?>" name="typeSequence_<?= $index ?>" value="Indetermine" checked />
+                                    <span class="checkmark"></span>
+                                </label>
+                                <?php if (!empty($_SESSION['error']['type'. $index])) { ?>
+                                    <p class="messageError"><?= $_SESSION['error']['type'. $index] ?></p>
+                                <?php } unset($_SESSION['error']['type'. $index]); ?>
                             </div>
                             <div>
                                 <p>Je m'en occupe :</p>
@@ -55,6 +63,9 @@
                                         <span class="checkmark"></span>
                                     </label>
                                 </div>
+                                <?php if (!empty($_SESSION['error']['is_assigned'. $index])) { ?>
+                                    <p class="messageError"><?= $_SESSION['error']['is_assigned'. $index] ?></p>
+                                <?php } unset($_SESSION['error']['is_assigned'. $index]); ?>
                             </div>
                         </div>
                     </div>
