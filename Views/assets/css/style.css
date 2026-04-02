@@ -190,8 +190,12 @@ hr {
 .popupSuppr div{
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: center;
   gap : 10px;
+}
+
+.popupSuppr div button, .popupSuppr div form {
+  margin: 0;
 }
 
 
@@ -324,6 +328,7 @@ form textarea, input:not([type="submit"], [type="file"], [type="radio"]) {
   height: 34px;
   margin: 0;
   padding-left : 10px;
+  padding-right: 10px;
 }
 
 form textarea:focus, input:not([type="submit"]):focus {
@@ -359,10 +364,6 @@ form fieldset:hover, form fieldset:focus {
 
 .block-radio p {
   margin-bottom: 10px;
-}
-
-.radioLabel {
-  margin-bottom: 0;
 }
 
 .block-dates p {
@@ -452,7 +453,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 /* Personnalisation des boutons radio */
 
 .radioLabel {
+  margin-bottom: 0;
   height: 36px;
+  line-height: 36px;
 }
 
 /* Style the checkmark/indicator */
@@ -1205,7 +1208,7 @@ height: calc(100dvh - 60px);
 
   /* ------------- CONTENEURS ------------ */
 
-  .container:not(.container-sinIn, .login-onglet, .login-button, .block-login, .dashboard-mobile-section, .container-legals, .container-details .container, .account-page form, #account-container) {
+  .container:not(.container-sinIn, .login-onglet, .login-button, .block-login, .dashboard-mobile-section, .container-legals, .container-details .container, .account-page form, #account-container, .popupSuppr) {
     margin: 0 auto 5dvh;
     padding: 40px 60px;
     justify-content: start;

@@ -18,14 +18,14 @@
             <form action="" method="POST">
                 <div>
                     <label for="email2">Email :</label>
-                    <input <?php if (!empty($_SESSION['error']['sigin-email']) || !empty($_SESSION['error']['verifIdentifiants'])) { ?> class="inputError" <?php } ?> type="text" name="email" id="email2" autocomplete="on" required>
+                    <input <?php if (!empty($_SESSION['error']['sigin-email']) || !empty($_SESSION['error']['verifIdentifiants'])) { ?> class="inputError" <?php } ?> type="text" name="email" id="email2" autocomplete="email" required>
                     <?php if (!empty($_SESSION['error']['sigin-email'])) { ?>
                         <p class="messageError"><?= $_SESSION['error']['sigin-email'] ?></p>
                     <?php } unset($_SESSION['error']['sigin-email']); ?>
                 </div>
                 <div>
                     <label for="password2">Mot de passe :</label>
-                    <input <?php if (!empty($_SESSION['error']['verifIdentifiants']) || !empty($_SESSION['error']['sigin-incorrectPassword'])) { ?> class="inputError" <?php } ?> type="password" name="password" id="password2" required>
+                    <input <?php if (!empty($_SESSION['error']['verifIdentifiants']) || !empty($_SESSION['error']['sigin-incorrectPassword'])) { ?> class="inputError" <?php } ?> type="password" name="password" id="password2" autocomplete="current-password" required>
                     <?php if ( !empty($_SESSION['error']['sigin-incorrectPassword'])) { ?>
                         <p class="messageError"><?= $_SESSION['error']['sigin-incorrectPassword'] ?></p>
                     <?php } unset($_SESSION['error']['sigin-incorrectPassword']); ?>
@@ -41,7 +41,7 @@
             <form action="" method="POST">
                 <div>
                     <label for="email">Email :</label>
-                    <input <?php if (!empty($_SESSION['error']['emailExists'])) { ?> class="inputError" <?php } ?> type="text" name="email" id="email" autocomplete="on" value="<?= $email??'' ?>" required>
+                    <input <?php if (!empty($_SESSION['error']['emailExists'])) { ?> class="inputError" <?php } ?> type="text" name="email" id="email" autocomplete="off" value="<?= $email??'' ?>" required>
                     <?php if (!empty($_SESSION['error']['emailExists'])) { ?>
                         <p class="messageError"><?= $_SESSION['error']['emailExists'] ?></p>
                     <?php } unset($_SESSION['error']['emailExists']); ?>
@@ -55,7 +55,7 @@
                 </div>
                 <div>
                     <label for="password">Mot de passe :</label>
-                    <input <?php if (!empty($_SESSION['error']['incorrectPassword']) || !empty($_SESSION['error']['regex'])) { ?> class="inputError" <?php } ?> type="password" name="password" id="password" required>
+                    <input <?php if (!empty($_SESSION['error']['incorrectPassword']) || !empty($_SESSION['error']['regex'])) { ?> class="inputError" <?php } ?> type="password" autocomplete="off" name="password" id="password" required>
                     <?php if (!empty($_SESSION['error']['incorrectPassword'])) { ?>
                         <p class="messageError"><?= $_SESSION['error']['incorrectPassword'] ?></p>
                     <?php } unset($_SESSION['error']['incorrectPassword']); ?>

@@ -9,20 +9,44 @@ use GauthierGladchambet\BoardCompanion\Models\ProjectModel;
 use GauthierGladchambet\BoardCompanion\Models\SequenceModel;
 use GauthierGladchambet\BoardCompanion\Models\UserModel;
 use GauthierGladchambet\BoardCompanion\Models\UserStatByTypeModel;
+use GauthierGladchambet\BoardCompanion\Services\Validators\FormsValidator;
 
 
 class FormController extends MotherController {
+    private FormsValidator $validator;
+
+    function __construct() {
+    
+        //Appelle ce qui est dans le constructeur de la class parente (s'il y en a un)
+        // parent::__construct();
+
+        //instantiation du validateur
+        $this->validator = new FormsValidator;
+    }
 
     public function newProject() {
-
         //Check si l'utilisateur est connecté, sinon renvoie à la page login
         if (empty($_SESSION)) {
             header("Location: /BoardCompanion/connexion");
             exit;
-        }
+            }
+            
+        $data = ['name' => '',
+                 'studio' => '',
+                 'episode_title' => '',
+                 'episode_nb' => '',
+                 'nb_predec' => '',
+                 'is_alone' => '',
+                 'is_cleaning' => '',
+                 'script_detailed' => '',
+                 'date_begin' => '',
+                 'date_end' => '',
+                 'script' => '',
+                 'template' => ''
+                ];
 
         // Flag pour indiquer si les estimations se font à partir du nombre total de pages ou du nombre de pages assignées
-        $flag = false;
+        $flagNbPages = false;
             
         if(count($_POST) > 0){
 
@@ -30,50 +54,59 @@ class FormController extends MotherController {
             $studio             = trim(filter_input(INPUT_POST,"studio", FILTER_SANITIZE_SPECIAL_CHARS)??'');
             $episodeNb          = trim(filter_input(INPUT_POST,"episode_nb", FILTER_SANITIZE_NUMBER_INT)??'');
             $episodeTitle       = trim(filter_input(INPUT_POST,"episode_title", FILTER_SANITIZE_SPECIAL_CHARS)??'');
+            $nbPredecs          = trim(filter_input(INPUT_POST,"nb_predec", FILTER_SANITIZE_NUMBER_INT)??'');
+            $isAlone            =$_POST['is_alone']??'';
+            $isCleaning         =$_POST['is_cleaning']??'';
             $dateBegin          = $_POST['date_begin']??'';
             $dateEnd            = $_POST['date_end']??'';
-            $nbPredecs          = trim(filter_input(INPUT_POST,"nb_predec", FILTER_SANITIZE_NUMBER_INT)??'');
-            $isCleaning         =$_POST['is_cleaning']??'';
-            $isAlone            =$_POST['is_alone']??'';
             $script_detailed    =$_POST['script_detailed']??'';
 
-            //si le champ de script existe et qu'aucune erreur ne se produit lors du chargement
-            if (isset($_FILES['script']) && $_FILES['script']['error'] === 0) {
-
-            // application/pdf is the official MIME type for PDF
-            $allowedTypes = ['application/pdf'];
-            //Si le type de fichier est correct, continuez ; sinon, arrêtez-vous et affichez un message d'erreur.
-            if (!in_array($_FILES['script']['type'], $allowedTypes)) {
-                die('Le fichier doit être un PDF.');
-            }
-
-
-            //obtenir le nom original du fichier
-            $originalName = $_FILES['script']['name'];
-
-            //PATHINFO_EXTENSION collect the extension of the file
-            $extension = pathinfo($originalName, PATHINFO_EXTENSION);
-
-            //uniqid génère un numéro unique juste après 'script_', concaténé avec l'extension du fichier
-            $newFileName = uniqid('script_') . '.' . $extension;
-
-            //pour construire le chemin réel du fichier, en commençant par le répertoire courant
-            $uploadDir = __DIR__ . '/../../uploads/scripts/';
-
-            // L'endroit où le fichier sera sauvegardé
-            $destination = $uploadDir . $newFileName;
-
-            //move_uploaded_file Déplacer le fichier de l'emplacement temporaire vers la destination
-            move_uploaded_file($_FILES['script']['tmp_name'], $destination);
-            $scriptFilePath    =realpath($destination);
-            }
-
-            // Cela ne fonctionnera pas si le fichier php.ini n'est pas correctement configuré ; il faut configurer upload_max_filesize, post_max_size et memory_limit.
-            if (isset($_FILES['template']) && $_FILES['template']['error'] === 0) {
-                $allowedTypes = ['image/vnd.adobe.photoshop','application/octet-stream'];
-                if (!in_array($_FILES['template']['type'], $allowedTypes)) {
-                    die('Le fichier doit être un PSD ou un SBBKP.');
+            // Validateurs des différents champs
+            // Array_filter permet de collecter uniquement les erreurs non nulles
+            $errors = array_filter([
+                'name'            => $this->validator->validerChamp($name),
+                'studio'          => $this->validator->validerChamp($studio),
+                'episode_title'   => $this->validator->validerChamp($episodeTitle),
+                'episode_nb'      => $this->validator->validerNumEp($episodeNb),
+                'nb_predec'       => $this->validator->verifierPredec($nbPredecs),
+                'is_alone'        => $this->validator->verifierRadio($isAlone),
+                'is_cleaning'     => $this->validator->verifierRadio($isCleaning),
+                'script_detailed' => $this->validator->verifierRadio($script_detailed),
+                'date_begin'      => $this->validator->verifierDates($dateBegin,$dateEnd),
+                'date_end'        => $this->validator->verifierDates($dateBegin,$dateEnd),
+                'script'          => $this->validator->verifierScript($_FILES['script']),
+                'template'        => $this->validator->verifierTemplate($_FILES['template'])
+            ]);
+            
+            // S'il y a des erreurs, on les met en session et on redirige
+            if (!empty($errors)) {
+                $_SESSION['error'] = $errors;
+                foreach($data as $key => $value) {
+                    if (!isset($_SESSION['error'][$key])) {
+                        $data[$key] = $_POST[$key]??'';
+                    }
                 }
+                
+            } else {
+                //obtenir le nom original du fichier
+                $originalName = $_FILES['script']['name'];
+
+                //PATHINFO_EXTENSION collect the extension of the file
+                $extension = pathinfo($originalName, PATHINFO_EXTENSION);
+
+                //uniqid génère un numéro unique juste après 'script_', concaténé avec l'extension du fichier
+                $newFileName = uniqid('script_') . '.' . $extension;
+
+                //pour construire le chemin réel du fichier, en commençant par le répertoire courant
+                $uploadDir = __DIR__ . '/../../uploads/scripts/';
+
+                // L'endroit où le fichier sera sauvegardé
+                $destination = $uploadDir . $newFileName;
+
+                //move_uploaded_file Déplacer le fichier de l'emplacement temporaire vers la destination
+                move_uploaded_file($_FILES['script']['tmp_name'], $destination);
+                $scriptFilePath = realpath($destination);
+           
                 $originalName = $_FILES['template']['name'];
                 $extension = pathinfo($originalName, PATHINFO_EXTENSION);
                 $newFileName = uniqid('template_') . '.' . $extension;
@@ -81,94 +114,93 @@ class FormController extends MotherController {
                 $destination = $uploadDir . $newFileName;
                 move_uploaded_file($_FILES['template']['tmp_name'], $destination);
                 $templateFilePath   = realpath($destination);
-            }
-
-            $project = new Project();
-            $project->setName($name);
-            $project->setStudio($studio);
-            $project->setEpisode_nb($episodeNb);
-            $project->setEpisode_title($episodeTitle);
-            $project->setDate_beginning($dateBegin);
-            $project->setDate_end($dateEnd);
-            $project->setNb_predec(intval($nbPredecs));
-            $project->setIs_cleaning($isCleaning);
-            $project->setIs_alone($isAlone);
-
-            if (isset($scriptFilePath)) {
-                $project->setScript_path($scriptFilePath);
-            }
-
-            if (isset($templateFilePath)) {
-                $project->setTemplate_path($templateFilePath);
-            }
-
-            // Récupérer l'identifiant utilisateur de la session ou la valeur par défaut 1 si non défini.
-            $userId = $_SESSION['user']['id'];
-            $project->setFk_user($userId);
-
-            try {
-                $newProjectModel = new ProjectModel();
-                $idProject = $newProjectModel->addProject($project);
-                $project->setId($idProject); // Assigner l'ID généré à l'entité Project pour les étapes suivantes
-                $project->getEstimated_cleaning_duration();
-                
-
-                // Commpte le nombre de pages du PDF et l'ajoute à l'entité Project
+            
+                $project = new Project();
+                $project->setName($name);
+                $project->setStudio($studio);
+                $project->setEpisode_nb($episodeNb);
+                $project->setEpisode_title($episodeTitle);
+                $project->setDate_beginning($dateBegin);
+                $project->setDate_end($dateEnd);
+                $project->setNb_predec(intval($nbPredecs));
+                $project->setIs_cleaning($isCleaning);
+                $project->setIs_alone($isAlone);
+    
                 if (isset($scriptFilePath)) {
-                    // Utilisation de smalot/pdfparser pour extraire les détails du PDF, notamment le nombre de pages
-                    try {
-                        // Créer une instance du parser et analyser le fichier PDF
-                        $parser = new \Smalot\PdfParser\Parser();
-                        $pdf = $parser->parseFile($project->getScript_path());
-                        $metaData = $pdf->getDetails();
-                        if (isset($metaData['Pages'])) {
-                            $project->setNb_total_pages(intval($metaData['Pages'])-1);
-                            $project->setNb_assigned_pages(intval($metaData['Pages'])-1);
-                            $newProjectModel->updateNbPagesProject($project);
-                            
-                            $project->setEstimated_total_duration($this->estimateTotalDuration($project, $flag));
-                            $newProjectModel->updateTotalDurationProject($project);
-
-                            $project->setRecommended_pages_per_day($this->estimateRecommendedPagesPerDay($project, $flag));
-                            $newProjectModel->updateRecommendedPagesPerDayProject($project);
-
-                            if($project->getIs_cleaning() == true) {
-                                $project->setEstimated_cleaning_duration($this->estimateCleaningDuration($project));
-                                $newProjectModel->updateAvgCleaningProject($project);
+                    $project->setScript_path($scriptFilePath);
+                }
+    
+                if (isset($templateFilePath)) {
+                    $project->setTemplate_path($templateFilePath);
+                }
+    
+                // Récupérer l'identifiant utilisateur de la session ou la valeur par défaut 1 si non défini.
+                $userId = $_SESSION['user']['id'];
+                $project->setFk_user($userId);
+    
+                try {
+                    $newProjectModel = new ProjectModel();
+                    $idProject = $newProjectModel->addProject($project);
+                    $project->setId($idProject); // Assigner l'ID généré à l'entité Project pour les étapes suivantes
+                    $project->getEstimated_cleaning_duration();
+                    
+    
+                    // Commpte le nombre de pages du PDF et l'ajoute à l'entité Project
+                    if (isset($scriptFilePath)) {
+                        // Utilisation de smalot/pdfparser pour extraire les détails du PDF, notamment le nombre de pages
+                        try {
+                            // Créer une instance du parser et analyser le fichier PDF
+                            $parser = new \Smalot\PdfParser\Parser();
+                            $pdf = $parser->parseFile($project->getScript_path());
+                            $metaData = $pdf->getDetails();
+                            if (isset($metaData['Pages'])) {
+                                $project->setNb_total_pages(intval($metaData['Pages'])-1);
+                                $project->setNb_assigned_pages(intval($metaData['Pages'])-1);
+                                $newProjectModel->updateNbPagesProject($project);
+                                
+                                $project->setEstimated_total_duration($this->estimateTotalDuration($project, $flagNbPages));
+                                $newProjectModel->updateTotalDurationProject($project);
+    
+                                $project->setRecommended_pages_per_day($this->estimateRecommendedPagesPerDay($project, $flagNbPages));
+                                $newProjectModel->updateRecommendedPagesPerDayProject($project);
+    
+                                if($project->getIs_cleaning() == true) {
+                                    $project->setEstimated_cleaning_duration($this->estimateCleaningDuration($project));
+                                    $newProjectModel->updateAvgCleaningProject($project);
+                                }
+    
+                                $project->setAvg_duration_estimated_per_pages($this->avgDurationEstimatedPerPage($project));
+                                $newProjectModel->updateAvgDurationEstimatedPerPage($project);
+    
                             }
-
-                            $project->setAvg_duration_estimated_per_pages($this->avgDurationEstimatedPerPage($project));
-                            $newProjectModel->updateAvgDurationEstimatedPerPage($project);
-
+                        } catch (\Exception $e) {
+                            echo "Erreur lors de la lecture du PDF : " . htmlspecialchars($e->getMessage());
+                            exit;
                         }
-                    } catch (\Exception $e) {
-                        echo "Erreur lors de la lecture du PDF : " . htmlspecialchars($e->getMessage());
+                    }
+    
+                    echo "Projet ajouté avec succès.";
+                    if($script_detailed === '1'){
+                        header("Location: /BoardCompanion/analyse-detaillee?project_id=". $idProject );
+                        exit;
+                    } else {
+                        $_SESSION['success']['projetAjoute'] = "Projet ajouté avec succès !";
+                        header("Location: /BoardCompanion/tableau-de-bord");
                         exit;
                     }
-                }
-
-                echo "Projet ajouté avec succès.";
-                if($script_detailed === '1'){
-                    header("Location: /BoardCompanion/analyse-detaillee?project_id=". $idProject );
-                    exit;
-                } else {
-                    header("Location: /BoardCompanion/tableau-de-bord");
+                } catch (\Exception $e) {
+                    echo "Erreur lors de l'ajout du projet : " . htmlspecialchars($e->getMessage());
                     exit;
                 }
-            } catch (\Exception $e) {
-                echo "Erreur lors de l'ajout du projet : " . htmlspecialchars($e->getMessage());
-                exit;
             }
-
-            
         }
         
-        $this->_display("projectForm/newProjectForm");
+        $this->_display("projectForm/newProjectForm", true, $data);
         
     }
 
     // Affichage du formulaire d'analyse détaillée, en passant le texte extrait et les en-têtes de scènes à la vue
-    public function detailedAnalysis(){
+    public function detailedAnalysis() {
 
         //Check si l'utilisateur est connecté, sinon renvoie à la page login
         if (empty($_SESSION)) {
@@ -176,7 +208,7 @@ class FormController extends MotherController {
             exit;
         }
 
-        $flag = true;
+        $flagNbPages = true;
 
         // Récupérer l'ID du projet
         $projectId = $_GET['project_id'] ?? null;
@@ -269,9 +301,9 @@ class FormController extends MotherController {
 
                 $project->setNb_assigned_pages($this->countAssignedPages($projectId));
                 $project->setEstimated_cleaning_duration($this->estimateCleaningDuration($project));
-                $project->setEstimated_total_duration($this->estimateTotalDuration($project, $flag));
+                $project->setEstimated_total_duration($this->estimateTotalDuration($project, $flagNbPages));
                 $project->setAvg_duration_estimated_per_pages($this->avgDurationEstimatedPerPage($project));
-                $project->setRecommended_pages_per_day($this->estimateRecommendedPagesPerDay($project, $flag));
+                $project->setRecommended_pages_per_day($this->estimateRecommendedPagesPerDay($project, $flagNbPages));
                 $project->setIs_detailed(1);
                 
                 $projectModel->updateNbPagesAssignedProject($project);
@@ -281,7 +313,7 @@ class FormController extends MotherController {
                 $projectModel->updateRecommendedPagesPerDayProject($project);
                 $projectModel->updateIsDetailed($project);
 
-
+                $_SESSION['success']['projetAjoute'] = "Projet ajouté avec succès !";
                 header("Location: /BoardCompanion/projet?project_id=" . $project->getId());
                 exit;
         } else {
@@ -321,6 +353,18 @@ class FormController extends MotherController {
             header("Location: /BoardCompanion/connexion");
             exit;
         }
+
+        $data = ['name' => '',
+                 'studio' => '',
+                 'episode_title' => '',
+                 'episode_nb' => '',
+                 'nb_predec' => '',
+                 'is_alone' => '',
+                 'is_cleaning' => '',
+                 'script_detailed' => '',
+                 'date_begin' => '',
+                 'date_end' => ''
+                ];
 
         // Récupération des attributs du projet
         $projectId = $_GET['project_id'];
@@ -362,7 +406,7 @@ class FormController extends MotherController {
 
         $this->_arrData['projects'] = $projectsToDisplay;
 
-        if(count($_POST) > 0){
+        if(count($_POST) > 0) {
 
             $name               = trim(filter_input(INPUT_POST,"name", FILTER_SANITIZE_SPECIAL_CHARS))??'';    //La fonction trim supprime les caractères invisibles comme les espaces, avant et après le texte.
             $studio             = trim(filter_input(INPUT_POST,"studio", FILTER_SANITIZE_SPECIAL_CHARS))??'';
@@ -375,51 +419,78 @@ class FormController extends MotherController {
             $isAlone            =$_POST['is_alone']??'';
             $script_detailed    =$_POST['script_detailed']??'';
 
+            // Validateurs des différents champs
+            // Array_filter permet de collecter uniquement les erreurs non nulles
+            $errors = array_filter([
+                'name'            => $this->validator->validerChamp($name),
+                'studio'          => $this->validator->validerChamp($studio),
+                'episode_title'   => $this->validator->validerChamp($episodeTitle),
+                'episode_nb'      => $this->validator->validerNumEp($episodeNb),
+                'nb_predec'       => $this->validator->verifierPredec($nbPredecs),
+                'is_alone'        => $this->validator->verifierRadio($isAlone),
+                'is_cleaning'     => $this->validator->verifierRadio($isCleaning),
+                'script_detailed' => $this->validator->verifierRadio($script_detailed),
+                'date_begin'      => $this->validator->verifierDates($dateBegin,$dateEnd),
+                'date_end'        => $this->validator->verifierDates($dateBegin,$dateEnd)
+            ]);
 
-            $projectUpdated = new Project();
-            $projectUpdated->setId($_GET['project_id']);
-            $projectUpdated->setName($name);
-            $projectUpdated->setStudio($studio);
-            $projectUpdated->setEpisode_nb($episodeNb);
-            $projectUpdated->setEpisode_title($episodeTitle);
-            $projectUpdated->setDate_beginning($dateBegin);
-            $projectUpdated->setDate_end($dateEnd);
-            $projectUpdated->setNb_predec(intval($nbPredecs));
-            $projectUpdated->setIs_cleaning($isCleaning);
-            $projectUpdated->setIs_alone($isAlone);
+            // S'il y a des erreurs, on les met en session et on redirige
+            if (!empty($errors)) {
+                $_SESSION['error'] = $errors;
+                foreach($data as $key => $value) {
+                    if (!isset($_SESSION['error'][$key])) {
+                        $data[$key] = $_POST[$key]??'';
+                    }
+                }
+                
+            } else {
 
-            // Récupérer l'identifiant utilisateur de la session ou la valeur par défaut 1 si non défini.
-            $userId = $_SESSION['user']['id'];
-            $projectUpdated->setFk_user($userId);
+                $projectUpdated = new Project();
+                $projectUpdated->setId($_GET['project_id']);
+                $projectUpdated->setName($name);
+                $projectUpdated->setStudio($studio);
+                $projectUpdated->setEpisode_nb($episodeNb);
+                $projectUpdated->setEpisode_title($episodeTitle);
+                $projectUpdated->setDate_beginning($dateBegin);
+                $projectUpdated->setDate_end($dateEnd);
+                $projectUpdated->setNb_predec(intval($nbPredecs));
+                $projectUpdated->setIs_cleaning($isCleaning);
+                $projectUpdated->setIs_alone($isAlone);
 
-            try {
-                $newProjectModel = new ProjectModel();
-                $idProject = $newProjectModel->updateProject($projectUpdated);
-                $projectUpdated->setId($idProject); // Assigner l'ID généré à l'entité Project pour les étapes suivantes
-                $projectUpdated->getEstimated_cleaning_duration();
+                // Récupérer l'identifiant utilisateur de la session ou la valeur par défaut 1 si non défini.
+                $userId = $_SESSION['user']['id'];
+                $projectUpdated->setFk_user($userId);
 
-                echo "Projet modifié avec succès.";
-                // Si l'utilisateur veut modifier l'analyse détaillée
-                if($script_detailed === '1'){
-                    // Si il n'y a pas encore d'analyse détaillée pour ce projet
-                    if($projectOld->getIs_detailed() == 0) {
-                        header("Location: /BoardCompanion/analyse-detaillee?project_id=". $projectOld->getId());
-                        exit;
+                try {
+                    $newProjectModel = new ProjectModel();
+                    $idProject = $newProjectModel->updateProject($projectUpdated);
+                    $projectUpdated->setId($idProject); // Assigner l'ID généré à l'entité Project pour les étapes suivantes
+                    $projectUpdated->getEstimated_cleaning_duration();
+
+                    // Si l'utilisateur veut modifier l'analyse détaillée
+                    if($script_detailed === '1'){
+                        // Si il n'y a pas encore d'analyse détaillée pour ce projet
+                        if($projectOld->getIs_detailed() == 0) {
+                            header("Location: /BoardCompanion/analyse-detaillee?project_id=". $projectOld->getId());
+                            exit;
+                        } else {
+                            header("Location: /BoardCompanion/modifier-analyse-detaillee?project_id=" . $projectOld->getId());
+                            exit;
+                        }
                     } else {
-                        header("Location: /BoardCompanion/modifier-analyse-detaillee?project_id=" . $projectOld->getId());
+                        $_SESSION['success']['projetModifie'] = "Projet modifié avec succès !";
+                        header("Location: /BoardCompanion/tableau-de-bord");
                         exit;
                     }
-                } else {
-                    header("Location: /BoardCompanion/tableau-de-bord");
+                } catch (\Exception $e) {
+                    echo "Erreur lors de l'ajout du projet : " . htmlspecialchars($e->getMessage());
                     exit;
                 }
-            } catch (\Exception $e) {
-                echo "Erreur lors de l'ajout du projet : " . htmlspecialchars($e->getMessage());
-                exit;
             }
+
         }
 
-        $this->_display("projectForm/updateProjectForm");
+        $this->_display("projectForm/updateProjectForm", true, $data);
 
 
     }
@@ -432,7 +503,7 @@ class FormController extends MotherController {
             exit;
         }
 
-        $flag = true;
+        $flagNbPages = true;
 
         // Récupération des attributs du projet
         $projectId = $_GET['project_id'];
@@ -538,9 +609,9 @@ class FormController extends MotherController {
 
             $project->setNb_assigned_pages($this->countAssignedPages($projectId));
             $project->setEstimated_cleaning_duration($this->estimateCleaningDuration($project));
-            $project->setEstimated_total_duration($this->estimateTotalDuration($project, $flag));
+            $project->setEstimated_total_duration($this->estimateTotalDuration($project, $flagNbPages));
             $project->setAvg_duration_estimated_per_pages($this->avgDurationEstimatedPerPage($project));
-            $project->setRecommended_pages_per_day($this->estimateRecommendedPagesPerDay($project, $flag));
+            $project->setRecommended_pages_per_day($this->estimateRecommendedPagesPerDay($project, $flagNbPages));
             
             $projectModel->updateNbPagesAssignedProject($project);
             $projectModel->updateAvgCleaningProject($project);
@@ -548,7 +619,8 @@ class FormController extends MotherController {
             $projectModel->updateAvgDurationEstimatedPerPage($project);
             $projectModel->updateRecommendedPagesPerDayProject($project);
             $projectModel->updateIsDetailed($project);
-
+            
+            $_SESSION['success']['projetModifie'] = "Projet modifié avec succès !";
             header("Location: /BoardCompanion/projet?project_id=" . $projectId);
             exit;
         }
@@ -767,11 +839,11 @@ class FormController extends MotherController {
 
 
     // Fonction d'estimation de la durée total pour boarder le projet
-    public function estimateTotalDuration(Project $project, bool $flag) {
+    public function estimateTotalDuration(Project $project, bool $flagNbPages) {
         // Récupérer les informations de l'utilisateur à partir de la base de données en fonction de son ID en session
             $userModel = new UserModel();
             $userData = $userModel->findById($_SESSION['user']['id']);
-        if($flag === true){
+        if($flagNbPages === true){
             $pagesDuration = $project->getNb_assigned_pages() / $userData['avg_pages_per_day'];
         } else {
             $pagesDuration = $project->getNb_total_pages() / $userData['avg_pages_per_day'];
@@ -781,9 +853,9 @@ class FormController extends MotherController {
 
 
     // Fonction d'estimation du nombre de jours recommandés pour boarder le projet, en fonction du nombre de pages totales ou du nombre de pages assignées, du temps de cleaning estimé et de la durée du projet
-    public function estimateRecommendedPagesPerDay(Project $project, bool $flag) {
+    public function estimateRecommendedPagesPerDay(Project $project, bool $flagNbPages) {
         $interval = $project->getDuree();
-        if($flag === true){
+        if($flagNbPages === true){
             $recommandation = ($project->getNb_assigned_pages() + $project->getEstimated_cleaning_duration()) / $interval;
         } else {
             $recommandation = ($project->getNb_total_pages() + $project->getEstimated_cleaning_duration()) / $interval;
@@ -814,5 +886,5 @@ class FormController extends MotherController {
     public function avgDurationEstimatedPerPage(Project $project) {
         $avgDurationEstimatedPerPage = ($project->getEstimated_total_duration()) / ($project->getNb_assigned_pages());
         return round($avgDurationEstimatedPerPage, 2);
-        }
+    }
 }

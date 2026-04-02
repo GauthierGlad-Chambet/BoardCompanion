@@ -7,7 +7,7 @@
                 <h3>Modifier le pseudo :</h3>
                 <div>
                     <label for="pseudo">Pseudo<span class="champObligatoire"> *</span> :</label>
-                    <input <?php if (!empty($_SESSION['error']['pseudo'])) { ?> class="inputError" <?php } ?> id="pseudo" type="text" name="pseudo" value="<?= $user->getPseudo() ?> required">
+                    <input <?php if (!empty($_SESSION['error']['pseudo'])) { ?> class="inputError" <?php } ?> id="pseudo" type="text" name="pseudo" value="<?= $user->getPseudo() ?>" required>
                     <?php if (!empty($_SESSION['error']['pseudo'])) { ?>
                         <p class="messageError"><?= $_SESSION['error']['pseudo'] ?></p>
                     <?php } unset($_SESSION['error']['pseudo']); ?>

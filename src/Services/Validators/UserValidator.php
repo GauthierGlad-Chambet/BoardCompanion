@@ -25,7 +25,6 @@ class UserValidator {
         } else {
             $userModel = new UserModel();
             if ($userModel->findByMail($email)) {
-                // var_dump($userModel->findByMail($email));die;
                 return "Ce compte existe déjà.";
             }
         }

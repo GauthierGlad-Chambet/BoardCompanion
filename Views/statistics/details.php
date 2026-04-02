@@ -119,12 +119,16 @@
         <p>Êtes-vous sûr de vouloir supprimer ce projet ? Cette action est irréversible.</p>
         <div>
             <button class="annulerSuppr button">Annuler</button>
-            <form method="POST" action="/BoardCompanion/tableau-de-bord">
+            <form method="POST" action="/BoardCompanion/supprimer-projet">
                 <input type="hidden" name="project_id" value="<?= $project->getId() ?>">
                 <button class="button" type="submit">Supprimer le projet</button>
             </form>
         </div>
     </div>
-
-
+    <?php if (!empty($_SESSION['success']['projetAjoute'])) { ?>
+        <p class="messageSuccess"><?= $_SESSION['success']['projetAjoute'] ?></p>
+    <?php } unset($_SESSION['success']['projetAjoute']); ?> 
+      <?php if (!empty($_SESSION['success']['projetModifie'])) { ?>
+        <p class="messageSuccess"><?= $_SESSION['success']['projetModifie'] ?></p>
+    <?php } unset($_SESSION['success']['projetModifie']); ?> 
 </main>

@@ -56,8 +56,6 @@ class UserController extends MotherController
                     if (!isset($_SESSION['error']['emailExists'])) {
                         $data['email'] = $_POST['email'];
                     }
-                    // header("Location: /BoardCompanion/connexion");
-                    // exit;
                 } else {
 
                     // Création de l'objet User et assignation des valeurs

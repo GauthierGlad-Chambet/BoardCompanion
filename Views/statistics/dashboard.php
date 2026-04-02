@@ -56,4 +56,10 @@
             </div>
         <?php endforeach; ?>   
     </div>
+    <?php if (!empty($_SESSION['success']['projetAjoute'])) { ?>
+        <p class="messageSuccess"><?= $_SESSION['success']['projetAjoute'] ?></p>
+    <?php } unset($_SESSION['success']['projetAjoute']); ?> 
+    <?php if (!empty($_SESSION['success']['projetModifie'])) { ?>
+        <p class="messageSuccess"><?= $_SESSION['success']['projetModifie'] ?></p>
+    <?php } unset($_SESSION['success']['projetModifie']); ?> 
 </main>
