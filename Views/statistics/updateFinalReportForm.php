@@ -69,7 +69,7 @@
                     <label for="duree_sequence[<?= $sequence->getId();?>]">
                         Séquence <?= $sequence->getNumber() ?> : <?= $sequence->getTitle() ?> (<?= $sequence->getTypeLabel() ?>)
                     </label>
-                    <input <?php if (!empty($_SESSION['error']['duree_sequence' . $sequence->getId()])) { ?> class="inputError" <?php } ?> type="number" id="duree_sequence[<?= $sequence->getId();?>]" name="duree_sequence[<?= $sequence->getId();?>]" value="<?= ($duree_sequence[$sequence->getId()] !== '')? $duree_sequence[$sequence->getId()] : $sequence->getDuration_real() ?>" min="0">
+                    <input <?php if (!empty($_SESSION['error']['duree_sequence' . $sequence->getId()])) { ?> class="inputError" <?php } ?> type="number" id="duree_sequence[<?= $sequence->getId();?>]" name="duree_sequence[<?= $sequence->getId();?>]" value="<?= $duree_sequence[$sequence->getId()]?? $sequence->getDuration_real() ?>" min="0">
                     <?php if (!empty($_SESSION['error']['duree_sequence' . $sequence->getId()])) { ?>
                         <p class="messageError"><?= $_SESSION['error']['duree_sequence' . $sequence->getId()] ?></p>
                     <?php } unset($_SESSION['error']['duree_sequence' . $sequence->getId()]); ?>
