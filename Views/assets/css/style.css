@@ -341,6 +341,7 @@ form textarea:focus, input:not([type="submit"]):focus {
 
 form textarea {
 height: 150px;
+max-width: 100%;
 }
 
 form fieldset {
