@@ -13,9 +13,20 @@ use GauthierGladchambet\BoardCompanion\Models\ProjectModel;
 use GauthierGladchambet\BoardCompanion\Models\SequenceModel;
 use GauthierGladchambet\BoardCompanion\Models\UserModel;
 use GauthierGladchambet\BoardCompanion\Models\UserStatByTypeModel;
+use GauthierGladchambet\BoardCompanion\Services\Validators\FormsValidator;
 
 class StatisticsController extends MotherController
 {
+    private FormsValidator $validator;
+
+    function __construct() {
+    
+        //Appelle ce qui est dans le constructeur de la class parente (s'il y en a un)
+        // parent::__construct();
+
+        //instantiation du validateur
+        $this->validator = new FormsValidator;
+    }
 
     public function dashboard() {
     
@@ -221,86 +232,131 @@ class StatisticsController extends MotherController
         $this->_arrData['arrAppreciations'] = $appreciationsToDisplay;
         $this->_arrData['projects'] = $projectsToDisplay;
 
+        $data = [
+            'duree_totale_projet' => '',
+            'total_plans'         => '',
+            'duree_cleaning'      => '',
+            'appreciation'        => $_POST['appreciation'] ?? '',
+            'commentaire'         => $_POST['commentaire']??'',
+            'duree_sequence'      => $_POST['duree_sequence'] ?? [],
+        ];
+
 
         // Récupération des infos du formulaire et mise en BDD
-        if(count($_POST) > 0)
-        {
+        if(count($_POST) > 0) {
        
             // Récupération de toutes les données du post qui concernent la table final_report en BDD
-            $dureeTotaleProjetForm      = (float)trim(filter_input(INPUT_POST,"duree_totale_projet", FILTER_SANITIZE_NUMBER_FLOAT)??'');
-            $dureeCleaningForm          = (float)trim(filter_input(INPUT_POST,"duree_cleaning", FILTER_SANITIZE_NUMBER_FLOAT)??'');
-            $totalPlansForm             = (int)trim(filter_input(INPUT_POST,"total_plans", FILTER_SANITIZE_NUMBER_INT)??'');
-            $commentaireForm            = trim(filter_input(INPUT_POST,"commentaire", FILTER_SANITIZE_SPECIAL_CHARS)??'');
-            $idAppreciationForm         = (int)filter_input(INPUT_POST,"appreciation", FILTER_SANITIZE_NUMBER_INT)??0;
-            $idProjectForm              = (int)filter_input(INPUT_POST,"project_id", FILTER_SANITIZE_NUMBER_INT)??'';
+            $project_id              = (int)filter_input(INPUT_POST,"project_id", FILTER_SANITIZE_NUMBER_INT)??'';
+            $appreciation           = (int)filter_input(INPUT_POST,"appreciation", FILTER_SANITIZE_NUMBER_INT)??0;
+            $duree_totale_projet      = (float)trim(filter_input(INPUT_POST,"duree_totale_projet", FILTER_SANITIZE_NUMBER_FLOAT)??'');
+            $total_plans             = (int)trim(filter_input(INPUT_POST,"total_plans", FILTER_SANITIZE_NUMBER_INT)??'');
+            $duree_cleaning          = (float)trim(filter_input(INPUT_POST,"duree_cleaning", FILTER_SANITIZE_NUMBER_FLOAT)??'');
+            $commentaire            = trim(filter_input(INPUT_POST,"commentaire", FILTER_SANITIZE_SPECIAL_CHARS)??'');
 
-            // création de l'objet final report
-            $finalReport = new FinalReport();
-            $finalReport->setTotal_duration($dureeTotaleProjetForm);
-            $finalReport->setCleaning_duration($dureeCleaningForm);
-            $finalReport->setNb_shots($totalPlansForm);
-            $finalReport->setCommentary($commentaireForm);
-            $finalReport->setFk_appreciation($idAppreciationForm);
-            $finalReport->setFk_project($idProjectForm);
-            
-            // Insertion du bilan final en bdd
-            try {
-                $finalReportModel = new FinalReportModel();
-                $finalReportModel->addFinalReport($finalReport);
-            
-                echo "Bilan final ajouté avec succès.";
-                
-            } catch (\Exception $e) {
-                echo "Erreur lors de l'ajout du bilan : " . htmlspecialchars($e->getMessage());
-                exit;
-            }
+
+            // Validateurs des différents champs
+            // Array_filter permet de collecter uniquement les erreurs non nulles
+            $errors = array_filter([
+                'appreciation'          => $this->validator->verifierRadioFinalReport($appreciation),
+                'duree_totale_projet'   => $this->validator->verifierInputNumber($duree_totale_projet),
+                'total_plans'           => $this->validator->verifierInputNumberOptionnel($total_plans),
+                'duree_cleaning'        => $this->validator->verifierDureeCleaning($duree_cleaning,$duree_totale_projet)
+            ]);
 
             // Récupération des durées réelles de séquences depuis le tableau dans le POST
-            $dureeSequencesForm = $_POST['duree_sequence']??[];
+            $duree_sequence = $_POST['duree_sequence']??[];
 
-            // Boucle de création des objets séquence et insertion dans la BDD
-            foreach($dureeSequencesForm as $sequenceId => $duree) {
+            // Boucle de création des objets séquence pour créer les erreurs correspondantes
+            foreach ($duree_sequence as $sequenceId => $duree) {
 
                 // Ignorer les champs vides
                 if ($duree === '') {
                     continue;
-                }
+                };
 
                 // Convertir la durée en float
                 $duree = (float)$duree;
 
-                //Création de l'objet séquence
-                $sequence = new Sequence();
-                $sequence ->setId($sequenceId);
-                $sequence->setDuration_real($duree);
+                // Validateur des séquences
+                $sequenceErrors = array_filter([
+                    'duree_sequence' . $sequenceId => $this->validator->verifierDureeSequence($duree)
+                ]);
 
+                // On met les erreurs de séquence dans le tableau des erreurs
+                $errors = array_merge($errors, $sequenceErrors);
+            }
+
+            
+            // S'il y a des erreurs, on les met en session et on redirige
+            if (!empty($errors)) {
+                $_SESSION['error'] = $errors;
+                foreach($data as $key => $value) {
+                    if (!isset($_SESSION['error'][$key])) {
+                        $data[$key] = $_POST[$key]??'';
+                    }
+                }
+               
+                $this->_display("statistics/finalReportForm", true, $data);
+                exit;
+                
+            } else {
+
+                // création de l'objet final report
+                $finalReport = new FinalReport();
+                $finalReport->setTotal_duration($duree_totale_projet);
+                $finalReport->setCleaning_duration($duree_cleaning);
+                $finalReport->setNb_shots($total_plans);
+                $finalReport->setCommentary($commentaire);
+                $finalReport->setFk_appreciation($appreciation);
+                $finalReport->setFk_project($project_id);
+                
+                // Insertion du bilan final en bdd
                 try {
-                    $sequenceModel = new SequenceModel();
-                    $sequenceModel->updateRealDuration($sequence);
-                    
+                    $finalReportModel = new FinalReportModel();
+                    $finalReportModel->addFinalReport($finalReport);
+            
+                    // Boucle de création des objets séquence et insertion dans la BDD
+                    foreach($duree_sequence as $sequenceId => $duree) {
+
+                        // Ignorer les champs vides
+                        if ($duree === '') {
+                            continue;
+                        };
+
+                        // Convertir la durée en float
+                        $duree = (float)$duree;
+        
+                        //Création de l'objet séquence
+                        $sequence = new Sequence();
+                        $sequence ->setId($sequenceId);
+                        $sequence->setDuration_real($duree);
+        
+                        $sequenceModel = new SequenceModel();
+                        $sequenceModel->updateRealDuration($sequence);
+                        
+                    }
+    
+                    //Modifier statistiques utilisateur avec les nouvelles infos du bilan :
+                    $this->updateUserAvgPagesPerDay($_SESSION['user']['id']);
+                    $this->updateUserAvgCleaningDuration($_SESSION['user']['id']);
+                    $this->updateUserAvgAppreciation($_SESSION['user']['id']);
+                    $this->updateUserAvgShotsPerPage($_SESSION['user']['id']);
+                    $this->updateUserStatsByType($_SESSION['user']['id']);
+    
+                    $_SESSION['success']['bilanFinal'] = "Bilan final ajouté avec succès !";
+                    header("Location: /BoardCompanion/projet?project_id=" . $project->getId() . "#bilanFinal");
+                    exit;
+
                 } catch (\Exception $e) {
                     echo "Erreur lors de l'ajout du bilan : " . htmlspecialchars($e->getMessage());
                     exit;
                 }
-
-                echo "Durées réelles des séquences ajoutées avec succès.";
-                
+    
+                            
             }
-            
-            //Modifier statistiques utilisateur avec les nouvelles infos du bilan :
-            $this->updateUserAvgPagesPerDay($_SESSION['user']['id']);
-            $this->updateUserAvgCleaningDuration($_SESSION['user']['id']);
-            $this->updateUserAvgAppreciation($_SESSION['user']['id']);
-            $this->updateUserAvgShotsPerPage($_SESSION['user']['id']);
-            $this->updateUserStatsByType($_SESSION['user']['id']);
-
-            header("Location: /BoardCompanion/projet?project_id=" . $project->getId() . "#bilanFinal");
-            exit;
-
         }
    
-        $this->_display("statistics/finalReportForm");
-
+        $this->_display("statistics/finalReportForm", true, $data);
     }
 
     public function updateFinalReport() {
@@ -404,76 +460,127 @@ class StatisticsController extends MotherController
         $this->_arrData['arrAppreciations'] = $appreciationsToDisplay;
         $this->_arrData['projects'] = $projectsToDisplay;
 
+        $data = [
+            'duree_totale_projet' => '',
+            'total_plans'         => '',
+            'duree_cleaning'      => '',
+            'appreciation'        => $_POST['appreciation'] ?? '',
+            'commentaire'         => $_POST['commentaire']??'',
+            'duree_sequence'      => $_POST['duree_sequence'] ?? []
+        ];
+
         if(count($_POST) > 0){
 
-            $dureeTotale      = (float)trim(filter_input(INPUT_POST,"duree_totale_projet", FILTER_SANITIZE_NUMBER_FLOAT)??'');
-            $dureeCleaning    = (float)trim(filter_input(INPUT_POST,"duree_cleaning", FILTER_SANITIZE_NUMBER_FLOAT)??'');
-            $totalPlans       = (int)trim(filter_input(INPUT_POST,"total_plans", FILTER_SANITIZE_NUMBER_INT)??'');
+            $project_id        = (int)filter_input(INPUT_POST,"project_id", FILTER_SANITIZE_NUMBER_INT)??'';
+            $duree_totale_projet      = (float)trim(filter_input(INPUT_POST,"duree_totale_projet", FILTER_SANITIZE_NUMBER_FLOAT)??'');
+            $duree_cleaning    = (float)trim(filter_input(INPUT_POST,"duree_cleaning", FILTER_SANITIZE_NUMBER_FLOAT)??'');
+            $total_plans       = (int)trim(filter_input(INPUT_POST,"total_plans", FILTER_SANITIZE_NUMBER_INT)??'');
             $commentaire      = trim(filter_input(INPUT_POST,"commentaire", FILTER_SANITIZE_SPECIAL_CHARS)??'');
             $appreciation     = (int)filter_input(INPUT_POST,"appreciation", FILTER_SANITIZE_NUMBER_INT)??0;
-            $projectId        = (int)filter_input(INPUT_POST,"project_id", FILTER_SANITIZE_NUMBER_INT)??'';
-         
-            $finalReportUpdated = new FinalReport();
-            $finalReportUpdated->setId($finalReport->getId());
-            $finalReportUpdated->setTotal_duration($dureeTotale);
-            $finalReportUpdated->setCleaning_duration($dureeCleaning);
-            $finalReportUpdated->setNb_shots($totalPlans);
-            $finalReportUpdated->setCommentary($commentaire);
-            $finalReportUpdated->setFk_appreciation($appreciation);
-            $finalReportUpdated->setFk_project($projectId);
 
-            try {
-                $newFinalReportModel = new FinalReportModel();
-                $newFinalReportModel->updateFinalReport($finalReportUpdated);
-                
-            } catch (\Exception $e) {
-                echo "Erreur lors de la modification du bilan final : " . htmlspecialchars($e->getMessage());
-                exit;
-            }
 
-           // Récupération des durées réelles de séquences depuis le tableau dans le POST
+            // Validateurs des différents champs
+            // Array_filter permet de collecter uniquement les erreurs non nulles
+            $errors = array_filter([
+                'appreciation'          => $this->validator->verifierRadioFinalReport($appreciation),
+                'duree_totale_projet'   => $this->validator->verifierInputNumber($duree_totale_projet),
+                'total_plans'           => $this->validator->verifierInputNumberOptionnel($total_plans),
+                'duree_cleaning'        => $this->validator->verifierDureeCleaning($duree_cleaning,$duree_totale_projet)
+            ]);
+
+            // Récupération des durées réelles de séquences depuis le tableau dans le POST
             $dureeSequencesForm = $_POST['duree_sequence']??[];
-
-            // Boucle de création des objets séquence et insertion dans la BDD
+                        
+            // Boucle de création des objets séquence pour créer les erreurs correspondantes
             foreach($dureeSequencesForm as $sequenceId => $duree) {
 
                 // Reinitialiser les champs vides
-                if ($duree === '' ||$duree == 0 ) {
+                if ($duree === '' || $duree == 0 ) {
                     $duree = NULL;
-                    // continue;
+
                 } else {
                     // Convertir la durée en float
                     $duree = (float)$duree;
                 }
 
-                //Création de l'objet séquence
-                $sequence = new Sequence();
-                $sequence ->setId($sequenceId);
-                $sequence->setDuration_real($duree);
+                // Validateur des séquences
+                $sequenceErrors = array_filter([
+                    'duree_sequence' . $sequenceId => $this->validator->verifierDureeSequence($duree)
+                ]);
 
-                try {
-                    $sequenceModel = new SequenceModel();
-                    $sequenceModel->updateRealDuration($sequence);
-                    
-                } catch (\Exception $e) {
-                    echo "Erreur lors de l'ajout du bilan : " . htmlspecialchars($e->getMessage());
-                    exit;
-                }
+                // On met les erreurs de séquence dans le tableau des erreurs
+                $errors = array_merge($errors, $sequenceErrors);
             }
 
-            //Modifier statistiques utilisateur avec les nouvelles infos du bilan :
-            $this->updateUserAvgPagesPerDay($_SESSION['user']['id']);
-            $this->updateUserAvgCleaningDuration($_SESSION['user']['id']);
-            $this->updateUserAvgAppreciation($_SESSION['user']['id']);
-            $this->updateUserAvgShotsPerPage($_SESSION['user']['id']);
-            $this->updateUserStatsByType($_SESSION['user']['id']);
-    
-            header("Location: /BoardCompanion/tableau-de-bord");
-            exit;
-
+            // S'il y a des erreurs, on les met en session et on redirige
+            if (!empty($errors)) {
+                $_SESSION['error'] = $errors;
+                foreach($data as $key => $value) {
+                    if (!isset($_SESSION['error'][$key])) {
+                        $data[$key] = $_POST[$key]??'';
+                    }
+                }
+               
+                $this->_display("statistics/updateFinalReportForm", true, $data);
+                exit;
+                
+                } else {
+                
+                    // création de l'objet final report
+                    $finalReportUpdated = new FinalReport();
+                    $finalReportUpdated->setId($finalReport->getId());
+                    $finalReportUpdated->setTotal_duration($duree_totale_projet);
+                    $finalReportUpdated->setCleaning_duration($duree_cleaning);
+                    $finalReportUpdated->setNb_shots($total_plans);
+                    $finalReportUpdated->setCommentary($commentaire);
+                    $finalReportUpdated->setFk_appreciation($appreciation);
+                    $finalReportUpdated->setFk_project($project_id);
+                    
+                    // Insertion du bilan final en bdd
+                    try {
+                        $newFinalReportModel = new FinalReportModel();
+                        $newFinalReportModel->updateFinalReport($finalReportUpdated);
+        
+                        // Boucle de création des objets séquence et insertion dans la BDD
+                        foreach($dureeSequencesForm as $sequenceId => $duree) {
+            
+                            // Reinitialiser les champs vides
+                            if ($duree === '' ||$duree == 0 ) {
+                                $duree = NULL;
+                               
+                            } else {
+                                // Convertir la durée en float
+                                $duree = (float)$duree;
+                            }
+            
+                            //Création de l'objet séquence
+                            $sequence = new Sequence();
+                            $sequence ->setId($sequenceId);
+                            $sequence->setDuration_real($duree);
+            
+                            $sequenceModel = new SequenceModel();
+                            $sequenceModel->updateRealDuration($sequence);
+                                
+                        }
+        
+                        //Modifier statistiques utilisateur avec les nouvelles infos du bilan :
+                        $this->updateUserAvgPagesPerDay($_SESSION['user']['id']);
+                        $this->updateUserAvgCleaningDuration($_SESSION['user']['id']);
+                        $this->updateUserAvgAppreciation($_SESSION['user']['id']);
+                        $this->updateUserAvgShotsPerPage($_SESSION['user']['id']);
+                        $this->updateUserStatsByType($_SESSION['user']['id']);
+                
+                        header("Location: /BoardCompanion/tableau-de-bord");
+                        exit;
+        
+                    } catch (\Exception $e) {
+                        echo "Erreur lors de la modification du bilan final : " . htmlspecialchars($e->getMessage());
+                        exit;
+                    }
+                }
         }
 
-        $this->_display("statistics/updateFinalReportForm");
+        $this->_display("statistics/updateFinalReportForm", true, $data);
     }
 
     public function deleteProject() {
@@ -530,6 +637,7 @@ class StatisticsController extends MotherController
         if(count($cleaningDurations) > 0) {
             $avgCleaningDuration = $total / count($cleaningDurations);
         } else {
+            // On remet la valeur par défaut
             $avgCleaningDuration = 0.2;
         }
 

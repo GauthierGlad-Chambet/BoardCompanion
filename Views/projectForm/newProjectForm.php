@@ -4,7 +4,7 @@
        <div>
                <div>
                        <label for="name">Nom du Projet :</label>
-                       <input <?php if (!empty($_SESSION['error']['name'])) { ?> class="inputError" <?php } ?> type="text" name="name" id="name" value="<?= $name??'' ?>">
+                       <input <?php if (!empty($_SESSION['error']['name'])) { ?> class="inputError" <?php } ?> type="text" name="name" id="name" value="<?= $name??'' ?>" required>
                        <?php if (!empty($_SESSION['error']['name'])) { ?>
                                 <p class="messageError"><?= $_SESSION['error']['name'] ?></p>
                         <?php } unset($_SESSION['error']['name']); ?>

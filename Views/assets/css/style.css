@@ -1446,10 +1446,8 @@ height: calc(100dvh - 60px);
   /* ------------- MESSAGES DE SUCCES ET D'ERREUR ------------ */
 
   .messageSuccess {
-  width: 50%;
-  
-}
-
+    width: 50%;
+  }
 
 }
 

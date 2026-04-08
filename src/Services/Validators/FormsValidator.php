@@ -26,10 +26,22 @@ class FormsValidator {
     }
 
     //Vérifier si le champ contient bien un entier positif
-    public function verifierPredec($predec) {
-        if (empty($predec)) {
+    public function verifierInputNumber($number) {
+        if (empty($number)) {
                 return "Ce champ est obligatoire.";
-        } else if (filter_var($predec, FILTER_VALIDATE_INT) !== false && $predec <= 0) {
+        } else if (filter_var($number, FILTER_VALIDATE_INT) !== false && $number <= 0) {
+            return "Ce champ attend un nombre entier positif.";
+        }
+        return null;
+    }
+
+    //Vérifier si le champ contient bien un entier positif, version champ optionnel
+    public function verifierInputNumberOptionnel($number) {
+        //Le champ n'est pas obligatoire
+        if (empty($number)) {
+            return null;
+        }
+        if (filter_var($number, FILTER_VALIDATE_INT) !== false && $number <= 0) {
             return "Ce champ attend un nombre entier positif.";
         }
         return null;
@@ -47,6 +59,14 @@ class FormsValidator {
     public function verifierRadioDetailed($radio) {
         if ($radio !== 'Action' && $radio !== 'Comedie' && $radio !== 'Mixte' && $radio !== 'Indetermine') {
             return "Veuillez cocher une case.";
+        }
+        return null;
+    }
+
+    //Vérifier si un des boutons radio du formulaire de bilan final est coché
+    public function verifierRadioFinalReport($radio) {
+        if ($radio < 1 || $radio > 4) {
+            return "Veuillez sélectionner une appréciation.";
         }
         return null;
     }
@@ -116,6 +136,30 @@ class FormsValidator {
         }
         return null;
     }
+
+    //Vérifier si la durée du cleaning est inférieure à la durée totale et si le champ contient bien un entier positif
+    public function verifierDureeCleaning($dureeCleaning, $dureeTotale) {
+        if (empty($dureeCleaning)) {
+                return null;
+        } else if (filter_var($dureeCleaning, FILTER_VALIDATE_INT) !== false && $dureeCleaning <= 0) {
+            return "Ce champ attend un nombre entier positif.";
+        } else if ($dureeCleaning >= $dureeTotale) {
+            return "La durée du cleaning ne peut pas être supérieure à la durée totale du projet.";
+        }
+        return null;
+    }
+
+    //Vérifier si le champ contient bien un entier positif
+    public function verifierDureeSequence($dureeSequence) {
+        if (empty($dureeSequence)) {
+                return null;
+        } else if (filter_var($dureeSequence, FILTER_VALIDATE_FLOAT) !== false && $dureeSequence <= 0) {
+            return "Ce champ attend un nombre positif.";
+        }
+        return null;
+    }
+
+
 
     
 }
