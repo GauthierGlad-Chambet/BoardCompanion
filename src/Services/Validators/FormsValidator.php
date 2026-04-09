@@ -11,6 +11,8 @@ class FormsValidator {
     public function validerChamp($champ) {
             if (empty($champ)) {
                 return "Ce champ est obligatoire.";
+            } else if (strlen($champ) > 50) {
+                return "Ce champ ne peut excéder 50 caractères.";
             }
             return null;
         }
@@ -21,7 +23,9 @@ class FormsValidator {
                 return "Ce champ est obligatoire.";
         } else if (!preg_match('/^\d{3,7}$/', $numEp)) {
             return "Ce champ doit correpondre au format 'NumSaisonNumEpisode'.";
-        }
+        } else if (strlen($numEp) > 10) {
+                return "Ce champ ne peut excéder 10 caractères.";
+            }
         return null;
     }
 
@@ -103,7 +107,7 @@ class FormsValidator {
         // application/pdf est le type MIME officiel pour les PDF
         if ($mimeType !== 'application/pdf' || strtolower($extension) !== 'pdf') {
             return "Un script au format .pdf est obligatoire.";
-        }
+        } 
         return null;
     }
 
@@ -159,7 +163,4 @@ class FormsValidator {
         return null;
     }
 
-
-
-    
 }

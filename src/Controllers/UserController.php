@@ -52,7 +52,9 @@ class UserController extends MotherController
                 // S'il y a des erreurs, on les met en session et on redirige
                 if (!empty($errors)) {
                     $_SESSION['error'] = $errors;
-                    $data['pseudo'] = $_POST['pseudo'];
+                    if (!isset($_SESSION['error']['pseudo'])) {
+                        $data['pseudo'] = $_POST['pseudo'];
+                    }
                     if (!isset($_SESSION['error']['emailExists'])) {
                         $data['email'] = $_POST['email'];
                     }

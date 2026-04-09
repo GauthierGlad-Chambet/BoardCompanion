@@ -10,7 +10,7 @@ class UserValidator {
     public function validerEmail($email) {
             if (empty($email)) {
                 return "Le champ 'Email' est obligatoire.";
-            } else if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            } else if (!filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($email) > 50) {
                 return "Adresse mail invalide.";
             }
             return null;
@@ -20,8 +20,8 @@ class UserValidator {
     public function emailExists($email) {
         if (empty($email)) {
             return "Le champ 'Email' est obligatoire.";
-        } else if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            return "Adresse mail invalide.";
+        } else if (!filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($email) > 50) {
+            return "Adresse email invalide.";
         } else {
             $userModel = new UserModel();
             if ($userModel->findByMail($email)) {
@@ -39,10 +39,12 @@ class UserValidator {
         return null;
     }
 
-    // Vérifie si le champs pseudo n'est pas vide
+    // Vérifie si le champs pseudo n'est pas vide et s'il fait 16 caractères ou moins
     public function validerPseudo($pseudo) {
         if (empty($pseudo)) {
             return "Le champ 'Pseudo' est obligatoire.";
+        } else if (strlen($pseudo) > 16) {
+            return "La taille du pseudo doit être inférieure à 16 caractères.";
         }
         return null;
     }
@@ -79,6 +81,8 @@ class UserValidator {
     public function regexMdp($newPassword) {
         if (!preg_match("/(?=\S{8,})(?=\S*[A-Z])(?=\S*[\d])(?=\S*[\W])\S/", $newPassword)) {
             return "Le mot de passe doit comporter au moins 8 caractères dont une majuscule et un caractère spécial.";
+        } else if (strlen($newPassword) > 255) {
+            return "Le mot de passe ne peut pas excéder 255 caractères.";
         }
         return null;
     }
