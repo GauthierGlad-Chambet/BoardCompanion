@@ -16,33 +16,33 @@
     <meta name="”theme-color”" content="#7CEE00" />
     <!-- Indique le thème de couleur du site, qui apparait sur les navigateurs compatibles-->
     <title>
-      BoardCompanion
+      <?= $strTitle ?>
     </title>
     <meta
       name="description"
-      content="#########insérer_description_max_160_caractères##########"
+      content="<?= $strMetaDesc ?>"
     />
 
     <!-- Pour afficher un aperçu personnalisé quand partage le lien du site sur les plateformes comme Messenger ou Whatsapp -->
     <meta
       property="og:title"
-      content="BoardCompanion"
+      content="<?= $strTitle ?>"
     />
-    <meta property="og:description" content="Plateforme de gestion de projets pour Storyboarders" />
+    <meta property="og:description" content="<?= $strMetaDesc ?>" />
     <meta
       property="og:image"
-      content="#########insérer_image_format rectangle_de_préférence##########"
+      content="https://www.boardcompanion.fr/Views/assets/icons/Boardy/boardy-pen.png"
     />
     <meta
       property="og:url"
-      content="#########insérer_url_page_accueil##########"
+      content="https://www.boardcompanion.fr"
     />
     <meta property="og:type" content="website" />
 
     <link
       rel="icon"
       type="image/png"
-      href="Views/assets/icons/favicon-board-companion.png"
+      href="https://www.boardcompanion.fr/Views/assets/icons/favicon-board-companion.png"
     />
 
     <!-- Appel de la police Julius Sans One -->

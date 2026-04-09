@@ -223,7 +223,7 @@ hr {
 .logo p {
   display: flex;
   justify-content: center;
-  /* width: 100px; */
+  text-align: center;
 }
 
 .text-primary-color {
@@ -1235,6 +1235,7 @@ height: calc(100dvh - 60px);
 
   .logo p {
     justify-content: flex-end;
+    align-self: end;
   }
   .boardy {
     position: relative;

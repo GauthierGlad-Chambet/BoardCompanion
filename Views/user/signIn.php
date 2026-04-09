@@ -2,7 +2,7 @@
     <div class="logo-signIn">
         <img src="/BoardCompanion/Views/assets/icons/Boardy/boardy.png" alt="Logo de Board Companion">
         <h1>Board Companion</h1>
-        <p class="text-primary-color">Ton assistant boarder personnel</p>
+        <p class="text-primary-color"><?= $msgBoardy ?></p>
     </div>
     <div class="container-signIn">
         <div class="login-onglets">

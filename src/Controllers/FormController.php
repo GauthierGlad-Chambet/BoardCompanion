@@ -25,6 +25,14 @@ class FormController extends MotherController {
     }
 
     public function newProject() {
+
+        // Variables du head
+        $this->_arrData['strTitle']        = "Nouveau projet | BoardCompanion";
+        $this->_arrData['strMetaDesc']     = "Créez un nouveau projet de storyboard sur BoardCompanion : renseignez les détails, uploadez votre script et planifiez votre production.";
+        
+        // Message de la mascotte
+        $this->_arrData['msgBoardy']     = "Prêt à embarquer sur un nouveau board ?";
+
         //Check si l'utilisateur est connecté, sinon renvoie à la page login
         if (empty($_SESSION)) {
             header("Location: /BoardCompanion/connexion");
@@ -202,6 +210,13 @@ class FormController extends MotherController {
     // Affichage du formulaire d'analyse détaillée, en passant le texte extrait et les en-têtes de scènes à la vue
     public function detailedAnalysis() {
 
+        // Variables du head
+        $this->_arrData['strTitle']        = "Analyse des séquences | BoardCompanion";
+        $this->_arrData['strMetaDesc']     = "Analysez votre projet en détail : statistiques par séquence, estimation des durées et répartition du travail pour optimiser votre storyboard.";
+        
+        // Message de la mascotte
+        $this->_arrData['msgBoardy']     = "Regardons ça de plus près !";
+
         //Check si l'utilisateur est connecté, sinon renvoie à la page login
         if (empty($_SESSION)) {
             header("Location: /BoardCompanion/connexion");
@@ -368,6 +383,14 @@ class FormController extends MotherController {
     }
 
     public function updateProject() {
+
+        // Variables du head
+        $this->_arrData['strTitle']        = "Modification du projet | BoardCompanion";
+        $this->_arrData['strMetaDesc']     = "Modifiez les informations de votre projet : dates, studio, nombre de pages, cleaning et autres paramètres de production.";
+        
+        // Message de la mascotte
+        $this->_arrData['msgBoardy']     = "Les plans changent, on s'adapte !";
+
         //Check si l'utilisateur est connecté, sinon renvoie à la page login
         if (empty($_SESSION)) {
             header("Location: /BoardCompanion/connexion");
@@ -516,6 +539,13 @@ class FormController extends MotherController {
     }
 
     public function updateDetailedAnalysis() {
+
+        // Variables du head
+        $this->_arrData['strTitle']        = "Modification de l'analyse des séquences | BoardCompanion";
+        $this->_arrData['strMetaDesc']     = "Ajustez l'analyse de votre projet : modifiez les types de séquences et la répartition du travail.";
+        
+        // Message de la mascotte
+        $this->_arrData['msgBoardy']     = "On affine l'analyse ?";
         
         //Check si l'utilisateur est connecté, sinon renvoie à la page login
         if (empty($_SESSION)) {

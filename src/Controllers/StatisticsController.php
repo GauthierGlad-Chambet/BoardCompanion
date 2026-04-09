@@ -29,6 +29,13 @@ class StatisticsController extends MotherController
     }
 
     public function dashboard() {
+
+        // Variables du head
+        $this->_arrData['strTitle']        = "Tableau de bord | BoardCompanion";
+        $this->_arrData['strMetaDesc']     = "Visualisez tous vos projets de storyboard : dates, pages assignées, durées estimées, rythme recommandé et appréciations en un coup d'œil.";
+        
+        // Message de la mascotte
+        $this->_arrData['msgBoardy']     = "Tous tes projets en un clin d'oeil !";
     
         //Check si l'utilisateur est connecté, sinon renvoie à la page login
         if (empty($_SESSION)) {
@@ -55,6 +62,13 @@ class StatisticsController extends MotherController
     }
 
     public function details() {
+
+        // Variables du head
+        $this->_arrData['strTitle']        = "Projet | BoardCompanion";
+        $this->_arrData['strMetaDesc']     = "Consultez les détails de votre projet : séquences, durées estimées par type, statistiques complètes et progression du storyboard.";
+        
+        // Message de la mascotte
+        $this->_arrData['msgBoardy']     = "Tous les détails de ce board, juste ici !";
         
         //Check si l'utilisateur est connecté, sinon renvoie à la page login
         if (empty($_SESSION)) {
@@ -144,6 +158,14 @@ class StatisticsController extends MotherController
     }
 
     public function finalReport() {
+
+        // Variables du head
+        $this->_arrData['strTitle']        = "Bilan du projet | BoardCompanion";
+        $this->_arrData['strMetaDesc']     = "Complétez le bilan final de votre projet : durée réelle, nombre de plans, appréciation globale pour enrichir vos futures estimations.";
+        
+        // Message de la mascotte
+        $this->_arrData['msgBoardy']     = "C'est fini ? Raconte-moi tout !";
+
         //Check si l'utilisateur est connecté, sinon renvoie à la page login
         if (empty($_SESSION)) {
             header("Location: /BoardCompanion/connexion");
@@ -360,6 +382,14 @@ class StatisticsController extends MotherController
     }
 
     public function updateFinalReport() {
+
+        // Variables du head
+        $this->_arrData['strTitle']        = "Modification du bilan du projet | BoardCompanion";
+        $this->_arrData['strMetaDesc']     = "Corrigez votre bilan final : durée réelle, nombre de plans définitif, appréciation et commentaires sur le projet terminé.";
+        
+        // Message de la mascotte
+        $this->_arrData['msgBoardy']     = "Une petite correction sur le bilan ?";
+
          //Check si l'utilisateur est connecté, sinon renvoie à la page login
         if (empty($_SESSION)) {
             header("Location: /BoardCompanion/connexion");

@@ -23,6 +23,14 @@ class UserController extends MotherController
 
     // Show signUp/signIn page
     public function login() {
+
+        // Variables du head
+        $this->_arrData['strTitle']        = "Inscription/Connexion | BoardCompanion";
+        $this->_arrData['strMetaDesc']     = "Connectez-vous à BoardCompanion pour accéder à vos projets de storyboard, statistiques et outils de planification de production.";
+        
+        // Message de la mascotte
+        $this->_arrData['msgBoardy']     = "Ton assistant boarder personnel";
+
         $data = ['pseudo' => '',
                  'email' => ''];
         //Si le $_POST n'est pas vide
@@ -161,6 +169,14 @@ class UserController extends MotherController
     }
 
     public function showAccount() {
+
+        // Variables du head
+        $this->_arrData['strTitle']        = "Compte utilisateur | BoardCompanion";
+        $this->_arrData['strMetaDesc']     = "Gérez votre compte BoardCompanion : modifier vos informations personnelles, vitesse de travail par type de séquence et préférences.";
+        
+        // Message de la mascotte
+        $this->_arrData['msgBoardy']     = "Tes infos, tes stats, ton espace !";
+
         //Check si l'utilisateur est connecté, sinon renvoie à la page login
         if (empty($_SESSION)) {
             header("Location: index.php?controller=user&action=login");
