@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : jeu. 09 avr. 2026 à 13:05
+-- Généré le : mar. 14 avr. 2026 à 11:09
 -- Version du serveur : 9.1.0
--- Version de PHP : 8.1.31
+-- Version de PHP : 8.3.14
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -34,7 +34,17 @@ CREATE TABLE IF NOT EXISTS `appreciation` (
   `id` int NOT NULL AUTO_INCREMENT,
   `label` enum('smiley-sad.svg','smiley-unhappy.svg','smiley-smile.svg','smiley-happy.svg') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Déchargement des données de la table `appreciation`
+--
+
+INSERT INTO `appreciation` (`id`, `label`) VALUES
+(1, 'smiley-happy.svg'),
+(2, 'smiley-smile.svg'),
+(3, 'smiley-unhappy.svg'),
+(4, 'smiley-sad.svg');
 
 -- --------------------------------------------------------
 
@@ -55,7 +65,7 @@ CREATE TABLE IF NOT EXISTS `final_report` (
   UNIQUE KEY `fk_project` (`fk_project`),
   KEY `fk_final_appreciation` (`fk_appreciation`),
   KEY `fk_final_project` (`fk_project`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -68,7 +78,7 @@ CREATE TABLE IF NOT EXISTS `project` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `studio` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `episode_nb` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `episode_nb` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `episode_title` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `nb_predec` int NOT NULL,
   `is_alone` tinyint(1) NOT NULL,
@@ -87,7 +97,7 @@ CREATE TABLE IF NOT EXISTS `project` (
   `fk_user` int NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_user` (`fk_user`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -110,7 +120,7 @@ CREATE TABLE IF NOT EXISTS `sequence` (
   PRIMARY KEY (`id`),
   KEY `fk_appreciation_type` (`fk_type`),
   KEY `fk_appreciation_project` (`fk_project`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -123,7 +133,17 @@ CREATE TABLE IF NOT EXISTS `type` (
   `id` int NOT NULL AUTO_INCREMENT,
   `label` enum('comédie','action','mixte','indéterminé') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Déchargement des données de la table `type`
+--
+
+INSERT INTO `type` (`id`, `label`) VALUES
+(1, 'comédie'),
+(2, 'action'),
+(3, 'mixte'),
+(4, 'indéterminé');
 
 -- --------------------------------------------------------
 
@@ -134,7 +154,7 @@ CREATE TABLE IF NOT EXISTS `type` (
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE IF NOT EXISTS `user` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `pseudo` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `pseudo` varchar(50) NOT NULL,
   `email` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `pwd` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `avg_pages_per_day` float DEFAULT '1',
@@ -144,7 +164,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`),
   KEY `fk_user__appreciation` (`fk_appreciation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -161,7 +181,7 @@ CREATE TABLE IF NOT EXISTS `user_type_statistics` (
   PRIMARY KEY (`id`),
   KEY `fk_user_statistics` (`fk_user`),
   KEY `fk_type_statistics` (`fk_type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Contraintes pour les tables déchargées
