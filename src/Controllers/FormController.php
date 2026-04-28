@@ -870,7 +870,7 @@ class FormController extends MotherController {
 
 
     // Récupère les séquences assignées depuis la bdd, compte le nombre total de lignes et
-    // calcule combien ça représente de pages en supposant qu'une page contient 33 lignes en moyenne
+    // calcule combien ça représente de pages en supposant qu'une page contient 35 lignes en moyenne
     public function countAssignedPages(int $projectId) {
             $sequenceModel = new SequenceModel();
             $assignedSequences = $sequenceModel->findAllSequencesByProjectId($projectId);
@@ -883,7 +883,12 @@ class FormController extends MotherController {
                 $totalLines += $sequence->getLines_count();
                 }
             }
-            $totalAssignedPages = round(($totalLines / 33),1); // En moyenne 33 lignes par page, arrondi à 1 décimale pour plus de lisibilité
+            $totalAssignedPages = round(($totalLines / 35),1); // En moyenne 35 lignes par page, arrondi à 1 décimale pour plus de lisibilité
+            
+            // Pour éviter les erreurs dûes à l'aproximation du nombre de lignes par page, si le calcul dépasse le total réel, on plafonne au nombre de pages total
+            if ($totalAssignedPages > $nbTotalPages) {
+                return $nbTotalPages;
+            }
 
             return $totalAssignedPages;   
     }
@@ -940,7 +945,7 @@ class FormController extends MotherController {
             
             $nb_lines = $sequence->getLines_count();
     
-            $nbPagesPerSequence = ceil($nb_lines / 33); // En moyenne 33 lignes par page
+            $nbPagesPerSequence = ceil($nb_lines / 35); // En moyenne 35 lignes par page
             // Evite bug de division par 0
             // if($userStatByTypeData['avg_pages_per_day'] > 0) {
                 $durationInDays = $nbPagesPerSequence / $userStatByTypeData['avg_pages_per_day'];

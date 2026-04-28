@@ -17,13 +17,13 @@ class UserValidator {
         }
 
     // Vérifie si l'email existe déjà en bdd
-    public function emailExists($email) {
+    public function emailExists($email, UserModel $userModel = null) {
         if (empty($email)) {
             return "Le champ 'Email' est obligatoire.";
         } else if (!filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($email) > 50) {
             return "Adresse email invalide.";
         } else {
-            $userModel = new UserModel();
+            $userModel = $userModel ?? new UserModel();
             if ($userModel->findByMail($email)) {
                 return "Ce compte existe déjà.";
             }
