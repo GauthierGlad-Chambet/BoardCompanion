@@ -9,7 +9,7 @@ $dotenv->load();
 
 // Détermine le controleur à appeler et son action en fonction de l'url
 
-if(empty($_SESSION)){
+if (empty($_SESSION)) {
     $controller = $_GET["controller"] ?? "user";
     $action = $_GET["action"] ?? "login";
 } else {

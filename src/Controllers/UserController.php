@@ -12,8 +12,9 @@ class UserController extends MotherController
 {
     private UserValidator $validator;
 
-    function __construct() {
-    
+    function __construct()
+    {
+
         //Appelle ce qui est dans le constructeur de la class parente (s'il y en a un)
         // parent::__construct();
 
@@ -22,29 +23,32 @@ class UserController extends MotherController
     }
 
     // Show signUp/signIn page
-    public function login() {
+    public function login()
+    {
 
         // Variables du head
         $this->_arrData['strTitle']        = "Inscription/Connexion | BoardCompanion";
         $this->_arrData['strMetaDesc']     = "Connectez-vous à BoardCompanion pour accéder à vos projets de storyboard, statistiques et outils de planification de production.";
-        
+
         // Message de la mascotte
         $this->_arrData['msgBoardy']     = "Ton assistant boarder personnel";
 
-        $data = ['pseudo' => '',
-                 'email' => ''];
+        $data = [
+            'pseudo' => '',
+            'email' => ''
+        ];
         //Si le $_POST n'est pas vide
-        if(count($_POST) > 0){
+        if (count($_POST) > 0) {
 
             // si on a cliqué sur le bouton s'inscrire
-            if(isset($_POST['submit_signUp'])) {
+            if (isset($_POST['submit_signUp'])) {
 
                 // Récupération des données du formulaire
-                $pseudo                 = trim(filter_input(INPUT_POST,"pseudo", FILTER_SANITIZE_SPECIAL_CHARS)??''); //trim supprime les caractères invisibles comme les espaces avant et après le texte
-                $email                  = trim(filter_input(INPUT_POST,"email", FILTER_SANITIZE_EMAIL)??'');
-                $password               = $_POST['password']??'';
-                $passwordConfirmation   = $_POST['passwordConfirmation']??'';
-                $accepteCGU             = $_POST['accepteCGU']??'off';
+                $pseudo                 = trim(filter_input(INPUT_POST, "pseudo", FILTER_SANITIZE_SPECIAL_CHARS) ?? ''); //trim supprime les caractères invisibles comme les espaces avant et après le texte
+                $email                  = trim(filter_input(INPUT_POST, "email", FILTER_SANITIZE_EMAIL) ?? '');
+                $password               = $_POST['password'] ?? '';
+                $passwordConfirmation   = $_POST['passwordConfirmation'] ?? '';
+                $accepteCGU             = $_POST['accepteCGU'] ?? 'off';
 
                 // Validateurs des différents champs
                 // Array_filter permet de collecter uniquement les erreurs non nulles
@@ -54,7 +58,7 @@ class UserController extends MotherController
                     'incorrectPassword' => $this->validator->validerMdp($password),
                     'matching'          => $this->validator->matcherMdp($password, $passwordConfirmation),
                     'regex'             => $this->validator->regexMdp($password),
-                    'accepteCGU'        => $this->validator->accepterCGU($accepteCGU)      
+                    'accepteCGU'        => $this->validator->accepterCGU($accepteCGU)
                 ]);
 
                 // S'il y a des erreurs, on les met en session et on redirige
@@ -70,29 +74,27 @@ class UserController extends MotherController
 
                     // Création de l'objet User et assignation des valeurs
                     $user = new User();
-                    $user->setEmail($email);    
+                    $user->setEmail($email);
                     $user->setPseudo($pseudo);
-                    
+
                     // Hash the password before storing it
                     $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
                     $user->setPwd($hashedPassword);
-                
-    
+
+
                     // Enregistrement de l'utilisateur dans la base de données
                     try {
                         $userModel = new UserModel();
                         $userModel->addUser($user);
-    
+
                         $userStatByTypeModel = new UserStatByTypeModel();
                         for ($i = 1; $i <= 3; $i++) {
                             $userStatByTypeModel->addUserStatByType($userModel->findByMail($user->getEmail())['id'], $i, 1);
                         }
-    
+
                         $_SESSION['success']['utilisateurAjoute'] = "Utilisateur ajouté avec succès !";
                         header("Location: /BoardCompanion/connexion");
                         exit;
-    
-                    
                     } catch (\Exception $e) {
                         echo "Erreur lors de l'ajout de l'utilisateur : " . htmlspecialchars($e->getMessage());
                         exit;
@@ -100,14 +102,14 @@ class UserController extends MotherController
                 }
 
 
-                    
 
-            // Si on a cliqué sur le bouton se connecter
+
+                // Si on a cliqué sur le bouton se connecter
             } else if (isset($_POST['submit_signIn'])) {
 
                 // Récupération des données du formulaire
-                $email    = trim(filter_input(INPUT_POST,"email", FILTER_SANITIZE_EMAIL)??'');
-                $password = $_POST['password']??'';
+                $email    = trim(filter_input(INPUT_POST, "email", FILTER_SANITIZE_EMAIL) ?? '');
+                $password = $_POST['password'] ?? '';
 
                 // Récupération de l'utilisateur par email
                 $userModel = new UserModel();
@@ -152,11 +154,12 @@ class UserController extends MotherController
                 exit;
             }
         }
-        
+
         $this->_display("user/signIn", false, $data);
     }
 
-    public function logout() {
+    public function logout()
+    {
         //Check si l'utilisateur est connecté, sinon renvoie à la page login
         if (empty($_SESSION)) {
             header("Location: /BoardCompanion/connexion");
@@ -168,12 +171,13 @@ class UserController extends MotherController
         exit;
     }
 
-    public function showAccount() {
+    public function showAccount()
+    {
 
         // Variables du head
         $this->_arrData['strTitle']        = "Compte utilisateur | BoardCompanion";
         $this->_arrData['strMetaDesc']     = "Gérez votre compte BoardCompanion : modifier vos informations personnelles, vitesse de travail par type de séquence et préférences.";
-        
+
         // Message de la mascotte
         $this->_arrData['msgBoardy']     = "Tes infos, tes stats, ton espace !";
 
@@ -200,75 +204,75 @@ class UserController extends MotherController
         $this->_display("user/account");
     }
 
-    public function updateAccount() {
+    public function updateAccount()
+    {
 
-        $pseudo = trim(filter_input(INPUT_POST,"pseudo", FILTER_SANITIZE_SPECIAL_CHARS)??'');
-        $oldPassword = $_POST['oldPassword']??'';
+        $pseudo = trim(filter_input(INPUT_POST, "pseudo", FILTER_SANITIZE_SPECIAL_CHARS) ?? '');
+        $oldPassword = $_POST['oldPassword'] ?? '';
         $newPassword = $_POST['newPassword'];
-        $newPasswordConfirmation = $_POST['newPasswordConfirmation']??'';
+        $newPasswordConfirmation = $_POST['newPasswordConfirmation'] ?? '';
 
         $userModel = new UserModel();
         $passwordHash = $userModel->getPasswordHash($_SESSION['user']['email']);
 
         // Condition pour savoir si on modifie juste le pseudo ou tout le compte
-        if(!$newPassword) {
+        if (!$newPassword) {
             // Array_filter permet de collecter uniquement les erreurs non nulles
             // Validateurs des différents champs
-                $errors = array_filter([
-                    'pseudo'            => $this->validator->validerPseudo($pseudo),
-                    'incorrectPassword' => $this->validator->verifierMdp($oldPassword, $passwordHash)
-                ]);
+            $errors = array_filter([
+                'pseudo'            => $this->validator->validerPseudo($pseudo),
+                'incorrectPassword' => $this->validator->verifierMdp($oldPassword, $passwordHash)
+            ]);
 
-                // S'il y a des erreurs, on les met en session et on redirige
-                if (!empty($errors)) {
-                    $_SESSION['error'] = $errors;
-                    header("Location: /BoardCompanion/compte");
-                    exit;
-                }
-
-                $user = new User();
-                $user->setId($_SESSION['user']['id']);
-                $user->setPseudo($pseudo);
-
-                $userModel->updateAccount($user);
-
-                $_SESSION['success']['CompteMAJ'] = "Compte mis à jour avec succès !";
-                header("Location: /BoardCompanion/compte");
-                exit;
-
-
-            } else {
-                $errors = array_filter([
-                    'pseudo'            => $this->validator->validerPseudo($pseudo),
-                    'incorrectPassword' => $this->validator->verifierMdp($oldPassword, $passwordHash),
-                    'differenceMdp'     => $this->validator->differenceMdp($oldPassword, $newPassword),
-                    'regex'             => $this->validator->regexMdp($newPassword),
-                    'matching'          => $this->validator->matcherMdp($newPassword, $newPasswordConfirmation),
-                ]);
-
-
-                // S'il y a des erreurs, on les met en session et on redirige
-                if (!empty($errors)) {
-                    $_SESSION['error'] = $errors;
-                    header("Location: /BoardCompanion/compte");
-                    exit;
-                }
-        
-                $user = new User();
-                $user->setId($_SESSION['user']['id']);
-                $user->setPseudo($pseudo);
-                $hashedPassword = password_hash($newPassword, PASSWORD_BCRYPT);
-                $user->setPwd($hashedPassword);
-        
-                $userModel->updateAccount($user);
-        
-                $_SESSION['success']['CompteMAJ'] = "Compte mis à jour avec succès !";
+            // S'il y a des erreurs, on les met en session et on redirige
+            if (!empty($errors)) {
+                $_SESSION['error'] = $errors;
                 header("Location: /BoardCompanion/compte");
                 exit;
             }
+
+            $user = new User();
+            $user->setId($_SESSION['user']['id']);
+            $user->setPseudo($pseudo);
+
+            $userModel->updateAccount($user);
+
+            $_SESSION['success']['CompteMAJ'] = "Compte mis à jour avec succès !";
+            header("Location: /BoardCompanion/compte");
+            exit;
+        } else {
+            $errors = array_filter([
+                'pseudo'            => $this->validator->validerPseudo($pseudo),
+                'incorrectPassword' => $this->validator->verifierMdp($oldPassword, $passwordHash),
+                'differenceMdp'     => $this->validator->differenceMdp($oldPassword, $newPassword),
+                'regex'             => $this->validator->regexMdp($newPassword),
+                'matching'          => $this->validator->matcherMdp($newPassword, $newPasswordConfirmation),
+            ]);
+
+
+            // S'il y a des erreurs, on les met en session et on redirige
+            if (!empty($errors)) {
+                $_SESSION['error'] = $errors;
+                header("Location: /BoardCompanion/compte");
+                exit;
+            }
+
+            $user = new User();
+            $user->setId($_SESSION['user']['id']);
+            $user->setPseudo($pseudo);
+            $hashedPassword = password_hash($newPassword, PASSWORD_BCRYPT);
+            $user->setPwd($hashedPassword);
+
+            $userModel->updateAccount($user);
+
+            $_SESSION['success']['CompteMAJ'] = "Compte mis à jour avec succès !";
+            header("Location: /BoardCompanion/compte");
+            exit;
+        }
     }
 
-    public function deleteAccount() {
+    public function deleteAccount()
+    {
 
         //Check si l'utilisateur est connecté, sinon renvoie à la page login
         if (empty($_SESSION)) {
@@ -276,7 +280,7 @@ class UserController extends MotherController
             exit;
         }
 
-        $confirmPassword = $_POST['confirmPassword']??'';
+        $confirmPassword = $_POST['confirmPassword'] ?? '';
 
         $userModel = new UserModel();
         $passwordHash = $userModel->getPasswordHash($_SESSION['user']['email']);
@@ -291,10 +295,10 @@ class UserController extends MotherController
             exit;
         }
 
-            
+
         $userModel = new UserModel();
         $userModel->deleteUserById($_SESSION['user']['id']);
-        
+
         session_destroy();
         $_SESSION['success']['CompteSupprime'] = "Compte supprimé avec succès !";
         header("Location: /BoardCompanion/connexion");

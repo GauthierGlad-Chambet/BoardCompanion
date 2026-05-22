@@ -10,34 +10,40 @@
                     <input <?php if (!empty($_SESSION['error']['pseudo'])) { ?> class="inputError" <?php } ?> id="pseudo" type="text" name="pseudo" value="<?= $user->getPseudo() ?>" required>
                     <?php if (!empty($_SESSION['error']['pseudo'])) { ?>
                         <p class="messageError"><?= $_SESSION['error']['pseudo'] ?></p>
-                    <?php } unset($_SESSION['error']['pseudo']); ?>
+                    <?php }
+                    unset($_SESSION['error']['pseudo']); ?>
                 </div>
                 <div>
                     <label for="oldPassword">Mot de passe<span class="champObligatoire"> *</span> :</label>
                     <input <?php if (!empty($_SESSION['error']['incorrectPassword'])) { ?> class="inputError" <?php } ?> id="oldPassword" type="password" name="oldPassword" placeholder="**********" required>
                     <?php if (!empty($_SESSION['error']['incorrectPassword'])) { ?>
-                        <p class="messageError"><?=  $_SESSION['error']['incorrectPassword'] ?></p>
-                    <?php } unset($_SESSION['error']['incorrectPassword']); ?>
+                        <p class="messageError"><?= $_SESSION['error']['incorrectPassword'] ?></p>
+                    <?php }
+                    unset($_SESSION['error']['incorrectPassword']); ?>
                 </div>
                 <h3>Modifier le mot de passe :</h3>
                 <div>
                     <label for="newPassword">Nouveau mot de passe<span class="champObligatoire"> *</span> :</label>
-                    <input <?php if (!empty($_SESSION['error']['regex']) ||
-                                     !empty($_SESSION['error']['differenceMdp'])
-                                    ) { ?> class="inputError" <?php } ?> id="newPassword" type="password" name="newPassword">
+                    <input <?php if (
+                                !empty($_SESSION['error']['regex']) ||
+                                !empty($_SESSION['error']['differenceMdp'])
+                            ) { ?> class="inputError" <?php } ?> id="newPassword" type="password" name="newPassword">
                     <?php if (!empty($_SESSION['error']['regex'])) { ?>
-                    <p class="messageError"><?=  $_SESSION['error']['regex'] ?></p>
-                    <?php } unset($_SESSION['error']['regex']); ?>
+                        <p class="messageError"><?= $_SESSION['error']['regex'] ?></p>
+                    <?php }
+                    unset($_SESSION['error']['regex']); ?>
                     <?php if (!empty($_SESSION['error']['differenceMdp'])) { ?>
-                        <p class="messageError"><?=  $_SESSION['error']['differenceMdp'] ?></p>
-                    <?php } unset($_SESSION['error']['differenceMdp']); ?>
+                        <p class="messageError"><?= $_SESSION['error']['differenceMdp'] ?></p>
+                    <?php }
+                    unset($_SESSION['error']['differenceMdp']); ?>
                 </div>
                 <div>
                     <label for="newPasswordConfirmation">Confirmez le nouveau mot de passe<span class="champObligatoire"> *</span> :</label>
                     <input <?php if (!empty($_SESSION['error']['matching'])) { ?> class="inputError" <?php } ?> id="newPasswordConfirmation" type="password" name="newPasswordConfirmation">
                     <?php if (!empty($_SESSION['error']['matching'])) { ?>
-                        <p class="messageError"><?=  $_SESSION['error']['matching'] ?></p>
-                    <?php } unset($_SESSION['error']['matching']); ?>
+                        <p class="messageError"><?= $_SESSION['error']['matching'] ?></p>
+                    <?php }
+                    unset($_SESSION['error']['matching']); ?>
                 </div>
                 <div class="button-lot">
                     <button class="button" id="button-modify-account" type="submit" name="modifier">
@@ -109,5 +115,6 @@
     </div>
     <?php if (!empty($_SESSION['success'])) { ?>
         <p class="messageSuccess"><?= $_SESSION['success']['CompteMAJ'] ?></p>
-    <?php } unset($_SESSION['success']['CompteMAJ']); ?>
+    <?php }
+    unset($_SESSION['success']['CompteMAJ']); ?>
 </main>

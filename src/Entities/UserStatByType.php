@@ -6,10 +6,11 @@ use GauthierGladchambet\BoardCompanion\Entities\MotherEntity;
 
 class UserStatByType extends MotherEntity
 {
-    function __construct() {
+    function __construct()
+    {
         $this->_strPrefix = "_userStatByType";
     }
-    
+
     private string $id;
     private float $avgPagesDays = 1;
     private int $fk_type;

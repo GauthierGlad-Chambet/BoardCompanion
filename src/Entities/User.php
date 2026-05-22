@@ -6,17 +6,18 @@ use GauthierGladchambet\BoardCompanion\Entities\MotherEntity;
 
 class User extends MotherEntity
 {
-    function __construct() {
+    function __construct()
+    {
         $this->_strPrefix = "_user";
     }
 
     private int $id;
     private string $pseudo;
     private string $email;
-    private string $pwd ='';
+    private string $pwd = '';
     private float $avg_pages_per_day = 1;
     private float $avg_cleaning_duration = 0.2; // en jours, par page assignée
-    private int $avg_shots_per_page = 0; 
+    private int $avg_shots_per_page = 0;
     private float $fk_appreciation = 2;
     private string $appreciation_label = "";
 

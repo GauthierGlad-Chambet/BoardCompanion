@@ -62,18 +62,22 @@ BTN_SUPPR.forEach((btn) => {
 });
 
 // Barre de chargement
-FORM_NEW_PROJECT.addEventListener("submit", () => {
-  // Vérifier si le formulaire est valide
-  //   if (this.checkValidity()) {
-  LOADER.classList.remove("hidden");
-  PAGE_CONTAINER.setAttribute("inert", "");
-  PAGE_CONTAINER.style.filter = "opacity(0.4)";
-  FOOTER.style.filter = "opacity(0.4)";
-  FOOTER.setAttribute("inert", "");
-  HEADER.style.filter = "opacity(0.4)";
-  HEADER.setAttribute("inert", "");
-  //   }
-});
+try {
+  FORM_NEW_PROJECT.addEventListener("submit", () => {
+    // Vérifier si le formulaire est valide
+    //   if (this.checkValidity()) {
+    LOADER.classList.remove("hidden");
+    PAGE_CONTAINER.setAttribute("inert", "");
+    PAGE_CONTAINER.style.filter = "opacity(0.4)";
+    FOOTER.style.filter = "opacity(0.4)";
+    FOOTER.setAttribute("inert", "");
+    HEADER.style.filter = "opacity(0.4)";
+    HEADER.setAttribute("inert", "");
+    //   }
+  });
+} catch (warn) {
+  console.warn("Une erreur s'est produite dans form :", warn);
+}
 
 // Ferme la popup de confirmation de suppresion
 BTN_ANNULER_SUPPR.forEach((btn) => {

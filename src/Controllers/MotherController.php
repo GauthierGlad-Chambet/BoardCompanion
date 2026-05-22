@@ -23,7 +23,7 @@ abstract class MotherController
         foreach ($data as $key => $value) {
             $$key = $value;
         }
-        
+
         // Chemins relatifs depuis le dossier Controllers vers le dossier Views
         if ($header) {
             require __DIR__ . '/../../Views/partials/header.php';

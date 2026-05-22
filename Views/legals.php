@@ -2,7 +2,7 @@
     <h1 class="h1-legals">Mentions legales</h1>
     <a class="button" href="/BoardCompanion/home">Retour au site</a>
     <div class="container container-legals">
- 
+
         <!-- ================================================ -->
         <h2>1. Informations légales</h2>
         <p>
@@ -16,15 +16,15 @@
             <strong>Hebergeur :</strong><br>
             &nbsp;&nbsp;&nbsp;&nbsp;Nom : <br>
             &nbsp;&nbsp;&nbsp;&nbsp;Adresse : <br>
-            &nbsp;&nbsp;&nbsp;&nbsp;Contact : 
+            &nbsp;&nbsp;&nbsp;&nbsp;Contact :
         </p>
- 
+
         <!-- ================================================ -->
         <h2>2. Description du service</h2>
         <p>
             Board Companion est un outil d'assistance destiné aux storyboarders professionnels. Il permet à ses utilisateurs de créer un compte, de se connecter, et d'importer des fichiers de script ainsi que des fichiers de templates fournis par leur studio. L'utilisateur peut également saisir des informations relatives à ses projets (nom du studio, numéro d'épisode, titre d'épisode, détails de production, etc.). Le site génère ensuite des statistiques à partir de ces données pour aider l'utilisateur dans le suivi de son travail.
         </p>
- 
+
         <!-- ================================================ -->
         <h2>3. Conditions générales d'utilisation</h2>
         <p>
@@ -34,7 +34,7 @@
             <br><br>
             Board Companion se réserve le droit de suspendre ou de supprimer tout compte en cas de manquement aux présentes conditions. Le site peut être temporairement indisponible pour des raisons de maintenance ou de mise à jour, sans que cela n'engage la responsabilité de l'éditeur.
         </p>
- 
+
         <!-- ================================================ -->
         <h2>4. Propriété intellectuelle</h2>
         <p>
@@ -42,7 +42,7 @@
             <br><br>
             Les fichiers importés par les utilisateurs (scripts, templates) restent la propriété intellectuelle des studios ou des tiers qui les ont produits. Board Companion ne revendique aucun droit sur ces fichiers et ne les utilise qu'à des fins de traitement interne pour le compte de l'utilisateur.
         </p>
- 
+
         <!-- ================================================ -->
         <h2>5. Données personnelles et confidentialité</h2>
         <p>
@@ -62,7 +62,7 @@
         </ul>
         <p><strong>Conservation des données :</strong> les données sont conservées tant que le compte utilisateur est actif. L'utilisateur peut demander la suppression de son compte et de ses données associées à tout moment.</p>
         <p><strong>Partage des données :</strong> les données personnelles ne sont jamais vendues ni transmises à des tiers, sauf obligation légale.</p>
- 
+
         <!-- ================================================ -->
         <h2>6. Vos droits</h2>
         <p>
@@ -79,13 +79,13 @@
             Pour exercer ces droits, contactez-nous à l'adresse suivante : <a href="mailto:gauthier.glad-chambet@outlook.fr">gauthier.glad-chambet@outlook.fr</a><br>
             En cas de litige, vous pouvez introduire une réclamation auprès de la <a href="https://www.cnil.fr" target="_blank">CNIL</a>
         </p>
- 
+
         <!-- ================================================ -->
         <h2>7. Cookies</h2>
         <p>
             Board Companion utilise uniquement un cookie de session (PHPSESSID), strictement nécessaire au maintien de votre connexion. Ce cookie est temporaire et supprimé quelques minutes après la fermeture de votre navigateur. Aucun cookie de tracking, de publicité ou d'analyse tiers n'est utilisé.
         </p>
- 
+
         <!-- ================================================ -->
         <h2>8. Limitation de responsabilité</h2>
         <p>
@@ -93,7 +93,7 @@
             <br><br>
             Il appartient à l'utilisateur de s'assurer que les fichiers qu'il importe (scripts, templates) ne contiennent pas d'informations soumises à des restrictions de confidentialité qu'il ne serait pas autorisé à partager.
         </p>
- 
+
         <!-- ================================================ -->
         <h2>9. Droit applicable</h2>
         <p>
