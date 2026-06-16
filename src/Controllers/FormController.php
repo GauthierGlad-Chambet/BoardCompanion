@@ -876,6 +876,12 @@ class FormController extends MotherController {
     public function countAssignedPages(int $projectId) {
             $sequenceModel = new SequenceModel();
             $assignedSequences = $sequenceModel->findAllSequencesByProjectId($projectId);
+
+            $projectModel = new ProjectModel();
+            $projectData = $projectModel->getProjectById($projectId);
+            $nbTotalPages = (int) ($projectData['nb_total_pages'] ?? 0);
+
+
             $totalLines = 0;
             foreach ($assignedSequences as $seq) {
                 $sequence = New Sequence();

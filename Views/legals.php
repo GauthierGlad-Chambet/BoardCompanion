@@ -40,6 +40,8 @@
         <p>
             Le site Board Companion ainsi que son code source, son interface, ses icônes et ses éléments graphiques sont protégés par les lois en vigueur sur la propriété intellectuelle. Toute reproduction, représentation ou adaptation, même partielle, sans autorisation écrite préalable de l'éditeur est interdite.
             <br><br>
+            La mascotte « Boardy » ainsi que l'ensemble des illustrations associées sont la propriété exclusive de Corentin Becq, storyboarder, et sont utilisées sur le site avec son autorisation.
+            <br><br>
             Les fichiers importés par les utilisateurs (scripts, templates) restent la propriété intellectuelle des studios ou des tiers qui les ont produits. Board Companion ne revendique aucun droit sur ces fichiers et ne les utilise qu'à des fins de traitement interne pour le compte de l'utilisateur.
         </p>
 
