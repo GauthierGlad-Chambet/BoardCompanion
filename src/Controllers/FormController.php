@@ -99,7 +99,7 @@ class FormController extends MotherController {
                 //obtenir le nom original du fichier
                 $originalName = $_FILES['script']['name'];
 
-                //PATHINFO_EXTENSION collect the extension of the file
+                //PATHINFO_EXTENSION collecte l'extension du fichier
                 $extension = pathinfo($originalName, PATHINFO_EXTENSION);
 
                 //uniqid génère un numéro unique juste après 'script_', concaténé avec l'extension du fichier
@@ -696,7 +696,8 @@ class FormController extends MotherController {
         $this->_display("projectForm/updateDetailedAnalysisForm");
     }
 
-    // Nettoyage du texte extrait du PDF pour supprimer les en-têtes, pieds de page, autres éléments répétitifs, numéros en trop, caractères spéciaux, ...
+    // Nettoyage du texte extrait du PDF pour supprimer les en-têtes, pieds de page,
+    // autres éléments répétitifs, numéros en trop, caractères spéciaux, ...
     public function cleanPDF($text) {
         $lines = explode("\n", $text);
         
@@ -808,7 +809,8 @@ class FormController extends MotherController {
         return ($percent / 100) >= $threshold;
     }
 
-    // Extraction des séquences à partir du texte nettoyé, en se basant sur les mots-clés "INT.", "EXT.", "I/E" et en récupérant les 8 lignes suivantes
+    // Extraction des séquences à partir du texte nettoyé,
+    // en se basant sur les mots-clés "INT.", "EXT.", "I/E" et en récupérant les 8 lignes suivantes
     public function extractSequences($text) {
         $lines = explode("\n", $text);
         $extracts = [];
@@ -885,7 +887,8 @@ class FormController extends MotherController {
             }
             $totalAssignedPages = round(($totalLines / 35),1); // En moyenne 35 lignes par page, arrondi à 1 décimale pour plus de lisibilité
             
-            // Pour éviter les erreurs dûes à l'aproximation du nombre de lignes par page, si le calcul dépasse le total réel, on plafonne au nombre de pages total
+            // Pour éviter les erreurs dûes à l'aproximation du nombre de lignes par page, si le calcul dépasse le total réel,
+            // on plafonne au nombre de pages total
             if ($totalAssignedPages > $nbTotalPages) {
                 return $nbTotalPages;
             }
@@ -925,7 +928,8 @@ class FormController extends MotherController {
     }
 
 
-    // Fonction d'estimation du nombre de jours recommandés pour boarder le projet, en fonction du nombre de pages totales ou du nombre de pages assignées, du temps de cleaning estimé et de la durée du projet
+    // Fonction d'estimation du nombre de jours recommandés pour boarder le projet,
+    // en fonction du nombre de pages totales ou du nombre de pages assignées, du temps de cleaning estimé et de la durée du projet
     public function estimateRecommendedPagesPerDay(Project $project, bool $flagNbPages) {
         $interval = $project->getDuree();
         if($flagNbPages === true){
@@ -960,6 +964,7 @@ class FormController extends MotherController {
         }
     }
 
+    // Fonction d'estimation du temps moyen par page
     public function avgDurationEstimatedPerPage(Project $project) {
         $avgDurationEstimatedPerPage = ($project->getEstimated_total_duration()) / ($project->getNb_assigned_pages());
         return round($avgDurationEstimatedPerPage, 2);

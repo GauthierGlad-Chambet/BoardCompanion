@@ -159,7 +159,8 @@ class ProjectModel extends MotherModel {
     //Trouver tous les projets d'un utilisateur
     function getAllProjectsByUser(int $userId): array {
         $query = "
-            SELECT project.id, name, studio, episode_nb, episode_title, nb_predec, is_alone, is_cleaning, is_detailed, date_beginning, date_end, nb_total_pages, nb_assigned_pages, estimated_total_duration, recommended_pages_per_day, label as appreciation_label
+            SELECT project.id, name, studio, episode_nb, episode_title, nb_predec, is_alone, is_cleaning, is_detailed,date_beginning,
+                   date_end, nb_total_pages, nb_assigned_pages, estimated_total_duration, recommended_pages_per_day, label as appreciation_label
             FROM project
             LEFT JOIN final_report ON final_report.fk_project = project.id
             LEFT JOIN appreciation ON final_report.fk_appreciation = appreciation.id

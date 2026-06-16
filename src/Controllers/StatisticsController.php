@@ -65,7 +65,6 @@ class StatisticsController extends MotherController
 
     public function details()
     {
-
         // Variables du head
         $this->_arrData['strTitle']        = "Projet | BoardCompanion";
         $this->_arrData['strMetaDesc']     = "Consultez les détails de votre projet : séquences, durées estimées par type, statistiques complètes et progression du storyboard.";
@@ -83,7 +82,6 @@ class StatisticsController extends MotherController
             echo "ID du projet non spécifié.";
             exit;
         }
-
 
         // Récupération des attributs du projet
         $projectId = $_GET['project_id'];

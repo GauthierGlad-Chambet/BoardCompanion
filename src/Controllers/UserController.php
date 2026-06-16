@@ -77,7 +77,7 @@ class UserController extends MotherController
                     $user->setEmail($email);
                     $user->setPseudo($pseudo);
 
-                    // Hash the password before storing it
+                    // Hash le mot de passe avant de le stocker
                     $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
                     $user->setPwd($hashedPassword);
 
