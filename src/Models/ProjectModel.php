@@ -348,7 +348,7 @@ class ProjectModel extends MotherModel {
     }
 
     // Récupère tous les projets avec les informations de leur utilisateur
-    function findAllProjectsAllUsers(): array {
+    function findAllProjectsAllUsers() {
         $query = "
             SELECT project.id, project.name, project.studio, project.episode_nb, project.episode_title,
                    project.date_beginning, project.date_end, project.nb_total_pages, project.nb_assigned_pages,

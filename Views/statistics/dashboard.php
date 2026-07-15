@@ -1,6 +1,6 @@
 <main>
     <h1>Tableau de bord</h1>
-    <table>
+    <table id="dashboard-desktop">
         <thead>
             <td>Nom du projet</td>
             <td>Dates</td>

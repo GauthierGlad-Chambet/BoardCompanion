@@ -1,6 +1,6 @@
     <footer>
       <a href="/BoardCompanion/mentions-legales">Mentions légales</a>
-      <?php if ($_SESSION['user']['admin']) { ?> 
+      <?php if (!empty($_SESSION['user']['admin'])) { ?> 
       <a href="/BoardCompanion/panneau-administration">Panneau d'administration</a>
       <?php } ?>
     </footer>
