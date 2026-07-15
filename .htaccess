@@ -26,6 +26,7 @@ RewriteRule ^deconnexion$ index.php?controller=user&action=logout [L]
 RewriteRule ^compte$ index.php?controller=user&action=showAccount [L]
 RewriteRule ^modifier-compte$ index.php?controller=user&action=updateAccount [L]
 RewriteRule ^supprimer-compte$ index.php?controller=user&action=deleteAccount [L]
+RewriteRule ^panneau-administration$ index.php?controller=user&action=adminPanel [L]
 
 
 RewriteRule ^arborescence$ index.php?controller=tree&action=main [L]

@@ -347,5 +347,26 @@ class ProjectModel extends MotherModel {
         return $prepare->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    // Récupère tous les projets avec les informations de leur utilisateur
+    function findAllProjectsAllUsers(): array {
+        $query = "
+            SELECT project.id, project.name, project.studio, project.episode_nb, project.episode_title,
+                   project.date_beginning, project.date_end, project.nb_total_pages, project.nb_assigned_pages,
+                   project.estimated_total_duration, project.recommended_pages_per_day, project.fk_user,
+                   user.pseudo AS user_pseudo, user.email AS user_email,
+                   appreciation.label AS appreciation_label
+            FROM project
+            JOIN user ON project.fk_user = user.id
+            LEFT JOIN final_report ON final_report.fk_project = project.id
+            LEFT JOIN appreciation ON final_report.fk_appreciation = appreciation.id
+            ORDER BY user.id DESC
+        ";
+
+        $prepare = $this->_db->prepare($query);
+        $prepare->execute();
+
+        return $prepare->fetchAll(PDO::FETCH_ASSOC);
+    }
+
 }
 

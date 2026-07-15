@@ -34,11 +34,21 @@ class UserModel extends MotherModel {
         }
     }
 
+    function getAllUsers() {
+         $query = "SELECT id, pseudo, email, avg_pages_per_day, avg_cleaning_duration, avg_shots_per_page FROM user";
+
+       $prepare = $this->_db->prepare($query);
+
+       $prepare->execute();
+       return $prepare->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
+
     function findByMail(string $email) {
 
         // Requête préparée pour récupérer les informations de l'utilisateur
         $query =
-            "SELECT id, pseudo, email FROM user
+            "SELECT id, pseudo, email, admin FROM user
             WHERE email=:email";
 
         $prepare = $this->_db->prepare($query);

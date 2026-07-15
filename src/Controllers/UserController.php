@@ -6,6 +6,7 @@ use GauthierGladchambet\BoardCompanion\Controllers\MotherController;
 use GauthierGladchambet\BoardCompanion\Entities\User;
 use GauthierGladchambet\BoardCompanion\Models\UserModel;
 use GauthierGladchambet\BoardCompanion\Models\UserStatByTypeModel;
+use GauthierGladchambet\BoardCompanion\Models\ProjectModel;
 use GauthierGladchambet\BoardCompanion\Services\Validators\UserValidator;
 
 class UserController extends MotherController
@@ -303,5 +304,42 @@ class UserController extends MotherController
         $_SESSION['success']['CompteSupprime'] = "Compte supprimé avec succès !";
         header("Location: /BoardCompanion/connexion");
         exit;
+    }
+
+
+    public function adminPanel()
+    {
+
+     // Variables du head
+        $this->_arrData['strTitle']        = "Panneau d'administration | BoardCompanion";
+        $this->_arrData['strMetaDesc']     = "Administrez le site Boardcompanion.";
+
+        // Message de la mascotte
+        $this->_arrData['msgBoardy']     = "Tous les utilisateurs et tous les projets en un coup d'oeil !";
+
+        //Check si l'utilisateur est connecté, sinon renvoie à la page login
+        if (empty($_SESSION)) {
+            header("Location: /BoardCompanion/connexion");
+            exit;
+        }
+
+        //Check si l'utilisateur est admin, sinon renvoie à la page 403
+        if (!$_SESSION['user']['admin']) {
+            header("Location: /BoardCompanion/403");
+            exit;
+        }
+         
+
+        // Récupère tous les utilisateurs
+        $userModel = new UserModel();
+        $this->_arrData['allUsers'] = $userModel->getAllUsers();
+
+        // Récupération de tous les projets de tous les utilisateurs)
+        $projectModel = new ProjectModel();
+        $this->_arrData['allProjectsAllUsers'] = $projectModel->findAllProjectsAllUsers();
+
+
+        $this->_display("user/adminPanel");
+
     }
 }
