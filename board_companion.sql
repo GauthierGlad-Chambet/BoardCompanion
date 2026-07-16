@@ -160,6 +160,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `avg_pages_per_day` float DEFAULT '1',
   `avg_cleaning_duration` float DEFAULT '0.2',
   `avg_shots_per_page` int NOT NULL,
+  `admin`int DEFAULT 'NULL',
   `fk_appreciation` int NOT NULL DEFAULT '2',
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`),

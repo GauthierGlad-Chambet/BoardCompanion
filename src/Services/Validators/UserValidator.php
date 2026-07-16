@@ -19,7 +19,7 @@ class UserValidator
     }
 
     // Vérifie si l'email existe déjà en bdd
-    public function emailExists($email, UserModel $userModel = null)
+    public function emailExists($email, ?UserModel $userModel = null)
     {
         if (empty($email)) {
             return "Le champ 'Email' est obligatoire.";
