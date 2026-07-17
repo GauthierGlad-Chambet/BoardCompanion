@@ -621,7 +621,41 @@ class StatisticsController extends MotherController
         $this->updateUserAvgShotsPerPage($_SESSION['user']['id']);
         $this->updateUserStatsByType($_SESSION['user']['id']);
 
+        $_SESSION['success']['ProjetSupprime'] = "Projet supprimé avec succès !";
         header("Location: /BoardCompanion/tableau-de-bord");
+        exit;
+    }
+
+    public function adminDeleteProject()
+    {
+
+     //Check si l'utilisateur est connecté, sinon renvoie à la page login
+        if (empty($_SESSION)) {
+            header("Location: /BoardCompanion/connexion");
+            exit;
+        }
+
+        //Check si l'utilisateur est admin, sinon renvoie à la page 403
+        if (!$_SESSION['user']['admin']) {
+            header("Location: /BoardCompanion/403");
+            exit;
+        }
+
+        $project_id = $_POST['project_id'] ?? '';
+        $project_fk_user = (int)$_POST['project_fk_user'] ?? '';
+
+        $projectModel = new ProjectModel();
+        $projectModel->deleteProjetbyId($project_id);
+
+        //Modifier statistiques utilisateur après supression d'un projet :
+        $this->updateUserAvgPagesPerDay($project_fk_user);
+        $this->updateUserAvgCleaningDuration($project_fk_user);
+        $this->updateUserAvgAppreciation($project_fk_user);
+        $this->updateUserAvgShotsPerPage($project_fk_user);
+        $this->updateUserStatsByType($project_fk_user);
+
+        $_SESSION['success']['ProjetSupprime'] = "Projet supprimé avec succès !";
+        header("Location: panneau-administration");
         exit;
     }
 

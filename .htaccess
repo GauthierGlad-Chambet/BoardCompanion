@@ -11,6 +11,7 @@ RewriteRule ^mentions-legales$ index.php?controller=main&action=legals [L]
 
 RewriteRule ^nouveau-projet$ index.php?controller=form&action=newProject [L,QSA]
 RewriteRule ^modifier-projet$ index.php?controller=form&action=updateProject [L,QSA]
+RewriteRule ^admin-supprimer-projet$ index.php?controller=statistics&action=adminDeleteProject [L]
 
 RewriteRule ^analyse-detaillee$ index.php?controller=form&action=detailedAnalysis [L,QSA]
 RewriteRule ^modifier-analyse-detaillee$ index.php?controller=form&action=updateDetailedAnalysis [L,QSA]
@@ -27,6 +28,7 @@ RewriteRule ^compte$ index.php?controller=user&action=showAccount [L]
 RewriteRule ^modifier-compte$ index.php?controller=user&action=updateAccount [L]
 RewriteRule ^supprimer-compte$ index.php?controller=user&action=deleteAccount [L]
 RewriteRule ^panneau-administration$ index.php?controller=user&action=adminPanel [L]
+RewriteRule ^admin-supprimer-compte$ index.php?controller=user&action=adminDeleteAccount [L]
 
 
 RewriteRule ^arborescence$ index.php?controller=tree&action=main [L]

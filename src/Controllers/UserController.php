@@ -342,4 +342,35 @@ class UserController extends MotherController
         $this->_display("user/adminPanel");
 
     }
+
+    public function adminDeleteAccount()
+    {
+        //Check si l'utilisateur est connecté, sinon renvoie à la page login
+        if (empty($_SESSION)) {
+            header("Location: /BoardCompanion/connexion");
+            exit;
+        }
+
+        //Check si l'utilisateur est admin, sinon renvoie à la page 403
+        if (!$_SESSION['user']['admin']) {
+            header("Location: /BoardCompanion/403");
+            exit;
+        }
+
+        $user_id = $_POST['user_id'] ?? '';
+        $user_admin = (int)$_POST['user_admin'] ?? '';
+
+        if ($user_admin == 1) {
+            $_SESSION['error']['errorDeleteAccount'] = "Impossible de supprimer un administrateur !";
+            header("Location: panneau-administration");
+            exit;
+        }
+
+        $userModel = new UserModel();
+        $userModel->deleteUserById($user_id);
+
+        $_SESSION['success']['CompteSupprime'] = "Compte supprimé avec succès !";
+        header("Location: panneau-administration");
+        exit;
+    }
 }

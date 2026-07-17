@@ -14,7 +14,7 @@
             <?php foreach ($projects as $project) : ?>
                 <tr>
                     <td><?= $project->getName() ?></td>
-                    <td>
+                    <td class="textNoWrap">
                         du <?= $project->getDate_beginningFormatted() ?>
                         <br>
                         au <?= $project->getDate_endFormatted() ?>
@@ -58,10 +58,11 @@
     </div>
     <?php if (!empty($_SESSION['success']['projetAjoute'])) { ?>
         <p class="messageSuccess"><?= $_SESSION['success']['projetAjoute'] ?></p>
-    <?php }
-    unset($_SESSION['success']['projetAjoute']); ?>
+    <?php } unset($_SESSION['success']['projetAjoute']); ?>
     <?php if (!empty($_SESSION['success']['projetModifie'])) { ?>
         <p class="messageSuccess"><?= $_SESSION['success']['projetModifie'] ?></p>
-    <?php }
-    unset($_SESSION['success']['projetModifie']); ?>
+    <?php } unset($_SESSION['success']['projetModifie']); ?>
+    <?php if (!empty($_SESSION['success']['ProjetSupprime'])) { ?>
+        <p class="messageSuccess"><?= $_SESSION['success']['ProjetSupprime'] ?></p>
+    <?php } unset($_SESSION['success']['ProjetSupprime']); ?>
 </main>

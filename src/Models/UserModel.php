@@ -35,7 +35,7 @@ class UserModel extends MotherModel {
     }
 
     function getAllUsers() {
-         $query = "SELECT id, pseudo, email, avg_pages_per_day, avg_cleaning_duration, avg_shots_per_page FROM user";
+         $query = "SELECT id, pseudo, email, avg_pages_per_day, avg_cleaning_duration, avg_shots_per_page, admin FROM user";
 
        $prepare = $this->_db->prepare($query);
 

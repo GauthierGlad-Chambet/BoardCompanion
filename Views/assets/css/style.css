@@ -132,6 +132,16 @@ hr {
   display: none;
 }
 
+#disable {
+  pointer-events: none;
+  opacity: 20%;
+}
+
+.textNoWrap {
+  text-wrap:nowrap;
+}
+
+
 /* ------------- CONTENEURS ------------ */
 
 .container {
@@ -750,6 +760,24 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   pointer-events: none;
 }
 
+.messageErrorPopup {
+  color: red;
+  border: 1px solid red;
+  border-radius: 10px;
+  background-color: var(--secondary-color);
+  padding: 20px;
+  text-align: center;
+  width: 500px;
+  max-width: 90dvw;
+  margin: 0 auto;
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: success-box-slide 2s ease-out forwards;
+  pointer-events: none;
+}
+
 @keyframes success-box-slide {
   0% {
     top: -200px;
@@ -1333,7 +1361,7 @@ table img {
     height: 78px;
   }
 
-  svg:not(.account-page form svg) {
+  svg:not(.account-page form svg, .adminPanelButton) {
     height: 70px;
   }
 
@@ -1500,9 +1528,10 @@ table img {
 
   /* ------------- MESSAGES DE SUCCES ET D'ERREUR ------------ */
 
-  .messageSuccess {
+  .messageSuccess, .messageErrorPopup {
     width: 50%;
   }
+
 }
 
 /* Très grands écrans */
