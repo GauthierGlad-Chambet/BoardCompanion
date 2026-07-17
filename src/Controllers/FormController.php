@@ -810,7 +810,7 @@ class FormController extends MotherController {
     }
 
     // Extraction des séquences à partir du texte nettoyé,
-    // en se basant sur les mots-clés "INT.", "EXT.", "I/E" et en récupérant les 8 lignes suivantes
+    // en se basant sur les mots-clés "INT.", "EXT.", "I/E" et en récupérant les lignes suivantes
     public function extractSequences($text) {
         $lines = explode("\n", $text);
         $extracts = [];
@@ -824,12 +824,6 @@ class FormController extends MotherController {
 
             // Vérifier si la ligne commence par un des mots-clés
             $isKeywordLine = false;
-
-            // foreach ($keywords as $keyword) {
-            //     if (stripos($line, $keyword) !== false) {
-            //         $isKeywordLine = true;
-            //         break;
-            //     }
             
             foreach ($keywords as $keyword) {
                 if (preg_match('/^\s*' . preg_quote($keyword, '/') . '/i', $line)) {

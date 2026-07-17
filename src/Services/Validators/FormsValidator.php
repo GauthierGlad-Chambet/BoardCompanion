@@ -100,7 +100,8 @@ class FormsValidator {
         }
         // On créé un objet finfo qui est un analyseur du type de fichier
         $finfo = new finfo(FILEINFO_MIME_TYPE);
-        // On demande le type du fichier qui a été uploadé indépendament de ce qu'envoie le navigateur (falsifiable)
+        // On demande le type du fichier qui a été uploadé indépendament
+        // de ce qu'envoie le navigateur (falsifiable)
         $mimeType = $finfo->file($script['tmp_name']);
         // On récupère l'extension du fichier
         $extension = pathinfo($script['name'], PATHINFO_EXTENSION);

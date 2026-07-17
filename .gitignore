@@ -1,6 +1,7 @@
 /Fichiers d'exemple/
 /vendor/
 /uploads/
+.phpunit.result.cache
 
 # On ignore les fichiers de configuration (données sensibles)
 .env*
