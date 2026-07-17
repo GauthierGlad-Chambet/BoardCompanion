@@ -19,7 +19,6 @@
                 <?php foreach ($allUsers as $user):?>
                     <form method="POST" action="/BoardCompanion/admin-supprimer-compte">
                         <input type="hidden" name="user_id" value="<?= htmlspecialchars($user['id']) ?>">
-                        <input type="hidden" name="user_admin" value="<?= htmlspecialchars($user['admin']??'') ?>">
                         <tr>
                             <td><?php echo htmlspecialchars($user['id'] ?? ''); ?></td>
                             <td><?php echo htmlspecialchars($user['pseudo'] ?? ''); ?></td>

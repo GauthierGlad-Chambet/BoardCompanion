@@ -83,7 +83,7 @@ class UserModel extends MotherModel {
 
         // Requête préparée pour récupérer les informations de l'utilisateur
         $query ="
-            SELECT user.id, pseudo, email, avg_pages_per_day, avg_cleaning_duration, avg_shots_per_page, user.fk_appreciation, appreciation.label as appreciation_label
+            SELECT user.id, pseudo, email, avg_pages_per_day, avg_cleaning_duration, avg_shots_per_page, admin, user.fk_appreciation, appreciation.label as appreciation_label
             FROM user
             LEFT JOIN appreciation ON user.fk_appreciation = appreciation.id
             WHERE user.id=:id

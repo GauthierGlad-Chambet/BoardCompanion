@@ -358,15 +358,16 @@ class UserController extends MotherController
         }
 
         $user_id = $_POST['user_id'] ?? '';
-        $user_admin = (int)$_POST['user_admin'] ?? '';
 
-        if ($user_admin == 1) {
+        $userModel = new UserModel();
+        $data['User'] = $userModel->findById($user_id);
+
+        if ($data['User']['admin'] == 1) {
             $_SESSION['error']['errorDeleteAccount'] = "Impossible de supprimer un administrateur !";
             header("Location: panneau-administration");
             exit;
         }
-
-        $userModel = new UserModel();
+        
         $userModel->deleteUserById($user_id);
 
         $_SESSION['success']['CompteSupprime'] = "Compte supprimé avec succès !";
