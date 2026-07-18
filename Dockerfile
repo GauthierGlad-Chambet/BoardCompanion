@@ -3,6 +3,10 @@ FROM php:8.1-apache
 # Installe les extensions PHP nécessaires pour MySQL
 RUN docker-php-ext-install pdo pdo_mysql mysqli
 
+# Installe unzip, nécessaire à Composer pour décompresser les paquets téléchargés
+RUN apt-get update && apt-get install -y --no-install-recommends unzip \
+    && rm -rf /var/lib/apt/lists/*
+
 # Active le module Apache mod_rewrite (utile pour les URLs propres / .htaccess)
 RUN a2enmod rewrite
 
