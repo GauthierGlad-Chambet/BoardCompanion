@@ -19,8 +19,10 @@ abstract class IntegrationTestCase extends TestCase
             "mysql:host=" . $_ENV['DB_HOSTNAME'] . ";dbname=" . $_ENV['DB_DATABASE'] . ";charset=utf8",
             $_ENV['DB_USERNAME'],
             $_ENV['DB_PASSWORD'],
-            [PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
+            [
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+            ]
         );
 
         // Réinitialiser les tables avant chaque test

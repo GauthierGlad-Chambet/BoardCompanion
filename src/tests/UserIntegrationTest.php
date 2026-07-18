@@ -8,7 +8,8 @@ use GauthierGladchambet\BoardCompanion\Entities\User;
 class UserIntegrationTest extends IntegrationTestCase
 {
     // Test 1 : créer un utilisateur et vérifier qu'il est bien en BDD
-    public function testCreerUtilisateur(): void {
+    public function testCreerUtilisateur(): void
+    {
         $user = new User();
         $user->setPseudo("TestUser");
         $user->setEmail("integration@test.com");
@@ -30,7 +31,8 @@ class UserIntegrationTest extends IntegrationTestCase
     }
 
     // Test 2 : vérifier qu'on ne peut pas créer 2 utilisateurs avec le même email
-    public function testEmailUniqueEnBdd(): void {
+    public function testEmailUniqueEnBdd(): void
+    {
         $this->db->exec("INSERT INTO user (pseudo, email, pwd, avg_shots_per_page, fk_appreciation) 
                          VALUES ('User1', 'doublon@test.com', 'hash', 0, 2)");
 
@@ -41,7 +43,8 @@ class UserIntegrationTest extends IntegrationTestCase
     }
 
     // Test 3 : retrouver un utilisateur par son email
-    public function testFindByMail(): void {
+    public function testFindByMail(): void
+    {
         $this->db->exec("INSERT INTO user (pseudo, email, pwd, avg_shots_per_page, fk_appreciation) 
                          VALUES ('TestFind', 'find@test.com', 'hash', 0, 2)");
 
