@@ -10,6 +10,23 @@ jobs:
   tests:
     if: github.ref == 'refs/heads/dev' || github.event_name == 'pull_request'
     runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:9.1
+        env:
+          MYSQL_ROOT_PASSWORD: root_test_password
+          MYSQL_DATABASE: board_companion_test
+          MYSQL_USER: board_user
+          MYSQL_PASSWORD: test_password
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=10
+
     steps:
       - uses: actions/checkout@v4
 
@@ -21,6 +38,17 @@ jobs:
       - name: Install dependencies (avec dev, pour PHPUnit)
         working-directory: ./src
         run: composer install --prefer-dist --no-interaction
+
+      - name: Importer le schéma de test dans MySQL
+        run: mysql --host=127.0.0.1 --port=3306 -u root -proot_test_password board_companion_test < database/test-schema.sql
+
+      - name: Générer le .env.test
+        working-directory: ./src
+        run: |
+          echo "DB_HOSTNAME=127.0.0.1" > .env.test
+          echo "DB_DATABASE=board_companion_test" >> .env.test
+          echo "DB_USERNAME=board_user" >> .env.test
+          echo "DB_PASSWORD=test_password" >> .env.test
 
       - name: Run PHPUnit
         working-directory: ./src
