@@ -1,0 +1,987 @@
+<?php
+
+namespace GauthierGladchambet\BoardCompanion\Controllers;
+
+use GauthierGladchambet\BoardCompanion\Controllers\MotherController;
+use GauthierGladchambet\BoardCompanion\Entities\Project;
+use GauthierGladchambet\BoardCompanion\Entities\Sequence;
+use GauthierGladchambet\BoardCompanion\Models\ProjectModel;
+use GauthierGladchambet\BoardCompanion\Models\SequenceModel;
+use GauthierGladchambet\BoardCompanion\Models\UserModel;
+use GauthierGladchambet\BoardCompanion\Models\UserStatByTypeModel;
+use GauthierGladchambet\BoardCompanion\Services\Validators\FormsValidator;
+
+
+class FormController extends MotherController
+{
+    private FormsValidator $validator;
+
+    function __construct()
+    {
+
+        //Appelle ce qui est dans le constructeur de la class parente (s'il y en a un)
+        // parent::__construct();
+
+        //instantiation du validateur
+        $this->validator = new FormsValidator;
+    }
+
+    public function newProject()
+    {
+
+        // Variables du head
+        $this->_arrData['strTitle']        = "Nouveau projet | BoardCompanion";
+        $this->_arrData['strMetaDesc']     = "Créez un nouveau projet de storyboard sur BoardCompanion : renseignez les détails, uploadez votre script et planifiez votre production.";
+
+        // Message de la mascotte
+        $this->_arrData['msgBoardy']     = "Prêt à embarquer sur un nouveau board ?";
+
+        //Check si l'utilisateur est connecté, sinon renvoie à la page login
+        if (empty($_SESSION)) {
+            header("Location: /connexion");
+            exit;
+        }
+
+        $data = [
+            'name' => '',
+            'studio' => '',
+            'episode_title' => '',
+            'episode_nb' => '',
+            'nb_predec' => '',
+            'is_alone' => '',
+            'is_cleaning' => '',
+            'script_detailed' => '',
+            'date_begin' => '',
+            'date_end' => '',
+            'script' => '',
+            'template' => ''
+        ];
+
+        // Flag pour indiquer si les estimations se font à partir du nombre total de pages ou du nombre de pages assignées
+        $flagNbPages = false;
+
+        if (count($_POST) > 0) {
+
+            $name               = trim(filter_input(INPUT_POST, "name", FILTER_SANITIZE_SPECIAL_CHARS) ?? '');    //La fonction trim supprime les caractères invisibles comme les espaces, avant et après le texte.
+            $studio             = trim(filter_input(INPUT_POST, "studio", FILTER_SANITIZE_SPECIAL_CHARS) ?? '');
+            $episodeNb          = trim(filter_input(INPUT_POST, "episode_nb", FILTER_SANITIZE_NUMBER_INT) ?? '');
+            $episodeTitle       = trim(filter_input(INPUT_POST, "episode_title", FILTER_SANITIZE_SPECIAL_CHARS) ?? '');
+            $nbPredecs          = trim(filter_input(INPUT_POST, "nb_predec", FILTER_SANITIZE_NUMBER_INT) ?? '');
+            $isAlone            = $_POST['is_alone'] ?? '';
+            $isCleaning         = $_POST['is_cleaning'] ?? '';
+            $dateBegin          = $_POST['date_begin'] ?? '';
+            $dateEnd            = $_POST['date_end'] ?? '';
+            $script_detailed    = $_POST['script_detailed'] ?? '';
+
+
+
+            // Validateurs des différents champs
+            // Array_filter permet de collecter uniquement les erreurs non nulles
+            $errors = array_filter([
+                'name'            => $this->validator->validerChamp($name),
+                'studio'          => $this->validator->validerChamp($studio),
+                'episode_title'   => $this->validator->validerChamp($episodeTitle),
+                'episode_nb'      => $this->validator->validerNumEp($episodeNb),
+                'nb_predec'       => $this->validator->verifierInputNumber($nbPredecs),
+                'is_alone'        => $this->validator->verifierRadio($isAlone),
+                'is_cleaning'     => $this->validator->verifierRadio($isCleaning),
+                'script_detailed' => $this->validator->verifierRadio($script_detailed),
+                'date_begin'      => $this->validator->verifierDates($dateBegin, $dateEnd),
+                'date_end'        => $this->validator->verifierDates($dateBegin, $dateEnd),
+                'script'          => $this->validator->verifierScript($_FILES['script']),
+                'template'        => $this->validator->verifierTemplate($_FILES['template'])
+            ]);
+
+            // S'il y a des erreurs, on les met en session et on redirige
+            if (!empty($errors)) {
+                $_SESSION['error'] = $errors;
+                foreach ($data as $key => $value) {
+                    if (!isset($_SESSION['error'][$key])) {
+                        $data[$key] = $_POST[$key] ?? '';
+                    }
+                }
+            } else {
+
+                $script_detailed    = (int) $script_detailed;
+
+                //obtenir le nom original du fichier
+                $originalName = $_FILES['script']['name'];
+
+                //PATHINFO_EXTENSION collecte l'extension du fichier
+                $extension = pathinfo($originalName, PATHINFO_EXTENSION);
+
+                //uniqid génère un numéro unique juste après 'script_', concaténé avec l'extension du fichier
+                $newFileName = uniqid('script_') . '.' . $extension;
+
+                //pour construire le chemin réel du fichier, en commençant par le répertoire courant
+                $uploadDir = __DIR__ . '/../../uploads/scripts/';
+
+                // L'endroit où le fichier sera sauvegardé
+                $destination = $uploadDir . $newFileName;
+
+                //move_uploaded_file Déplacer le fichier de l'emplacement temporaire vers la destination
+                move_uploaded_file($_FILES['script']['tmp_name'], $destination);
+                $scriptFilePath = realpath($destination);
+
+                $originalName = $_FILES['template']['name'];
+                $extension = pathinfo($originalName, PATHINFO_EXTENSION);
+                $newFileName = uniqid('template_') . '.' . $extension;
+                $uploadDir = __DIR__ . '/../../uploads/templates/';
+                $destination = $uploadDir . $newFileName;
+                move_uploaded_file($_FILES['template']['tmp_name'], $destination);
+                $templateFilePath   = realpath($destination);
+
+                $project = new Project();
+                $project->setName($name);
+                $project->setStudio($studio);
+                $project->setEpisode_nb($episodeNb);
+                $project->setEpisode_title($episodeTitle);
+                $project->setDate_beginning($dateBegin);
+                $project->setDate_end($dateEnd);
+                $project->setNb_predec(intval($nbPredecs));
+                $project->setIs_cleaning($isCleaning);
+                $project->setIs_alone($isAlone);
+
+                if (isset($scriptFilePath)) {
+                    $project->setScript_path($scriptFilePath);
+                }
+
+                if (isset($templateFilePath)) {
+                    $project->setTemplate_path($templateFilePath);
+                }
+
+                // Récupérer l'identifiant utilisateur de la session ou la valeur par défaut 1 si non défini.
+                $userId = $_SESSION['user']['id'];
+                $project->setFk_user($userId);
+
+                try {
+                    $newProjectModel = new ProjectModel();
+                    $idProject = $newProjectModel->addProject($project);
+                    $project->setId($idProject); // Assigner l'ID généré à l'entité Project pour les étapes suivantes
+                    $project->getEstimated_cleaning_duration();
+
+
+                    // Commpte le nombre de pages du PDF et l'ajoute à l'entité Project
+                    if (isset($scriptFilePath)) {
+                        // Utilisation de smalot/pdfparser pour extraire les détails du PDF, notamment le nombre de pages
+                        try {
+                            // Créer une instance du parser et analyser le fichier PDF
+                            $parser = new \Smalot\PdfParser\Parser();
+                            $pdf = $parser->parseFile($project->getScript_path());
+                            $metaData = $pdf->getDetails();
+                            if (isset($metaData['Pages'])) {
+                                $project->setNb_total_pages(intval($metaData['Pages']) - 1);
+                                $project->setNb_assigned_pages(intval($metaData['Pages']) - 1);
+                                $newProjectModel->updateNbPagesProject($project);
+
+                                $project->setEstimated_total_duration($this->estimateTotalDuration($project, $flagNbPages));
+                                $newProjectModel->updateTotalDurationProject($project);
+
+                                $project->setRecommended_pages_per_day($this->estimateRecommendedPagesPerDay($project, $flagNbPages));
+                                $newProjectModel->updateRecommendedPagesPerDayProject($project);
+
+                                if ($project->getIs_cleaning() == true) {
+                                    $project->setEstimated_cleaning_duration($this->estimateCleaningDuration($project));
+                                    $newProjectModel->updateAvgCleaningProject($project);
+                                }
+
+                                $project->setAvg_duration_estimated_per_pages($this->avgDurationEstimatedPerPage($project));
+                                $newProjectModel->updateAvgDurationEstimatedPerPage($project);
+                            }
+                        } catch (\Exception $e) {
+                            echo "Erreur lors de la lecture du PDF : " . htmlspecialchars($e->getMessage());
+                            exit;
+                        }
+                    }
+
+
+                    if ($script_detailed === 1) {
+                        header("Location: /analyse-detaillee?project_id=" . $idProject);
+                        exit;
+                    } else {
+                        $_SESSION['success']['projetAjoute'] = "Projet ajouté avec succès !";
+                        header("Location: /tableau-de-bord");
+                        exit;
+                    }
+                } catch (\Exception $e) {
+                    echo "Erreur lors de l'ajout du projet : " . htmlspecialchars($e->getMessage());
+                    exit;
+                }
+            }
+        }
+
+        $this->_display("projectForm/newProjectForm", true, $data);
+    }
+
+    // Affichage du formulaire d'analyse détaillée, en passant le texte extrait et les en-têtes de scènes à la vue
+    public function detailedAnalysis()
+    {
+
+        // Variables du head
+        $this->_arrData['strTitle']        = "Analyse des séquences | BoardCompanion";
+        $this->_arrData['strMetaDesc']     = "Analysez votre projet en détail : statistiques par séquence, estimation des durées et répartition du travail pour optimiser votre storyboard.";
+
+        // Message de la mascotte
+        $this->_arrData['msgBoardy']     = "Regardons ça de plus près !";
+
+        //Check si l'utilisateur est connecté, sinon renvoie à la page login
+        if (empty($_SESSION)) {
+            header("Location: /connexion");
+            exit;
+        }
+
+        $flagNbPages = true;
+
+        // Récupérer l'ID du projet
+        $projectId = $_GET['project_id'] ?? null;
+        if (!$projectId) {
+            echo "ID du projet manquant.";
+            exit;
+        }
+
+        $projectModel = new ProjectModel();
+        $projectData = $projectModel->getProjectById($projectId);
+
+        // Vérifier que le projet appartient bien à l'utilisateur connecté
+        if (!$projectData || $projectData['fk_user'] != $_SESSION['user']['id']) {
+            header("Location: /403");
+            exit;
+        }
+
+        $project = new Project();
+        $project->hydrate($projectData);
+
+        $this->_arrData['project'] = $project;
+
+        $scriptPath = new ProjectModel();
+
+        // Récupérer le script path en fonction de l'ID du projet
+        $projectModel = new ProjectModel();
+        $scriptPath = $projectModel->findScriptPathByProjectId($projectId);
+
+        if (!$scriptPath || !file_exists($scriptPath)) {
+            header("Location: /404");
+            exit;
+        }
+
+        if (isset($_POST['submit_sequences'])) {
+
+            $sequenceModel = new SequenceModel();
+
+            // Traiter les données du formulaire ici
+            foreach ($_POST as $key => $value) {
+                // Identifier les champs de type de séquence en utilisant le préfixe "typeSequence_"
+                if (strpos($key, 'typeSequence_') === 0) {
+                    // Extraire l'index de la séquence à partir du nom du champ
+                    $index = str_replace('typeSequence_', '', $key);
+
+                    // Validateurs des différents champs
+                    // Array_filter permet de collecter uniquement les erreurs non nulles
+                    $errors = array_filter([
+                        'type' . $index            => $this->validator->verifierRadioDetailed(($_POST['typeSequence_' . $index]) ?? ''),
+                        'is_assigned' . $index     => $this->validator->verifierRadio($_POST['is_assigned_' . $index])
+                    ]);
+
+                    // S'il y a des erreurs, on les met en session et on redirige
+                    if (!empty($errors)) {
+                        $_SESSION['error'] = $errors;
+                        $data = [
+                            'sequenceHeaders' => $_SESSION['sequences']['sequenceHeaders'],
+                            'projectId' => $_SESSION['sequences']['projectId']
+                        ];
+                        $this->_display("projectForm/detailedAnalysisForm", true, $data);
+                    } else {
+
+                        // Si le type de séquence est "action" insérer 1
+                        if ($value === 'Action') {
+                            $typeSequence = 1;
+                        } else if ($value === 'Comedie') {
+                            $typeSequence = 2;
+                        } else if ($value === 'Mixte') {
+                            $typeSequence = 3;
+                        } else {
+                            $typeSequence = 4;
+                        }
+
+                        $isAssigned = (int) ($_POST['is_assigned_' . $index] ?? 0);
+
+                        //récupérer le titre de la séquence
+                        $sequenceHeader = $_POST['sequence_header_' . $index] ?? 'Séquence sans titre';
+
+                        // Récupérer le contenu de la séquence
+                        $sequenceContent = $_POST['sequence_content_' . $index] ?? '[]';
+                        $sequenceContent = json_decode($sequenceContent, true);
+
+                        // Convertir le contenu en JSON pour le stockage
+                        $sequenceContentJson = json_encode($sequenceContent);
+
+                        // Enregistrer ces informations dans la base de données
+                        $sequence = new Sequence();
+                        $sequence->setNumber($index + 1);
+                        $sequence->setTitle($sequenceHeader);
+                        $sequence->setFk_type($typeSequence);
+                        $sequence->setIs_assigned($isAssigned);
+                        $sequence->setScript($sequenceContentJson); // Stocker en tant que JSON
+                        $sequence->setLines_count(count($sequenceContent)); // Stocker le nombre de lignes de la séquence
+                        $sequence->setDuration_estimated($this->estimateDurationBySequence($sequence)); // Estimer la durée de boarding de la séquence
+                        $sequence->setFk_project($projectId);
+
+                        $sequenceModel->addSequence($sequence);
+                    }
+                }
+            }
+
+            $project = new Project();
+            $project->setId($projectId);
+
+
+            $projectData = $projectModel->getProjectById($projectId);
+            $project->setIs_cleaning($projectData['is_cleaning']);
+            $project->setNb_total_pages($projectData['nb_total_pages']);
+            $project->setDate_beginning($projectData['date_beginning']);
+            $project->setDate_end($projectData['date_end']);
+
+            $project->setNb_assigned_pages($this->countAssignedPages($projectId));
+            $project->setEstimated_cleaning_duration($this->estimateCleaningDuration($project));
+            $project->setEstimated_total_duration($this->estimateTotalDuration($project, $flagNbPages));
+            $project->setAvg_duration_estimated_per_pages($this->avgDurationEstimatedPerPage($project));
+            $project->setRecommended_pages_per_day($this->estimateRecommendedPagesPerDay($project, $flagNbPages));
+            $project->setIs_detailed(1);
+
+            $projectModel->updateNbPagesAssignedProject($project);
+            $projectModel->updateAvgCleaningProject($project);
+            $projectModel->updateTotalDurationProject($project);
+            $projectModel->updateAvgDurationEstimatedPerPage($project);
+            $projectModel->updateRecommendedPagesPerDayProject($project);
+            $projectModel->updateIsDetailed($project);
+
+            $_SESSION['success']['projetAjoute'] = "Projet ajouté avec succès !";
+            header("Location: /projet?project_id=" . $project->getId());
+            exit;
+        } else {
+            // Utilisation de smalot/pdfparser pour extraire le texte du PDF
+            try {
+                $parser = new \Smalot\PdfParser\Parser();
+                $pdf = $parser->parseFile($scriptPath);
+                $text = $pdf->getText();
+
+                // Nettoyage du texte pour supprimer les éléments répétitifs, les numéros en trop, les caractères spéciaux, etc.
+                $text = $this->cleanPDF($text);
+
+                // Extraction des séquences
+                $sequences = $this->extractSequences($text);
+
+                // Passer à la vue
+                $data = [
+                    'sequenceHeaders' => $sequences,
+                    'projectId' => $projectId
+                ];
+
+                $_SESSION['sequences']['sequenceHeaders'] = $sequences;
+                $_SESSION['sequences']['projectId'] = $projectId;
+
+                $this->_display("projectForm/detailedAnalysisForm", true, $data);
+            } catch (\Exception $e) {
+                echo "Erreur : " . $e->getMessage();
+                exit;
+            }
+        }
+    }
+
+    public function updateProject()
+    {
+
+        // Variables du head
+        $this->_arrData['strTitle']        = "Modification du projet | BoardCompanion";
+        $this->_arrData['strMetaDesc']     = "Modifiez les informations de votre projet : dates, studio, nombre de pages, cleaning et autres paramètres de production.";
+
+        // Message de la mascotte
+        $this->_arrData['msgBoardy']     = "Les plans changent, on s'adapte !";
+
+        //Check si l'utilisateur est connecté, sinon renvoie à la page login
+        if (empty($_SESSION)) {
+            header("Location: /connexion");
+            exit;
+        }
+
+        $data = [
+            'name' => '',
+            'studio' => '',
+            'episode_title' => '',
+            'episode_nb' => '',
+            'nb_predec' => '',
+            'is_alone' => '',
+            'is_cleaning' => '',
+            'script_detailed' => '',
+            'date_begin' => '',
+            'date_end' => ''
+        ];
+
+        // Récupération des attributs du projet
+        $projectId = $_GET['project_id'];
+        $projectModel = new ProjectModel();
+        $projectData = $projectModel->getProjectById($projectId);
+
+        // Vérifier que le projet appartient bien à l'utilisateur connecté
+        if (!$projectData || $projectData['fk_user'] != $_SESSION['user']['id']) {
+            header("Location: /403");
+            exit;
+        }
+
+
+        if (!$projectData) {
+            header("Location: /404");
+            exit;
+        }
+
+        $projectOld = new Project();
+        $projectOld->hydrate($projectData);
+        $this->_arrData['project'] = $projectOld;
+
+        // Récupération de tous les autres projets
+
+        // création d'une entité projet et injection des attributs
+        $projectModel = new ProjectModel();
+
+        // récupération de tous les projets de l'utilisateur connecté
+        $projects = $projectModel->getAllProjectsByUser($_SESSION['user']['id']);
+
+
+        // On parcourt le tableau pour créer des objets
+        $projectsToDisplay = array();
+        foreach ($projects as $detProject) {
+            $project = new Project();
+            $project->hydrate($detProject);
+            $projectsToDisplay[] = $project;
+        }
+
+        $this->_arrData['projects'] = $projectsToDisplay;
+
+        if (count($_POST) > 0) {
+
+            $name               = trim(filter_input(INPUT_POST, "name", FILTER_SANITIZE_SPECIAL_CHARS)) ?? '';    //La fonction trim supprime les caractères invisibles comme les espaces, avant et après le texte.
+            $studio             = trim(filter_input(INPUT_POST, "studio", FILTER_SANITIZE_SPECIAL_CHARS)) ?? '';
+            $episodeNb          = trim(filter_input(INPUT_POST, "episode_nb", FILTER_SANITIZE_NUMBER_INT)) ?? '';
+            $episodeTitle       = trim(filter_input(INPUT_POST, "episode_title", FILTER_SANITIZE_SPECIAL_CHARS)) ?? '';
+            $dateBegin          = $_POST['date_begin'] ?? '';
+            $dateEnd            = $_POST['date_end'] ?? '';
+            $nbPredecs          = trim(filter_input(INPUT_POST, "nb_predec", FILTER_SANITIZE_NUMBER_INT)) ?? '';
+            $isCleaning         = $_POST['is_cleaning'] ?? '';
+            $isAlone            = $_POST['is_alone'] ?? '';
+            $script_detailed    = $_POST['script_detailed'] ?? '';
+
+            // Validateurs des différents champs
+            // Array_filter permet de collecter uniquement les erreurs non nulles
+            $errors = array_filter([
+                'name'            => $this->validator->validerChamp($name),
+                'studio'          => $this->validator->validerChamp($studio),
+                'episode_title'   => $this->validator->validerChamp($episodeTitle),
+                'episode_nb'      => $this->validator->validerNumEp($episodeNb),
+                'nb_predec'       => $this->validator->verifierInputNumber($nbPredecs),
+                'is_alone'        => $this->validator->verifierRadio($isAlone),
+                'is_cleaning'     => $this->validator->verifierRadio($isCleaning),
+                'script_detailed' => $this->validator->verifierRadio($script_detailed),
+                'date_begin'      => $this->validator->verifierDates($dateBegin, $dateEnd),
+                'date_end'        => $this->validator->verifierDates($dateBegin, $dateEnd)
+            ]);
+
+            // S'il y a des erreurs, on les met en session et on redirige
+            if (!empty($errors)) {
+                $_SESSION['error'] = $errors;
+                foreach ($data as $key => $value) {
+                    if (!isset($_SESSION['error'][$key])) {
+                        $data[$key] = $_POST[$key] ?? '';
+                    }
+                }
+            } else {
+
+                $projectUpdated = new Project();
+                $projectUpdated->setId($_GET['project_id']);
+                $projectUpdated->setName($name);
+                $projectUpdated->setStudio($studio);
+                $projectUpdated->setEpisode_nb($episodeNb);
+                $projectUpdated->setEpisode_title($episodeTitle);
+                $projectUpdated->setDate_beginning($dateBegin);
+                $projectUpdated->setDate_end($dateEnd);
+                $projectUpdated->setNb_predec(intval($nbPredecs));
+                $projectUpdated->setIs_cleaning($isCleaning);
+                $projectUpdated->setIs_alone($isAlone);
+
+                // Récupérer l'identifiant utilisateur de la session ou la valeur par défaut 1 si non défini.
+                $userId = $_SESSION['user']['id'];
+                $projectUpdated->setFk_user($userId);
+
+                try {
+                    $newProjectModel = new ProjectModel();
+                    $idProject = $newProjectModel->updateProject($projectUpdated);
+                    $projectUpdated->setId($idProject); // Assigner l'ID généré à l'entité Project pour les étapes suivantes
+                    $projectUpdated->getEstimated_cleaning_duration();
+
+                    // Si l'utilisateur veut modifier l'analyse détaillée
+                    if ($script_detailed === '1') {
+                        // Si il n'y a pas encore d'analyse détaillée pour ce projet
+                        if ($projectOld->getIs_detailed() == 0) {
+                            header("Location: /analyse-detaillee?project_id=" . $projectOld->getId());
+                            exit;
+                        } else {
+                            header("Location: /modifier-analyse-detaillee?project_id=" . $projectOld->getId());
+                            exit;
+                        }
+                    } else {
+                        $_SESSION['success']['projetModifie'] = "Projet modifié avec succès !";
+                        header("Location: /tableau-de-bord");
+                        exit;
+                    }
+                } catch (\Exception $e) {
+                    echo "Erreur lors de l'ajout du projet : " . htmlspecialchars($e->getMessage());
+                    exit;
+                }
+            }
+        }
+
+        $this->_display("projectForm/updateProjectForm", true, $data);
+    }
+
+    public function updateDetailedAnalysis()
+    {
+
+        // Variables du head
+        $this->_arrData['strTitle']        = "Modification de l'analyse des séquences | BoardCompanion";
+        $this->_arrData['strMetaDesc']     = "Ajustez l'analyse de votre projet : modifiez les types de séquences et la répartition du travail.";
+
+        // Message de la mascotte
+        $this->_arrData['msgBoardy']     = "On affine l'analyse ?";
+
+        //Check si l'utilisateur est connecté, sinon renvoie à la page login
+        if (empty($_SESSION)) {
+            header("Location: /connexion");
+            exit;
+        }
+
+        $flagNbPages = true;
+
+        // Récupération des attributs du projet
+        $projectId = $_GET['project_id'];
+        $projectModel = new ProjectModel();
+        $projectData = $projectModel->getProjectById($projectId);
+
+        // Vérifier que le projet appartient bien à l'utilisateur connecté
+        if (!$projectData || $projectData['fk_user'] != $_SESSION['user']['id']) {
+            header("Location: /403");
+            exit;
+        }
+
+
+        if (!$projectData) {
+            header("Location: /404");
+            exit;
+        }
+
+        $project = new Project();
+        $project->hydrate($projectData);
+        $this->_arrData['project'] = $project;
+
+        // Récupération de tous les autres projets
+
+        // création d'une entité projet et injection des attributs
+        $projectModel = new ProjectModel();
+
+        // récupération de tous les projets de l'utilisateur connecté
+        $projects = $projectModel->getAllProjectsByUser($_SESSION['user']['id']);
+
+
+        // On parcourt le tableau pour créer des objets
+        $projectsToDisplay = array();
+        foreach ($projects as $detProject) {
+            $project = new Project();
+            $project->hydrate($detProject);
+            $projectsToDisplay[] = $project;
+        }
+
+        $this->_arrData['projects'] = $projectsToDisplay;
+
+        // création d'une entité séquence et injection des attributs
+        $sequenceModel = new SequenceModel();
+
+        // Récupérer l'ID du projet
+        $projectId = $_GET['project_id'] ?? null;
+        if (!$projectId) {
+            echo "ID du projet manquant.";
+            exit;
+        }
+        $this->_arrData['projectId'] = $projectId;
+        // Récupération de toutes les séquences du projet
+        $sequences = $sequenceModel->findAllSequencesByProjectId($projectId);
+
+        // On parcourt le tableau pour créer des objets
+        $sequencesToDisplay = array();
+        foreach ($sequences as $detSequence) {
+            $sequence = new Sequence();
+            $sequence->hydrate($detSequence);
+            $sequencesToDisplay[] = $sequence;
+        }
+
+        $this->_arrData['sequences'] = $sequencesToDisplay;
+
+        if (isset($_POST['submit_sequences'])) {
+
+            $sequenceModel = new SequenceModel();
+
+            foreach ($_POST as $key => $value) {
+
+                // Identifier les champs de type de séquence en utilisant le préfixe "typeSequence_"
+                if (str_starts_with($key, 'typeSequence_')) {
+                    // Extraire l'index de la séquence à partir du nom du champ
+                    $index = str_replace('typeSequence_', '', $key);
+
+                    // Validateurs des différents champs
+                    // Array_filter permet de collecter uniquement les erreurs non nulles
+                    $errors = array_filter([
+                        'type' . $index            => $this->validator->verifierRadioDetailed(($_POST['typeSequence_' . $index]) ?? ''),
+                        'is_assigned' . $index     => $this->validator->verifierRadio($_POST['is_assigned_' . $index])
+                    ]);
+
+                    // S'il y a des erreurs, on les met en session et on redirige
+                    if (!empty($errors)) {
+                        $_SESSION['error'] = $errors;
+                        $this->_display("projectForm/updateDetailedAnalysisForm");
+                        exit;
+                    } else {
+
+                        if ($value === 'Action') {
+                            $typeSequence = 1;
+                        } else if ($value === 'Comedie') {
+                            $typeSequence = 2;
+                        } else if ($value === 'Mixte') {
+                            $typeSequence = 3;
+                        } else {
+                            $typeSequence = 4;
+                        }
+
+                        $isAssigned = (int) ($_POST['is_assigned_' . $index] ?? 0);
+                        $sequenceId  = (int) ($_POST['sequence_id_' . $index] ?? 0);
+
+                        $sequence = new Sequence();
+                        $sequence->setId($sequenceId);
+                        $sequence->setFk_type($typeSequence);
+                        $sequence->setIs_assigned($isAssigned);
+
+                        $sequenceModel->updateSequence($sequence);
+                    }
+                }
+            }
+
+            $project = new Project();
+            $project->setId($projectId);
+
+            $projectData = $projectModel->getProjectById($projectId);
+            $project->setIs_cleaning($projectData['is_cleaning']);
+            $project->setNb_total_pages($projectData['nb_total_pages']);
+            $project->setDate_beginning($projectData['date_beginning']);
+            $project->setDate_end($projectData['date_end']);
+
+            $project->setNb_assigned_pages($this->countAssignedPages($projectId));
+            $project->setEstimated_cleaning_duration($this->estimateCleaningDuration($project));
+            $project->setEstimated_total_duration($this->estimateTotalDuration($project, $flagNbPages));
+            $project->setAvg_duration_estimated_per_pages($this->avgDurationEstimatedPerPage($project));
+            $project->setRecommended_pages_per_day($this->estimateRecommendedPagesPerDay($project, $flagNbPages));
+
+            $projectModel->updateNbPagesAssignedProject($project);
+            $projectModel->updateAvgCleaningProject($project);
+            $projectModel->updateTotalDurationProject($project);
+            $projectModel->updateAvgDurationEstimatedPerPage($project);
+            $projectModel->updateRecommendedPagesPerDayProject($project);
+            $projectModel->updateIsDetailed($project);
+
+            $_SESSION['success']['projetModifie'] = "Projet modifié avec succès !";
+            header("Location: /projet?project_id=" . $projectId);
+            exit;
+        }
+
+        $this->_display("projectForm/updateDetailedAnalysisForm");
+    }
+
+    // Nettoyage du texte extrait du PDF pour supprimer les en-têtes, pieds de page,
+    // autres éléments répétitifs, numéros en trop, caractères spéciaux, ...
+    public function cleanPDF($text)
+    {
+        $lines = explode("\n", $text);
+
+        // Séparer les lignes courtes et longues
+        $longLines = [];
+
+        // Identifier les lignes longues et les stocker avec leur index
+        foreach ($lines as $index => $line) {
+            $trimmedLine = trim($line);
+            if (empty($trimmedLine)) continue;
+
+            if (strlen($trimmedLine) > 15) { // Seuil de longueur pour considérer une ligne comme "longue"
+                $longLines[$index] = $trimmedLine;
+            }
+        }
+
+        // Détecter uniquement les lignes LONGUES similaires
+        $linesToRemove = [];
+        $similarGroups = $this->findSimilarLongLines($longLines);
+        // Seules les lignes longues qui se répètent plus de 3 fois sont considérées comme des éléments à supprimer
+        $threshold = 3;
+
+        // Marquer les indices des lignes longues similaires qui dépassent le seuil pour suppression
+        foreach ($similarGroups as $group) {
+            if (count($group) > $threshold) {
+                $linesToRemove = array_merge($linesToRemove, $group);
+            }
+        }
+
+        // Construire le texte nettoyé
+        $cleanedLines = [];
+        foreach ($lines as $index => $line) {
+            $trimmedLine = trim($line);
+
+            // Ignorer les lignes vides
+            if (empty($trimmedLine)) continue;
+
+            // Ignorer uniquement si c'est une ligne longue marquée pour suppression
+            if (in_array($index, $linesToRemove)) continue;
+
+            // Garder TOUTES les lignes courtes (même répétitives)
+            $cleanedLines[] = $line;
+        }
+
+        $text = implode("\n", $cleanedLines);
+
+        // Supprimer tous les astérisques
+        $text = str_replace('*', '', $text);
+
+        // Suppression des lignes type "1    1", "14   14"
+        $text = preg_replace('/^(\d+)\s+\1\s*$/m', '', $text);
+
+        // Nettoyer les lignes vides multiples
+        $text = preg_replace('/\n\s*\n+/', "\n\n", $text);
+
+        // Supprimer les espaces en début et fin de texte
+        return trim($text);
+    }
+
+
+    // Trouver les groupes de lignes longues similaires
+    private function findSimilarLongLines($longLines)
+    {
+        $groups = [];
+        $processed = [];
+
+        // Obtenir les indices des lignes longues
+        $indices = array_keys($longLines);
+
+        // Comparer chaque ligne longue avec les autres pour trouver des groupes de lignes similaires
+        foreach ($indices as $i) {
+
+            // Si cette ligne a déjà été traitée dans un groupe, la sauter
+            if (isset($processed[$i])) continue;
+
+            $line1 = $longLines[$i];
+            $similarIndices = [$i];
+
+            // Comparer avec toutes les autres lignes longues
+            foreach ($indices as $j) {
+                if ($i === $j || isset($processed[$j])) continue;
+
+                $line2 = $longLines[$j];
+
+                // Calculer la similarité
+                if ($this->areLinesimilar($line1, $line2)) {
+                    $similarIndices[] = $j;
+                    $processed[$j] = true;
+                }
+            }
+
+            // Si ce groupe de lignes similaires contient plus d'une ligne, le conserver
+            if (count($similarIndices) > 1) {
+                $groups[] = $similarIndices;
+            }
+
+            $processed[$i] = true;
+        }
+
+        return $groups;
+    }
+
+    // Déterminer si deux lignes sont similaires en utilisant une combinaison de normalisation et de calcul de similarité
+    // $threshold indique le pourcentage de similarité requis
+    private function areLinesimilar($line1, $line2, $threshold = 0.9)
+    {
+
+        // Méthode 2 : Calculer le pourcentage de similarité
+        similar_text($line1, $line2, $percent);
+
+        return ($percent / 100) >= $threshold;
+    }
+
+    // Extraction des séquences à partir du texte nettoyé,
+    // en se basant sur les mots-clés "INT.", "EXT.", "I/E" et en récupérant les lignes suivantes
+    public function extractSequences($text)
+    {
+        $lines = explode("\n", $text);
+        $extracts = [];
+        $keywords = ['INT.', 'EXT.', 'I/E', 'SEQ'];
+
+        $currentSequence = null;
+
+        // Parcourir chaque ligne du texte
+        for ($i = 0; $i < count($lines); $i++) {
+            $line = trim($lines[$i]);
+
+            // Vérifier si la ligne commence par un des mots-clés
+            $isKeywordLine = false;
+
+            foreach ($keywords as $keyword) {
+                if (preg_match('/^\s*' . preg_quote($keyword, '/') . '/i', $line)) {
+                    $isKeywordLine = true;
+                    break;
+                }
+            }
+
+            // Si la ligne contient un mot-clé, démarrer une nouvelle séquence
+            if ($isKeywordLine) {
+                // Si une séquence est en cours, la terminer
+                if ($currentSequence) {
+                    $currentSequence['line_count'] = count($currentSequence['content']);
+                    $extracts[] = $currentSequence;
+                }
+
+                // Démarrer une nouvelle séquence
+                $currentSequence = [
+                    'keyword' => $keyword,
+                    'line_number' => $i + 1,
+                    'header' => $line,
+                    'content' => []
+                ];
+            } elseif ($currentSequence) {
+                // Ajouter la ligne à la séquence en cours
+                if (!empty($line)) {
+                    $currentSequence['content'][] = $line;
+                }
+            }
+        }
+
+        // Ajouter la dernière séquence si elle existe
+        if ($currentSequence) {
+            $currentSequence['line_count'] = count($currentSequence['content']);
+            $extracts[] = $currentSequence;
+        }
+
+        return $extracts;
+    }
+
+
+    // Récupère les séquences assignées depuis la bdd, compte le nombre total de lignes et
+    // calcule combien ça représente de pages en supposant qu'une page contient 35 lignes en moyenne
+    public function countAssignedPages(int $projectId)
+    {
+        $sequenceModel = new SequenceModel();
+        $assignedSequences = $sequenceModel->findAllSequencesByProjectId($projectId);
+
+        $projectModel = new ProjectModel();
+        $projectData = $projectModel->getProjectById($projectId);
+        $nbTotalPages = (int) ($projectData['nb_total_pages'] ?? 0);
+
+
+        $totalLines = 0;
+        foreach ($assignedSequences as $seq) {
+            $sequence = new Sequence();
+            // On ne compte que les lignes des séquences assignées
+            if (isset($seq['is_assigned']) && $seq['is_assigned'] == 1) {
+                $sequence->setLines_count($seq['lines_count']);
+                $totalLines += $sequence->getLines_count();
+            }
+        }
+        $totalAssignedPages = round(($totalLines / 35), 1); // En moyenne 35 lignes par page, arrondi à 1 décimale pour plus de lisibilité
+
+        // Pour éviter les erreurs dûes à l'aproximation du nombre de lignes par page, si le calcul dépasse le total réel,
+        // on plafonne au nombre de pages total
+        if ($totalAssignedPages > $nbTotalPages) {
+            return $nbTotalPages;
+        }
+
+        return $totalAssignedPages;
+    }
+
+
+    // Fonction d'estimation du temps de cleaning :
+    // si is_cleaning est true on multiplie le nombre de pages assignées par avg_cleaning_duration de l'utilisateur
+    public function estimateCleaningDuration(Project $project)
+    {
+        if ($project->getIs_cleaning()) {
+            // Récupérer les informations de l'utilisateur à partir de la base de données en fonction de son ID en session
+            $userModel = new UserModel();
+            $userData = $userModel->findById($_SESSION['user']['id']);
+
+            // Estimation du temps de cleaning en fonction du nombre de pages assignées
+            $assignedPages = $project->getNb_assigned_pages();
+            $cleaningDuration = $assignedPages * ($userData['avg_cleaning_duration']); // de base, 0.2 jour par  par page assignée
+            return $cleaningDuration;
+        }
+        return 0; // Pas de cleaning nécessaire
+    }
+
+
+    // Fonction d'estimation de la durée total pour boarder le projet
+    public function estimateTotalDuration(Project $project, bool $flagNbPages)
+    {
+        // Récupérer les informations de l'utilisateur à partir de la base de données en fonction de son ID en session
+        $userModel = new UserModel();
+        $userData = $userModel->findById($_SESSION['user']['id']);
+        if ($flagNbPages === true) {
+            $pagesDuration = $project->getNb_assigned_pages() / $userData['avg_pages_per_day'];
+        } else {
+            $pagesDuration = $project->getNb_total_pages() / $userData['avg_pages_per_day'];
+        }
+        return round($pagesDuration, 2);
+    }
+
+
+    // Fonction d'estimation du nombre de jours recommandés pour boarder le projet,
+    // en fonction du nombre de pages totales ou du nombre de pages assignées, du temps de cleaning estimé et de la durée du projet
+    public function estimateRecommendedPagesPerDay(Project $project, bool $flagNbPages)
+    {
+        $interval = $project->getDuree();
+        if ($flagNbPages === true) {
+            $recommandation = ($project->getNb_assigned_pages() + $project->getEstimated_cleaning_duration()) / $interval;
+        } else {
+            $recommandation = ($project->getNb_total_pages() + $project->getEstimated_cleaning_duration()) / $interval;
+        }
+        return round($recommandation, 2);
+    }
+
+    // Fonction d'estimation du temps de boarding d'une séquence en fonction de son type et de son nombre de lignes
+    public function estimateDurationBySequence(Sequence $sequence)
+    {
+        if ($sequence->getFk_type() !== 4) {
+            // Récupérer les informations de l'utilisateur à partir de la base de données en fonction de son ID en session
+            $userStatByTypeModel = new UserStatByTypeModel();
+            $userStatByTypeData = $userStatByTypeModel->findByUserIdAndType($_SESSION['user']['id'], $sequence->getFk_type());
+
+            $nb_lines = $sequence->getLines_count();
+
+            $nbPagesPerSequence = ceil($nb_lines / 35); // En moyenne 35 lignes par page
+            // Evite bug de division par 0
+            // if($userStatByTypeData['avg_pages_per_day'] > 0) {
+            $durationInDays = $nbPagesPerSequence / $userStatByTypeData['avg_pages_per_day'];
+            // } else {
+            //    $durationInDays = $nbPagesPerSequence / 1; 
+            // }
+            $durationInHours = $durationInDays * 8; // Convertir en heures, en supposant 8 heures de travail par jour
+
+            return round($durationInHours, 2); // Arrondir à 2 décimales pour plus de lisibilité
+        } else {
+            return 0;
+        }
+    }
+
+    // Fonction d'estimation du temps moyen par page
+    public function avgDurationEstimatedPerPage(Project $project)
+    {
+        $avgDurationEstimatedPerPage = ($project->getEstimated_total_duration()) / ($project->getNb_assigned_pages());
+        return round($avgDurationEstimatedPerPage, 2);
+    }
+}

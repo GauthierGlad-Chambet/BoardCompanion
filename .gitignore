@@ -1,6 +1,6 @@
-/Fichiers d'exemple/
-/vendor/
-/uploads/
+/SRc/Fichiers d'exemple/
+/src/vendor/
+/src/uploads/
 .phpunit.result.cache
 
 # On ignore les fichiers de configuration (données sensibles)
