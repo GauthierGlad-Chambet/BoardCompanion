@@ -1,22 +1,32 @@
 FROM php:8.1-apache
- 
+
 # Installe les extensions PHP nécessaires pour MySQL
 RUN docker-php-ext-install pdo pdo_mysql mysqli
- 
+
 # Active le module Apache mod_rewrite (utile pour les URLs propres / .htaccess)
 RUN a2enmod rewrite
- 
-# Autorise les fichiers .htaccess à surcharger la config Apache (nécessaire pour ton .htaccess)
+
+# Autorise les fichiers .htaccess à surcharger la config Apache
 RUN { \
     echo '<Directory /var/www/html/>'; \
     echo '    AllowOverride All'; \
     echo '</Directory>'; \
     } > /etc/apache2/conf-available/htaccess.conf \
     && a2enconf htaccess
- 
-# Copie la config PHP personnalisée (logue les erreurs au lieu de les afficher)
+
+# Autorise les requêtes/uploads volumineux
+COPY apache-uploads.conf /etc/apache2/conf-available/uploads.conf
+RUN a2enconf uploads
+
+# Copie la config PHP personnalisée (logs + uploads volumineux)
 COPY php.ini /usr/local/etc/php/conf.d/custom.ini
- 
-# Définit le dossier racine du site (Apache sert déjà /var/www/html par défaut)
+
+# Installe Composer (copié depuis l'image officielle Composer)
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# Copie le code de l'application dans l'image (voir .dockerignore pour les exclusions)
+COPY ./src /var/www/html
 WORKDIR /var/www/html
- 
+
+# Installe uniquement les dépendances de PRODUCTION (ignore phpunit et le reste du require-dev)
+RUN composer install --no-dev --optimize-autoloader --no-interaction

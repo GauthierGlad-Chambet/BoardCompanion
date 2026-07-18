@@ -1,0 +1,8 @@
+src/vendor
+src/uploads
+src/.env
+src/.env.*
+src/tests
+src/phpunit.xml
+src/.phpunit.result.cache
+.git
